@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, abort, request
-from flask.ext.httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth
 from flask import make_response
 from secrets import *
 
@@ -45,7 +45,7 @@ def get_information():
 @app.route('/middle/api/v1.0/value', methods=['POST'])
 @auth.login_required
 def recieve_information():
-    if not request.json or not 'length' in request.json:
+    if not request.json or 'length' not in request.json:
         abort(400)
     tmp = {
         'id': middle[-1]['id'] + 1,
@@ -60,4 +60,4 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
