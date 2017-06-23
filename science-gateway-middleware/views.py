@@ -10,17 +10,21 @@ app = Flask(__name__)
 auth = HTTPBasicAuth()
 
 
-# used to check a username and password against the values in secrets.py
 @auth.get_password
 def get_password(username):
+    '''
+    used to check a username and password against the values in secrets.py
+    '''
     if username == USERNAME:
         return PASSWORD
     return None
 
 
-# output an error message and 401 error code if user/pass are incorrect
 @auth.error_handler
 def unauthorized():
+    '''
+    output an error message and 401 error code if user/pass are incorrect
+    '''
     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
 
 
@@ -49,7 +53,7 @@ def ssh_connect(command):
 def recieve_information():
     '''
     http post method to append data to the stored json.
-    to pass the json {"length":5} into the app use the following command:
+    to pass a json into the app use the following command:
     curl -u <username>:<password> -i -H "Content-Type: application/json"
     -X POST -d '{"length":5, "width": 10}' http://localhost:5000/post
     '''
