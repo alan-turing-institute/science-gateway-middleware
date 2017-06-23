@@ -4,7 +4,10 @@ python:
 script: pytest
 branches:
   only:
-    - master
+    - stuart-wip
 install:
  - pip install .
  - pip install -r .travis.requirements.txt
+
+before_script:
+ - "export PYTHONPATH=."
