@@ -13,3 +13,4 @@ Werkzeug==0.12.2
 Flask-HTTPAuth
 paramiko
 pytest
+flake8
