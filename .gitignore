@@ -102,3 +102,6 @@ ENV/
 
 # Secrets file
 secrets.py
+
+# Log path
+.logs/

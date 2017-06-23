@@ -1,4 +1,5 @@
 import paramiko
+import os
 
 
 class ssh:
@@ -7,7 +8,7 @@ class ssh:
     to understand.
     '''
 
-    def __init__(self, hostname, username, port):
+    def __init__(self, hostname, username, port, debug=True):
         '''
         Create an SSHClient object, load host keys from the known_hosts file,
         so this is only posix compliant I think.
@@ -16,6 +17,9 @@ class ssh:
         hostname that has never been connected to before. Currently that will
         cause a failure which is not handled.
         '''
+        if debug:
+            os.makedirs(os.path.dirname('.logs/ssh.log'), exist_ok=True)
+            paramiko.util.log_to_file('.logs/ssh.log')
         self.client = paramiko.SSHClient()
         self.client.load_system_host_keys()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())

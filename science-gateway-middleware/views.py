@@ -1,8 +1,7 @@
 from flask import Flask, jsonify, abort, request, make_response
 from flask_httpauth import HTTPBasicAuth
-from ssh import ssh
+from .ssh import ssh
 from secrets import *
-
 
 app = Flask(__name__)
 
@@ -41,7 +40,7 @@ def ssh_connect(command):
     else:
         port = 22
 
-    connection = ssh(hostname, username, port)
+    connection = ssh(hostname, username, port, debug=True)
     result = connection.pass_command(command)
     connection.close_connection()
 
