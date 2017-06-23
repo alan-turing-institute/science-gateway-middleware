@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, abort, request, make_response
 from flask_httpauth import HTTPBasicAuth
 from secrets import *
+from simple import ssh
 
 # simple json, will be replaced by the incoming data from the frontend
 middle = [
@@ -35,6 +36,28 @@ def unauthorized():
 @app.route("/")
 def hello():
     return "Hello World!"
+
+
+# ssh to a remote machine
+@app.route("/ssh")
+def ssh_attempt():
+
+    # gathering the needed info from our secrets file
+    username = SSH_USR
+    hostname = SSH_HOSTNAME
+    if SSH_PORT:
+        port = SSH_PORT
+    else:
+        port = 22
+
+    # making a simple command that multiplies 2 numbers
+    command = 'echo "$(({0} * {1}))"'.format(5, 10)
+
+    connection = ssh(hostname, username, port)
+    result = connection.pass_command(command)
+    connection.close_connection()
+
+    return result
 
 
 # http get method to return contents of the json message, defined above
