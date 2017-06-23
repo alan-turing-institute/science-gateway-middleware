@@ -1,5 +1,5 @@
 import pytest
-import middleware as mw
+import middleware.views as mw
 
 
 class TestClass(object):
@@ -7,4 +7,4 @@ class TestClass(object):
         input_data = {'length': 5, 'width': 16}
         output = mw.build_command(input_data)
 
-        assert output is 'echo "$((5 * 16))"'
+        assert output == 'echo "$((5 * 16))"'
