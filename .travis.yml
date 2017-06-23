@@ -5,7 +5,7 @@ matrix:
     - python: 3.6
 script:
   - pytest
-  - flake8 middleware/
+  - flake8 middleware/ --ignore=F403,F405
 install:
  - pip install -r requirements.txt
 

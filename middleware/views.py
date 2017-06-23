@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, abort, request, make_response
 from flask_httpauth import HTTPBasicAuth
 from .ssh import ssh
-from secrets import USERNAME, PASSWORD, SSH_USR, SSH_HOSTNAME, SSH_PORT
+from secrets import *
 
 app = Flask(__name__)
 
