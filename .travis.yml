@@ -6,7 +6,7 @@ branches:
   only:
     - stuart-wip
 install:
- - pip install -r .travis.requirements.txt
+ - pip install -r requirements.txt
 
 before_script:
  - "export PYTHONPATH=."
