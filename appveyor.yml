@@ -6,9 +6,8 @@ branches:
     - stuart-wip
 
 environment:
-
-    - PYTHON: "C:\\Python36"
-    - PYTHON: "C:\\Python36-x64"
+  - PYTHON: "C:\\Python36"
+  - PYTHON: "C:\\Python36-x64"
 
 install:
   # We need wheel installed to build wheels
