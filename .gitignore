@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Secrets file
+secrets.py
+
+# Log path
+.logs/

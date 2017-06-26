@@ -1,0 +1,18 @@
+language: python
+
+branches:
+  only:
+  - master
+  - stuart-wip
+
+matrix:
+  include:
+    - python: 3.6
+script:
+  - pytest
+  - flake8 middleware/ --ignore=F403,F405
+install:
+ - pip install -r requirements.txt
+
+before_script:
+ - "export PYTHONPATH=."
