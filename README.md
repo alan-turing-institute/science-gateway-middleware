@@ -30,6 +30,15 @@ SSH_PORT = <optional port to connect via, defaults to 22>
 
 The `SHH_*` variables will need to point to `science-gateway-cluster` but at present I have been testing this via one of UCL's servers. The ssh code assumes that you already have ssh keys configured on the machine where the app is running, and has limited error handling if this is not the case.
 
+### Local deployment
+
+```
+git clone git@github.com:alan-turing-institute/science-gateway-middleware.git
+cd science-gateway-middleware/middleware
+export FLASK_APP=views.py
+export FLASK_DEBUG=1
+flask run
+```
 
 ## Usage
 
