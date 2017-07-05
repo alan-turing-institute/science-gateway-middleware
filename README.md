@@ -19,10 +19,10 @@ pip install -r requirements.txt
 At present this app uses a `secrets.py` file to store login details. For obvious reasons this is not committed with the rest of the code, but can be created locally. The code expects a `secrets.py` file placed in the root of the directory with the following variables:
 
 ```
-USERNAME = <a username>
-PASSWORD = <a password>
-SSH_USR = <username to connect to remote server>
-SSH_HOSTNAME = <ip address of server to ssh into>
+USERNAME = "<a username>"
+PASSWORD = "<a password>"
+SSH_USR = "<username to connect to remote server>"
+SSH_HOSTNAME = "<ip address of server to ssh into>"
 SSH_PORT = <optional port to connect via, defaults to 22>
 ```
 
