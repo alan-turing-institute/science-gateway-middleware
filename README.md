@@ -76,4 +76,4 @@ Date: Mon, 26 Jun 2017 10:49:31 GMT
 
 ## Testing
 
-Tests can be run via `pytest`.
+Tests can be run via `python -m pytest`.
