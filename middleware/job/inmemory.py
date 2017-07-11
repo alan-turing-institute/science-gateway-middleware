@@ -24,11 +24,19 @@ class JobRepositoryMemory():
         else:
             return None
 
-    def update_job(self, job):
+    def update(self, job):
         job_id = job["id"]
         if(job_id in self._jobs):
             # Replace job if already in job list
             self._jobs[job_id] = job
             return job
+        else:
+            return None
+
+    def delete(self, job):
+        job_id = job["id"]
+        if(job_id in self._jobs):
+            # If job exists, remove job from dictionary and return removed job
+            return self._jobs.pop(job_id)
         else:
             return None
