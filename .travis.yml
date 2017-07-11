@@ -1,10 +1,5 @@
 language: python
 
-branches:
-  only:
-  - master
-  - stuart-wip
-
 matrix:
   include:
     - python: 3.6
