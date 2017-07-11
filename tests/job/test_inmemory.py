@@ -108,7 +108,7 @@ class TestJobRepositoryMemory(object):
         repo._jobs[job_id] = job
         job_returned = repo.delete(job_id)
         job_stored = repo._jobs.get(job_id)
-        assert(job_returned == job)
+        assert(job_returned is None)
         assert(job_stored is None)
 
     def test_delete_nonexistent_job_returns_none(self):

@@ -39,6 +39,7 @@ class JobRepositoryMemory():
     def delete(self, job_id):
         if(self.exists(job_id)):
             # If job exists, remove job from dictionary and return removed job
-            return self._jobs.pop(job_id)
+            self._jobs.pop(job_id)
+            return None
         else:
             return None
