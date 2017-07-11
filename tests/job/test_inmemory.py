@@ -14,14 +14,29 @@ class TestJobRepositoryMemory(object):
         job = {"id": job_id,
                "parameters": {"height": 3, "width": 4, "depth": 5}}
         repo._jobs[job_id] = job
-        job_ret = repo.get_by_id(job_id)
-        assert(job_ret == job)
+        job_returned = repo.get_by_id(job_id)
+        assert(job_returned == job)
 
     def test_create_job(self):
         repo = JobRepositoryMemory()
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id,
                "parameters": {"height": 3, "width": 4, "depth": 5}}
-        repo.create(job)
-        job_ret = repo._jobs[job_id]
-        assert(job_ret == job)
+        job_returned = repo.create(job)
+        job_stored = repo._jobs[job_id]
+        assert(job_returned == job)
+        assert(job_stored == job)
+
+    def test_update_job(self):
+        # Test that update replaces job object in entirety
+        repo = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_initial = {"id": job_id, "parameters": {"height": 3, "width": 4,
+                       "depth": 5}}
+        job_updated = {"id": job_id, "purple": {"circle": "street",
+                       "triangle": "road", "square": "avenue"}}
+        repo._jobs[job_id] = job_initial
+        job_returned = repo.update_job(job_updated)
+        job_stored = repo._jobs[job_id]
+        assert(job_returned == job_updated)
+        assert(job_stored == job_updated)

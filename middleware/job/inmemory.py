@@ -20,3 +20,12 @@ class JobRepositoryMemory():
             return self._jobs[job_id]
         else:
             return None
+
+    def update_job(self, job):
+        job_id = job["id"]
+        if(job_id in self._jobs):
+            # Replace job if already in job list
+            self._jobs[job_id] = job
+            return job
+        else:
+            return None
