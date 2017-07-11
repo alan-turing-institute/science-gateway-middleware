@@ -19,9 +19,6 @@ class JobRepositoryMemory():
             return None
 
     def get_by_id(self, job_id):
-        # Note: We could skip the whole if..else check for the existence of
-        # job_id as a key as the dictionary.get() method returns None if the
-        # key does not exist.
         if self.exists(job_id):
             return self._jobs.get(job_id)
         else:
