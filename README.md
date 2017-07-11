@@ -16,7 +16,8 @@ This code is tested on `python 3.6` and all dependencies can be installed via `p
 pip install -r requirements.txt
 ```
 
-At present this app uses a `secrets.py` file to store login details. For obvious reasons this is not committed with the rest of the code, but can be created locally. The code expects a `secrets.py` file placed in the root of the directory with the following variables:
+At present this app uses a `secrets.py` file to store login details. This file must be present in the `instance` directory of the package. This directory is
+excluded from source control and contains instance-specific data. The code expects an `instance/secrets.py` file  with the following variables:
 
 ```
 USERNAME = "<a username>"
@@ -76,4 +77,4 @@ Date: Mon, 26 Jun 2017 10:49:31 GMT
 
 ## Testing
 
-Tests can be run via `pytest`.
+Tests can be run via `python -m pytest middleware`.
