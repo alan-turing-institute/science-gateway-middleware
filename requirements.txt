@@ -14,3 +14,4 @@ Flask-HTTPAuth
 paramiko
 pytest
 flake8
+flask-restful
