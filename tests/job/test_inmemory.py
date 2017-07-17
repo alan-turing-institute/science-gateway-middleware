@@ -29,6 +29,15 @@ class TestJobRepositoryMemory(object):
         job_returned = repo.exists(fetch_id)
         assert job_returned is False
 
+    def test_exists_for_none_returns_false(self):
+        repo = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id,
+               "parameters": {"height": 3, "width": 4, "depth": 5}}
+        repo._jobs[job_id] = job
+        job_returned = repo.exists(None)
+        assert job_returned is False
+
     def test_get_existing_job_by_id_returns_job(self):
         repo = JobRepositoryMemory()
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
