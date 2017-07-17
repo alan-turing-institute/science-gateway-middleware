@@ -1,6 +1,6 @@
 import paramiko
 import os
-
+from scp import SCPClient
 
 class ssh:
     '''
@@ -33,6 +33,10 @@ class ssh:
         '''
         stdin, stdout, stderr = self.client.exec_command(command)
         return stdout.read().decode("utf-8")
+
+    def secure_copy(self, filename, destination_path):
+        with SCPClient(self.client.get_transport()) as scp:
+            scp.put(filename, destination_path)
 
     def close_connection(self):
         '''
