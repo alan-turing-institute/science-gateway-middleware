@@ -44,3 +44,19 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 404
         assert job_response.data == json_to_response_data(error_message)
 
+
+class TestJobsApi(object):
+
+    def test_post_for_nonexistent_job_returns_job_with_200_status(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id,
+               "parameters": {"height": 3, "width": 4, "depth": 5}}
+        self.app = create_app(jobs)
+        self.client = self.app.test_client()
+        job_response = self.client.post("/jobs", data=json.dumps(job),
+                                        content_type='application/json')
+        assert job_response.status_code == 200
+        assert job_response.data == json_to_response_data(job)
+        assert jobs.get_by_id(job_id) == job
