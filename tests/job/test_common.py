@@ -1,4 +1,4 @@
-from middleware.job.common import JobApi, JobsApi
+from middleware.job.common import JobApi
 from middleware.job.inmemory import JobRepositoryMemory
 from middleware.app import create_app
 import unittest
@@ -67,12 +67,14 @@ class TestJobsApi(object):
         job_existing = {"id": job_id, "parameters": {"height": 3, "width": 4,
                         "depth": 5}}
         jobs.create(job_existing)
-        job_new = {"id": job_id, "parameters": {"blue": "high", "green": "low"}}
+        job_new = {"id": job_id, "parameters": {"blue": "high",
+                   "green": "low"}}
         self.app = create_app(jobs)
         self.client = self.app.test_client()
         job_response = self.client.post("/jobs", data=json.dumps(job_new),
                                         content_type='application/json')
-        error_message = {"message": "Job with ID {} already exists".format(job_id)}
+        error_message = {"message": "Job with ID {} already "
+                         "exists".format(job_id)}
         assert job_response.status_code == 409
         assert response_to_json(job_response) == error_message
         assert jobs.get_by_id(job_id) == job_existing

@@ -32,7 +32,8 @@ class JobsApi(Resource):
         else:
             job_id = job.get("id")
             if self.jobs.exists(job_id):
-                abort(409, message="Job with ID {} already exists".format(job_id))
+                abort(409, message="Job with ID {} already "
+                                   "exists".format(job_id))
             else:
                 job = self.jobs.create(job)
                 return job, 200, {'Content-Type': 'application/json'}
