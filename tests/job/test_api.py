@@ -84,6 +84,22 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
 
+    def test_put_with_nonjson_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3,
+               "width": 4, "depth": 5}}
+        jobs.create(job)
+        invalid_json = "{key-with-no-value}"
+        client = test_client(jobs)
+        # We don't add content_type='application/json' because, if we do the
+        # framework catches invalid JSON before it gets to our response handler
+        job_response = client.put("/job/{}".format(job_id),
+                                  data=invalid_json)
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
     def test_put_with_mismatched_job_id_returns_error_with_409_status(self):
         jobs = JobRepositoryMemory()
         # Create job
@@ -131,6 +147,22 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_new
         assert jobs.get_by_id(job_id) == job_new
+
+    def test_put_with_invalid_job_json_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3, "width": 4,
+               "depth": 5}}
+        jobs.create(job)
+        client = test_client(jobs)
+        invalid_job = {"no-id-field": "valid-json"}
+        job_response = client.put("/job/{}".format(job_id),
+                                  data=json.dumps(invalid_job),
+                                  content_type='application/json')
+        error_message = {"message": "Message body is not valid Job JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
 
     # === DELETE tests (DELETE) ===
     def test_delete_with_no_job_id_returns_error_with_404_status(self):
@@ -206,3 +238,24 @@ class TestJobsApi(object):
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
         assert len(jobs._jobs) == 0
+
+    def test_post_with_nonjson_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        invalid_json = "{key-with-no-value}"
+        client = test_client(jobs)
+        # We don't add content_type='application/json' because, if we do the
+        # framework catches invalid JSON before it gets to our response handler
+        job_response = client.post("/jobs", data=invalid_json)
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_post_with_invalid_job_json_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        invalid_job = {"no-id-field": "valid-json"}
+        client = test_client(jobs)
+        job_response = client.post("/jobs", data=json.dumps(invalid_job),
+                                   content_type='application/json')
+        error_message = {"message": "Message body is not valid Job JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message

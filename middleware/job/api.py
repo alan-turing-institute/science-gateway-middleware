@@ -1,4 +1,5 @@
 from flask_restful import Resource, abort, request
+from middleware.job.model import is_valid_job_json
 
 
 class JobApi(Resource):
@@ -26,8 +27,11 @@ class JobApi(Resource):
         job_new = request.json
         if job_new is None:
             abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(job_new):
+            abort(400, message="Message body is not valid Job JSON")
         # Check job_id route parameter consistent with JSON data
-        job_id_json = job_new["id"]
+        job_id_json = job_new.get("id")
         if job_id != job_id_json:
             abort(409, message="Job ID in URL ({}) does not match job "
                                "ID in message JSON ({}).".format(job_id,
@@ -61,6 +65,9 @@ class JobsApi(Resource):
         job = request.json
         if job is None:
             abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(job):
+            abort(400, message="Message body is not valid Job JSON")
         job_id = job.get("id")
         if self.jobs.exists(job_id):
             abort(409, message="Job with ID {} already "
