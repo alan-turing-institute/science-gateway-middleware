@@ -80,7 +80,7 @@ Date: Mon, 26 Jun 2017 10:49:31 GMT
 #### app.py entrypoint
 **Create Job:**
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"id": "<uuid>", "parameters": {"height": 3,"width": 4,"depth": 5}}' http://localhost:5000/jobs
+curl -i -H "Content-Type: application/json" -X POST -d '{"id": "<uuid>", "parameters": {"height": 3,"width": 4,"depth": 5}}' http://localhost:5000/job
 ```
 **Retrieve Job:**
 ```
