@@ -1,8 +1,6 @@
-from flask_restful import Resource, abort, request
-from flask import jsonify, request
-from os import makedirs
 import os
-from os.path import dirname, basename
+from flask_restful import Resource, abort, request
+from os.path import basename
 from middleware.job.model import is_valid_job_json
 from middleware.patcher import (apply_patch, patch_and_transfer_template_files,
                                 transfer_files, run_remote_script)
