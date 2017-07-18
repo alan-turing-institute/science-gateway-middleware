@@ -9,6 +9,8 @@ from os import makedirs
 from os.path import dirname
 from os.path import basename
 
+from mako.template import Template
+
 
 app = Flask(__name__)
 
@@ -103,7 +105,10 @@ def recieve_information():
 # i.e. generalise to a system that is not f90 specific
 
 def apply_patch(template_path, parameters, destination_path):
-    f90nml.patch(template_path, parameters, destination_path)
+    # f90nml.patch(template_path, parameters, destination_path)
+    template = Template(filename=template_path)
+    with open(destination_path, "w") as f:
+        f.write(template.render(parameters=parameters))
 
 def patch_and_transfer_template_files(template_list, parameter_patch):
     '''
@@ -169,6 +174,9 @@ def setup():
     template_list = input_data["templates"]
     script_list = input_data["scripts"]
     parameter_patch = input_data["parameters"]
+
+    print(parameter_patch)
+
 
     patch_and_transfer_template_files(template_list, parameter_patch)
     transfer_files(script_list)
