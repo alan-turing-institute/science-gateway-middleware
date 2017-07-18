@@ -12,7 +12,7 @@ def create_app(job_repository):
     api.add_resource(JobApi, '/job/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
-    api.add_resource(JobsApi, '/jobs',
+    api.add_resource(JobsApi, '/job',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
     return app

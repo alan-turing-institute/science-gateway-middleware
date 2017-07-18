@@ -205,7 +205,7 @@ class TestJobsApi(object):
         job = {"id": job_id,
                "parameters": {"height": 3, "width": 4, "depth": 5}}
         client = test_client(jobs)
-        job_response = client.post("/jobs", data=json.dumps(job),
+        job_response = client.post("/job", data=json.dumps(job),
                                    content_type='application/json')
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job
@@ -221,7 +221,7 @@ class TestJobsApi(object):
         job_new = {"id": job_id, "parameters": {"blue": "high",
                    "green": "low"}}
         client = test_client(jobs)
-        job_response = client.post("/jobs", data=json.dumps(job_new),
+        job_response = client.post("/job", data=json.dumps(job_new),
                                    content_type='application/json')
         error_message = {"message": "Job with ID {} already "
                          "exists".format(job_id)}
@@ -232,7 +232,7 @@ class TestJobsApi(object):
     def test_post_with_none_returns_error_with_400_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
-        job_response = client.post("/jobs", data=json.dumps(None),
+        job_response = client.post("/job", data=json.dumps(None),
                                    content_type='application/json')
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
@@ -245,7 +245,7 @@ class TestJobsApi(object):
         client = test_client(jobs)
         # We don't add content_type='application/json' because, if we do the
         # framework catches invalid JSON before it gets to our response handler
-        job_response = client.post("/jobs", data=invalid_json)
+        job_response = client.post("/job", data=invalid_json)
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
@@ -254,7 +254,7 @@ class TestJobsApi(object):
         jobs = JobRepositoryMemory()
         invalid_job = {"no-id-field": "valid-json"}
         client = test_client(jobs)
-        job_response = client.post("/jobs", data=json.dumps(invalid_job),
+        job_response = client.post("/job", data=json.dumps(invalid_job),
                                    content_type='application/json')
         error_message = {"message": "Message body is not valid Job JSON"}
         assert job_response.status_code == 400
