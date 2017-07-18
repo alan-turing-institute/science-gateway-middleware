@@ -122,9 +122,9 @@ def patch_and_transfer_template_files(template_list, parameter_patch):
         apply_patch(template_file, parameter_patch, tmp_file)
         secure_copy(tmp_file, destination_path)
 
-def copy_files(object_list):
+def transfer_files(object_list):
     '''
-    Method to copy multiple files to cluster using single connection
+    Method to copy multiple files to cluster using single SSHClient connection
     '''
     # gathering the needed info from our secrets file
     username = SSH_USR
@@ -142,6 +142,12 @@ def copy_files(object_list):
         secure_copy(file_full_path, destination_path)
     connection.close_connection()
 
+def run_remote_script(script_name, remote_path, debug=True):
+    command = "cd {}; bash {}".format(remote_path, script_name)
+    out = ssh_connect(command)
+    if debug:
+        print(out)
+
 # currently exposed method, later make private and call from /run
 # rename to /api/run if necessary
 @app.route('/setup', methods=['POST'])
@@ -149,6 +155,9 @@ def copy_files(object_list):
 def setup():
     '''
     '''
+
+    # TODO build data structure here with full remote path information, so that
+    # generating full paths is a once only operation
 
     input_data = {
         'id': request.json['id'],
@@ -162,7 +171,12 @@ def setup():
     parameter_patch = input_data["parameters"]
 
     patch_and_transfer_template_files(template_list, parameter_patch)
-    copy_files(script_list)
+    transfer_files(script_list)
+
+    for script in script_list:
+        script_name = basename(script["source_uri"])
+        remote_location = os.path.join(simulation_root, script["destination_path"])
+        run_remote_script(script_name, remote_location)
 
     # TODO add an actual check on "success"
     result = jsonify({"success":"true", "message": "patch applied"})
@@ -192,7 +206,6 @@ def build_command(input_data):
     # a simple command that multiplies 2 numbers
     return 'echo "$(({0} * {1}))"'.format(input_data['length'],
                                           input_data['width'])
-
 
 if __name__ == '__main__':
     app.run()
