@@ -19,7 +19,7 @@ auth = HTTPBasicAuth()
 # see http://flask.pocoo.org/docs/0.12/config/
 # all cluster paths are relative to this location
 # later, make into parameter that can be set from science-gateway-web
-simulation_root= '/home/vm-admin/simulation'
+simulation_root = '/home/vm-admin/simulation'
 # simulation_root='tmp'
 
 
