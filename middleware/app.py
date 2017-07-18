@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from middleware.job.common import JobApi, JobsApi
+from middleware.job.api import JobApi, JobsApi
 from middleware.job.inmemory import JobRepositoryMemory
 
 

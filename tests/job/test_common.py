@@ -1,4 +1,4 @@
-from middleware.job.common import JobApi
+from middleware.job.api import JobApi
 from middleware.job.inmemory import JobRepositoryMemory
 from middleware.app import create_app
 import unittest
