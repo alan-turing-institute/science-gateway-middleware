@@ -40,3 +40,6 @@ class JobRepositoryMemory():
             return None
         else:
             return None
+
+    def list_ids(self):
+        return [key for key, val in self._jobs.items()]

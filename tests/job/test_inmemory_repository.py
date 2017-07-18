@@ -1,4 +1,4 @@
-from middleware.job.inmemory import JobRepositoryMemory
+from middleware.job.inmemory_repository import JobRepositoryMemory
 
 
 class TestJobRepositoryMemory(object):
@@ -27,6 +27,15 @@ class TestJobRepositoryMemory(object):
         repo._jobs[store_id] = job
         fetch_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
         job_returned = repo.exists(fetch_id)
+        assert job_returned is False
+
+    def test_exists_for_none_returns_false(self):
+        repo = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id,
+               "parameters": {"height": 3, "width": 4, "depth": 5}}
+        repo._jobs[job_id] = job
+        job_returned = repo.exists(None)
         assert job_returned is False
 
     def test_get_existing_job_by_id_returns_job(self):
@@ -122,3 +131,22 @@ class TestJobRepositoryMemory(object):
         job_stored = repo._jobs.get(job_id_initial)
         assert job_returned is None
         assert job_stored == job_initial
+
+    def test_list_ids_returns_all_ids(self):
+        repo = JobRepositoryMemory()
+        # Add multiple jobs to repo
+        job_id_1 = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_1 = {"id": job_id_1, "parameters": {"height": 11, "width": 12,
+                 "depth": 13}}
+        job_id_2 = "53835db6-87cb-4dd8-a91f-5c98100c0b82"
+        job_2 = {"id": job_id_2, "parameters": {"height": 21, "width": 22,
+                 "depth": 23}}
+        job_id_3 = "781692cc-b71c-469e-a8e9-938c2fda89f2"
+        job_3 = {"id": job_id_3, "parameters": {"height": 31, "width": 32,
+                 "depth": 33}}
+        repo._jobs[job_id_1] = job_1
+        repo._jobs[job_id_2] = job_2
+        repo._jobs[job_id_3] = job_3
+        list_expected = [key for key, val in repo._jobs.items()]
+        list_returned = repo.list_ids()
+        assert list_returned == list_expected
