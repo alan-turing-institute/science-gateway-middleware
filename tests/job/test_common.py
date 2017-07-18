@@ -14,7 +14,10 @@ def test_client(job_repository=JobRepositoryMemory()):
 
 
 def response_to_json(response):
-    return json.loads(response.get_data(as_text=True))
+    data = response.get_data(as_text=True)
+    if not data:
+        return None
+    return json.loads(data)
 
 
 class TestJobApi(unittest.TestCase):
