@@ -7,6 +7,12 @@ from werkzeug.exceptions import NotFound
 import json
 
 
+@pytest.fixture
+def test_client(job_repository=JobRepositoryMemory()):
+    app = create_app(job_repository)
+    return app.test_client()
+
+
 def response_to_json(response):
     return json.loads(response.get_data(as_text=True))
 
@@ -27,27 +33,24 @@ class TestJobApi(unittest.TestCase):
         job = {"id": job_id,
                "parameters": {"height": 3, "width": 4, "depth": 5}}
         jobs.create(job)
-        self.app = create_app(jobs)
-        self.client = self.app.test_client()
-        job_response = self.client.get("/job/{}".format(job_id))
+        client = test_client(jobs)
+        job_response = client.get("/job/{}".format(job_id))
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job
 
     def test_get_for_nonexistent_job_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
-        self.app = create_app(jobs)
-        self.client = self.app.test_client()
+        client = test_client(jobs)
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-        job_response = self.client.get("/job/{}".format(job_id))
+        job_response = client.get("/job/{}".format(job_id))
         error_message = {"message": "Job {} not found".format(job_id)}
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
 
     def test_get_with_no_job_id_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
-        self.app = create_app(jobs)
-        self.client = self.app.test_client()
-        job_response = self.client.get("/job/")
+        client = test_client(jobs)
+        job_response = client.get("/job/")
         assert job_response.status_code == 404
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
