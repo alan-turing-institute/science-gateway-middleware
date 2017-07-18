@@ -76,7 +76,8 @@ class JobApi(Resource):
         script_list = input_data["scripts"]
         parameter_patch = input_data["parameters"]
 
-        #patch_and_transfer_template_files(template_list, parameter_patch)
+        #patch_and_transfer_template_files(template_list, parameter_patch,
+                                         # simulation_root)
         #transfer_files(script_list)
 
         for script in script_list:

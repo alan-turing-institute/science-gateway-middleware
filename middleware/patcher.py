@@ -17,8 +17,9 @@ from os.path import basename
 def apply_patch(template_path, parameters, destination_path):
     f90nml.patch(template_path, parameters, destination_path)
 
-
-def patch_and_transfer_template_files(template_list, parameter_patch):
+# {"source_uri":"./resources/templates/Blue.nml", "destination_path":"project/case/"}] ,
+# "scripts": [ { "source_uri": "./resources/scripts/start_job.sh", "destination_path": "project/case/" }
+def patch_and_transfer_template_files(template_list, parameter_patch, simulation_root):
     '''
     Apply patch to all template files
     '''
@@ -34,7 +35,8 @@ def patch_and_transfer_template_files(template_list, parameter_patch):
         makedirs(tmp_path, exist_ok=True)
 
         apply_patch(template_file, parameter_patch, tmp_file)
-        secure_copy(tmp_file, destination_path)
+        print('Secure copy would be here')
+        #secure_copy(tmp_file, destination_path)
 
 
 def transfer_files(object_list):
