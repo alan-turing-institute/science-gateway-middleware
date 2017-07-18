@@ -31,7 +31,7 @@ SSH_PORT = <optional port to connect via, defaults to 22>
 The `SHH_*` variables will need to point to `science-gateway-cluster` but at present I have been testing this via one of UCL's servers. The ssh code assumes that you already have ssh keys configured on the machine where the app is running, and has limited error handling if this is not the case.
 
 ### Local deployment
-
+#### views.py entrypoint
 ```
 git clone git@github.com:alan-turing-institute/science-gateway-middleware.git
 cd science-gateway-middleware/middleware
@@ -39,9 +39,12 @@ export FLASK_APP=views.py
 export FLASK_DEBUG=1
 flask run
 ```
+#### app.py entrypoint
+`./run.sh`
 
 ## Usage
 
+#### views.py entrypoint
 This app is designed to provide an example of how the middleware will interact with the front end and the cluster. The app currently receives two values, `length` and `width` as a `json`, eg:
 
 ```
@@ -72,6 +75,16 @@ Server: Werkzeug/0.12.2 Python/3.6.1
 Date: Mon, 26 Jun 2017 10:49:31 GMT
 
 50
+```
+
+#### app.py entrypoint
+**Create Job:**
+```
+curl -i -H "Content-Type: application/json" -X POST -d '{"id": "<uuid>", "parameters": {"height": 3,"width": 4,"depth": 5}}' http://localhost:5000/jobs
+```
+**Retrieve Job:**
+```
+curl -i -H "Content-Type: application/json" -X GET http://localhost:5000/job/<uuid>
 ```
 
 ## Testing
