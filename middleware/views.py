@@ -2,8 +2,8 @@ from flask import Flask, jsonify, abort, request, make_response
 from flask_httpauth import HTTPBasicAuth
 from .ssh import ssh
 from secrets import *
-
-
+import f90nml
+import json
 import os
 from os import makedirs
 from os.path import dirname
@@ -15,14 +15,13 @@ app = Flask(__name__)
 # initialise authentication
 auth = HTTPBasicAuth()
 
-import f90nml
-import json
-
-# TODO LRM (l.mason@imperial.ac.uk) add a configuration system, see http://flask.pocoo.org/docs/0.12/config/
+# TODO LRM (l.mason@imperial.ac.uk) add a configuration system,
+# see http://flask.pocoo.org/docs/0.12/config/
 # all cluster paths are relative to this location
 # later, make into parameter that can be set from science-gateway-web
-simulation_root='/home/vm-admin/simulation'
+simulation_root= '/home/vm-admin/simulation'
 # simulation_root='tmp'
+
 
 @auth.get_password
 def get_password(username):
@@ -32,6 +31,7 @@ def get_password(username):
     if username == USERNAME:
         return PASSWORD
     return None
+
 
 @auth.error_handler
 def unauthorized():
@@ -102,8 +102,10 @@ def recieve_information():
 # TODO LRM (l.mason@imperial.ac.uk): generalise to templating patch system,
 # i.e. generalise to a system that is not f90 specific
 
+
 def apply_patch(template_path, parameters, destination_path):
     f90nml.patch(template_path, parameters, destination_path)
+
 
 def patch_and_transfer_template_files(template_list, parameter_patch):
     '''
@@ -113,14 +115,16 @@ def patch_and_transfer_template_files(template_list, parameter_patch):
         template_file = template["source_uri"]
         template_filename = basename(template_file)
 
-        destination_path = os.path.join(simulation_root, template["destination_path"])
+        destination_path = os.path.join(simulation_root,
+                                        template["destination_path"])
 
         tmp_path = os.path.join('tmp', template["destination_path"])
-        tmp_file = os.path.join(tmp_path,template_filename)
+        tmp_file = os.path.join(tmp_path, template_filename)
         makedirs(tmp_path, exist_ok=True)
 
         apply_patch(template_file, parameter_patch, tmp_file)
         secure_copy(tmp_file, destination_path)
+
 
 def transfer_files(object_list):
     '''
@@ -138,15 +142,18 @@ def transfer_files(object_list):
 
     for file_object in object_list:
         file_full_path = file_object["source_uri"]
-        destination_path = os.path.join(simulation_root, file_object["destination_path"])
+        destination_path = os.path.join(simulation_root,
+                                        file_object["destination_path"])
         secure_copy(file_full_path, destination_path)
     connection.close_connection()
+
 
 def run_remote_script(script_name, remote_path, debug=True):
     command = "cd {}; bash {}".format(remote_path, script_name)
     out = ssh_connect(command)
     if debug:
         print(out)
+
 
 # currently exposed method, later make private and call from /run
 # rename to /api/run if necessary
@@ -175,12 +182,14 @@ def setup():
 
     for script in script_list:
         script_name = basename(script["source_uri"])
-        remote_location = os.path.join(simulation_root, script["destination_path"])
+        remote_location = os.path.join(simulation_root,
+                                       script["destination_path"])
         run_remote_script(script_name, remote_location)
 
     # TODO add an actual check on "success"
-    result = jsonify({"success":"true", "message": "patch applied"})
+    result = jsonify({"success": "true", "message": "patch applied"})
     return result, 201
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -188,6 +197,7 @@ def not_found(error):
     handles 404 errors gracefully
     '''
     return make_response(jsonify({'error': 'Not found'}), 404)
+
 
 def workflow(input_data):
     '''
