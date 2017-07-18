@@ -1,5 +1,5 @@
 from flask_restful import Resource, abort, request
-from middleware.job.model import is_valid_job_json
+from middleware.job.model import is_valid_job_json, job_summary_json
 
 
 class JobApi(Resource):
@@ -60,6 +60,16 @@ class JobsApi(Resource):
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
+
+    def get(self):
+        def list_job_summary_json(job_id):
+            job = self.jobs.get_by_id(job_id)
+            summary_json = job_summary_json(job)
+            summary_json["uri"] = "/job/{}".format(job_id)
+            return summary_json
+        job_ids = self.jobs.list_ids()
+        summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
+        return summary_list, 200, {'Content-Type': 'application/json'}
 
     def post(self):
         job = request.json

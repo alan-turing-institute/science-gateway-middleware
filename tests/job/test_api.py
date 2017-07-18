@@ -198,6 +198,38 @@ class TestJobApi(unittest.TestCase):
 
 class TestJobsApi(object):
 
+    # === GET tests (LIST) ===
+    def test_get_returns_object_summary_list(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id_1 = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_1 = {"id": job_id_1, "parameters": {"height": 11, "width": 12,
+                 "depth": 13}}
+        job_id_2 = "53835db6-87cb-4dd8-a91f-5c98100c0b82"
+        job_2 = {"id": job_id_2, "parameters": {"height": 21, "width": 22,
+                 "depth": 23}}
+        job_id_3 = "781692cc-b71c-469e-a8e9-938c2fda89f2"
+        job_3 = {"id": job_id_3, "parameters": {"height": 31, "width": 32,
+                 "depth": 33}}
+        jobs.create(job_1)
+        jobs.create(job_2)
+        jobs.create(job_3)
+        client = test_client(jobs)
+
+        def job_uri(job_id):
+            return "/job/{}".format(job_id)
+
+        expected_response = [{"id": job_id_1, "uri": job_uri(job_id_1)},
+                             {"id": job_id_2, "uri": job_uri(job_id_2)},
+                             {"id": job_id_3, "uri": job_uri(job_id_3)}]
+        job_response = client.get("/job")
+        assert job_response.status_code == 200
+        # Both lists of dictionaries need to have same sort order to
+        # successfully compare
+        assert response_to_json(job_response).sort(key=lambda x: x["id"]) == \
+            expected_response.sort(key=lambda x: x["id"])
+
+    # === POST tests (CREATE) ===
     def test_post_for_nonexistent_job_returns_job_with_200_status(self):
         jobs = JobRepositoryMemory()
         # Create job
