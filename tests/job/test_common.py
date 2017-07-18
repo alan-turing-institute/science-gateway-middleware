@@ -64,10 +64,9 @@ class TestJobsApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id,
                "parameters": {"height": 3, "width": 4, "depth": 5}}
-        self.app = create_app(jobs)
-        self.client = self.app.test_client()
-        job_response = self.client.post("/jobs", data=json.dumps(job),
-                                        content_type='application/json')
+        client = test_client(jobs)
+        job_response = client.post("/jobs", data=json.dumps(job),
+                                   content_type='application/json')
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job
         assert jobs.get_by_id(job_id) == job
@@ -81,22 +80,21 @@ class TestJobsApi(object):
         jobs.create(job_existing)
         job_new = {"id": job_id, "parameters": {"blue": "high",
                    "green": "low"}}
-        self.app = create_app(jobs)
-        self.client = self.app.test_client()
-        job_response = self.client.post("/jobs", data=json.dumps(job_new),
-                                        content_type='application/json')
+        client = test_client(jobs)
+        job_response = client.post("/jobs", data=json.dumps(job_new),
+                                   content_type='application/json')
         error_message = {"message": "Job with ID {} already "
                          "exists".format(job_id)}
         assert job_response.status_code == 409
         assert response_to_json(job_response) == error_message
         assert jobs.get_by_id(job_id) == job_existing
 
-    def test_post_with_none_returns_errro_with_400_status(self):
+    def test_post_with_none_returns_error_with_400_status(self):
         jobs = JobRepositoryMemory()
-        self.app = create_app(jobs)
-        self.client = self.app.test_client()
-        job_response = self.client.post("/jobs", data=json.dumps(None),
-                                        content_type='application/json')
+        client = test_client(jobs)
+        job_response = client.post("/jobs", data=json.dumps(None),
+                                   content_type='application/json')
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
+        assert len(jobs._jobs) == 0
