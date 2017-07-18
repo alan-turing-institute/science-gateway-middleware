@@ -57,7 +57,7 @@ class TestJobApi(unittest.TestCase):
         # TODO: Get the 404 response defined for the app and compare it here
 
     # === PUT tests (UPDATE) ===
-    def test_put_with_no_job_returns_error_with_400_status(self):
+    def test_put_with_no_job_id_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
         job_response = client.put("/job/")
@@ -65,6 +65,21 @@ class TestJobApi(unittest.TestCase):
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
         assert len(jobs._jobs) == 0
+
+    def test_put_with_empty_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3,
+               "width": 4, "depth": 5}}
+        jobs.create(job)
+        job = None
+        client = test_client(jobs)
+        job_response = client.put("/job/{}".format(job_id),
+                                  data=json.dumps(job),
+                                  content_type='application/json')
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
 
     def test_put_with_mismatched_job_id_returns_error_with_409_status(self):
         jobs = JobRepositoryMemory()
