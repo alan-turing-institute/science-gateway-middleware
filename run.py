@@ -1,4 +1,4 @@
-from middleware.job.inmemory import JobRepositoryMemory
+from middleware.job.inmemory_repository import JobRepositoryMemory
 from middleware.app import create_app
 
 
