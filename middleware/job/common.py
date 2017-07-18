@@ -39,6 +39,16 @@ class JobApi(Resource):
         else:
             return updated_job, 200, {'Content-Type': 'application/json'}
 
+    def delete(self, job_id):
+        # Require job to exist in order to delete it
+        job = self.jobs.get_by_id(job_id)
+        if job is None:
+            self.abort_if_not_found(job_id)
+        # Delete job
+        self.jobs.delete(job_id)
+        deleted_job = self.jobs.get_by_id(job_id)
+        return deleted_job, 204
+
 
 class JobsApi(Resource):
     '''API for listing a collection of jobs (GET) and creating a new
