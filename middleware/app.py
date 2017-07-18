@@ -6,15 +6,15 @@ from middleware.job.inmemory_repository import JobRepositoryMemory
 
 def create_app(job_repository):
     app = Flask("app")
-    app.job_repository = job_repository
+    app._job_repository = job_repository
     api = Api(app)
 
     api.add_resource(JobApi, '/job/<string:job_id>',
                      resource_class_kwargs={'job_repository':
-                                            app.job_repository})
+                                            app._job_repository})
     api.add_resource(JobsApi, '/jobs',
                      resource_class_kwargs={'job_repository':
-                                            app.job_repository})
+                                            app._job_repository})
     return app
 
 
