@@ -51,8 +51,6 @@ def patch_and_transfer_template_files(template_list, parameter_patch, simulation
         makedirs(tmp_path, exist_ok=True)
 
         apply_patch(template_file, parameter_patch, tmp_file)
-        print('Secure copy would be here')
-        print(tmp_file, destination_path)
         connection.secure_copy(tmp_file, destination_path)
 
 
