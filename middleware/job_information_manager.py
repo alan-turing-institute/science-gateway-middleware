@@ -67,3 +67,9 @@ class job_information_manager():
         out = connection.pass_command(command)
         if debug:
             print(out)
+
+    def run_remote_scripts(self, debug=True):
+        for script in self.script_list:
+            remote_location = os.path.join(self.simulation_root,
+                                           script["destination_path"])
+            self.run_remote_script(script, remote_location, debug=debug)

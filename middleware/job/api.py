@@ -62,16 +62,11 @@ class JobApi(Resource):
         '''
         simulation_root = ''
 
-        manager = JIM(request)
+        manager = JIM(request, simulation_root=simulation_root)
 
         manager.patch_and_transfer()
         manager.transfer_scripts()
-
-        for script in manager.script_list:
-            script_name = basename(script["source_uri"])
-            remote_location = os.path.join(simulation_root,
-                                           script["destination_path"])
-            manager.run_remote_script(script_name, remote_location)
+        manager.run_remote_scripts()
 
         # TODO add an actual check on "success"
         result = {"success": "true", "message": "patch applied"}
