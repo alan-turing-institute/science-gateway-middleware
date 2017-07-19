@@ -60,6 +60,11 @@ class JobApi(Resource):
         '''
         Method to patch job info
         '''
+
+        # TODO LRM (l.mason@imperial.ac.uk) add a configuration system,
+        # see http://flask.pocoo.org/docs/0.12/config/
+        # all cluster paths are relative to this location
+        # later, make into parameter that can be set from science-gateway-web
         simulation_root = ''
 
         manager = JIM(request, simulation_root=simulation_root)
