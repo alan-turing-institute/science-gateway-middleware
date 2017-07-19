@@ -36,6 +36,9 @@ class ssh():
         return stdout.read().decode("utf-8")
 
     def secure_copy(self, filename, destination_path):
+        '''
+        Use SCPClient to copy files over an ssh connection.
+        '''
         with SCPClient(self.client.get_transport()) as scp:
             scp.put(filename, destination_path)
 
