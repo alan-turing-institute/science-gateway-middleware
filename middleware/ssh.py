@@ -2,6 +2,7 @@ import paramiko
 import os
 from scp import SCPClient
 
+
 class ssh:
     '''
     A simple class around a basic paramiko ssh connection to make things easier

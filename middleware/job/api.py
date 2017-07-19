@@ -61,7 +61,7 @@ class JobApi(Resource):
         '''
         Method to patch job info
         '''
-        simulation_root = '/home/vm-admin/simulation'
+        simulation_root = ''
 
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
@@ -75,16 +75,21 @@ class JobApi(Resource):
         template_list = input_data["templates"]
         script_list = input_data["scripts"]
         parameter_patch = input_data["parameters"]
+        print('-------')
+        print(template_list)
+        print(script_list)
+        print(parameter_patch)
+        print('-------')
 
-        #patch_and_transfer_template_files(template_list, parameter_patch,
-                                         # simulation_root)
-        #transfer_files(script_list)
+        patch_and_transfer_template_files(template_list, parameter_patch,
+                                          simulation_root)
+        transfer_files(script_list, simulation_root)
 
         for script in script_list:
             script_name = basename(script["source_uri"])
             remote_location = os.path.join(simulation_root,
                                            script["destination_path"])
-            #run_remote_script(script_name, remote_location)
+            run_remote_script(script_name, remote_location)
 
         # TODO add an actual check on "success"
         result = {"success": "true", "message": "patch applied"}
