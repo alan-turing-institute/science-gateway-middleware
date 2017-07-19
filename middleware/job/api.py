@@ -69,11 +69,11 @@ class JobApi(Resource):
 
         manager.patch_and_transfer()
         manager.transfer_scripts()
-        results = manager.run_remote_scripts()
+        out, err = manager.run_remote_scripts()
 
         # TODO add an actual check on "success"
-        result = {"success": "true", "message": "patch applied"}
-        print('RESULTS:', results)
+        result = {"std out": out, "std err": err}
+
         return result, 201
 
 

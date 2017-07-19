@@ -92,7 +92,7 @@ class job_information_manager():
         out, err = connection.pass_command(command)
         if debug:
             print(out)
-        return err
+        return out, err
 
     def run_remote_scripts(self, debug=True):
         '''
@@ -101,13 +101,15 @@ class job_information_manager():
         Set the debug flag to print stdout to the terminal, and to enable
         logging in ./logs/ssh.log
         '''
-        results = []
+        std_errs = []
+        std_outs = []
 
         for script in self.script_list:
             remote_location = os.path.join(self.simulation_root,
                                            script["destination_path"])
             script_name = os.path.basename(script['source_uri'])
-            err = self._run_remote_script(script_name, remote_location,
+            out, err = self._run_remote_script(script_name, remote_location,
                                           debug=debug)
-            results.append(err)
-        return results
+            std_outs.append(out)
+            std_errs.append(err)
+        return std_outs, std_errs
