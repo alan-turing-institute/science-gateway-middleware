@@ -33,7 +33,7 @@ class ssh():
         No error handling, stderr is ignored.
         '''
         stdin, stdout, stderr = self.client.exec_command(command)
-        return stdout.read().decode("utf-8")
+        return stdout.read().decode("utf-8"), stderr.read().decode("utf-8")
 
     def secure_copy(self, filename, destination_path):
         '''

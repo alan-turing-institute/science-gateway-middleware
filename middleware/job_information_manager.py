@@ -89,9 +89,10 @@ class job_information_manager():
         '''
         connection = ssh(self.hostname, self.username, self.port, debug=True)
         command = "cd {}; bash {}".format(remote_path, script_name)
-        out = connection.pass_command(command)
+        out, err = connection.pass_command(command)
         if debug:
             print(out)
+        return err
 
     def run_remote_scripts(self, debug=True):
         '''

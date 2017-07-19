@@ -2,13 +2,9 @@ from flask import Flask, jsonify, abort, request, make_response
 from flask_httpauth import HTTPBasicAuth
 from .ssh import ssh
 from secrets import *
-import f90nml
 import json
-import os
 from os import makedirs
 from os.path import dirname
-from os.path import basename
-
 from mako.template import Template
 
 
@@ -183,7 +179,6 @@ def setup():
     parameter_patch = input_data["parameters"]
 
     print(parameter_patch)
-
 
     patch_and_transfer_template_files(template_list, parameter_patch)
     transfer_files(script_list)

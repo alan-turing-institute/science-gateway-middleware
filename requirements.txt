@@ -13,7 +13,6 @@ Werkzeug==0.12.2
 Flask-HTTPAuth
 paramiko
 scp
-f90nml
 pytest
 flake8
 flask-restful
