@@ -17,3 +17,4 @@ f90nml
 pytest
 flake8
 flask-restful
+mako
