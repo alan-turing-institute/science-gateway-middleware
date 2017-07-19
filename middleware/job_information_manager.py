@@ -1,10 +1,7 @@
-from secrets import *
+import os
 from mako.template import Template
 from middleware.ssh import ssh
-import os
-from os.path import dirname
-from os.path import basename
-from os import makedirs
+from secrets import *
 
 
 class job_information_manager():
@@ -56,14 +53,14 @@ class job_information_manager():
 
         for template in self.template_list:
             template_file = template["source_uri"]
-            template_filename = basename(template_file)
+            template_filename = os.path.basename(template_file)
 
             destination_path = os.path.join(self.simulation_root,
                                             template["destination_path"])
 
             tmp_path = os.path.join('tmp', template["destination_path"])
             tmp_file = os.path.join(tmp_path, template_filename)
-            makedirs(tmp_path, exist_ok=True)
+            os.makedirs(tmp_path, exist_ok=True)
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
             connection.secure_copy(tmp_file, destination_path)
