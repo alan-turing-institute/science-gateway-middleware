@@ -1,6 +1,10 @@
 from secrets import *
 from mako.template import Template
-from .ssh import ssh
+from middleware.ssh import ssh
+import os
+from os.path import dirname
+from os.path import basename
+from os import makedirs
 
 
 class job_information_manager():
@@ -15,10 +19,12 @@ class job_information_manager():
         else:
             self.port = 22
 
+        # TODO build data structure here with full remote path information, so
+        # generating full paths is a once only operation
         self.job_id = request.json['id']
         self.template_list = request.json['templates']
-        self.script_list = request.json['parameters']
-        self.parameter_patch = request.json['scripts']
+        self.parameter_patch = request.json['parameters']
+        self.script_list = request.json['scripts']
 
         self.simulation_root = simulation_root
 

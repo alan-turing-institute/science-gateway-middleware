@@ -2,8 +2,7 @@ import os
 from flask_restful import Resource, abort, request
 from os.path import basename
 from middleware.job.model import is_valid_job_json
-from middleware.patcher import (apply_patch, patch_and_transfer_template_files,
-                                transfer_files, run_remote_script)
+from middleware.job_information_manager import job_information_manager as JIM
 
 
 class JobApi(Resource):
@@ -63,33 +62,16 @@ class JobApi(Resource):
         '''
         simulation_root = ''
 
-        # TODO build data structure here with full remote path information, so
-        # generating full paths is a once only operation
-        input_data = {
-            'id': request.json['id'],
-            'templates': request.json['templates'],
-            'parameters': request.json['parameters'],
-            'scripts': request.json['scripts']
-        }
+        manager = JIM(request)
 
-        template_list = input_data["templates"]
-        script_list = input_data["scripts"]
-        parameter_patch = input_data["parameters"]
-        print('-------')
-        print(template_list)
-        print(script_list)
-        print(parameter_patch)
-        print('-------')
+        manager.patch_and_transfer()
+        manager.transfer_scripts()
 
-        patch_and_transfer_template_files(template_list, parameter_patch,
-                                          simulation_root)
-        transfer_files(script_list, simulation_root)
-
-        for script in script_list:
+        for script in manager.script_list:
             script_name = basename(script["source_uri"])
             remote_location = os.path.join(simulation_root,
                                            script["destination_path"])
-            run_remote_script(script_name, remote_location)
+            manager.run_remote_script(script_name, remote_location)
 
         # TODO add an actual check on "success"
         result = {"success": "true", "message": "patch applied"}
