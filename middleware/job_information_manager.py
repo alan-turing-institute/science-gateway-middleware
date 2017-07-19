@@ -109,7 +109,7 @@ class job_information_manager():
                                            script["destination_path"])
             script_name = os.path.basename(script['source_uri'])
             out, err = self._run_remote_script(script_name, remote_location,
-                                          debug=debug)
+                                               debug=debug)
             std_outs.append(out)
             std_errs.append(err)
         return std_outs, std_errs
