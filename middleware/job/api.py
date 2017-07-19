@@ -1,5 +1,6 @@
 from flask_restful import Resource, abort, request
 from middleware.job.model import is_valid_job_json, job_summary_json
+import json_merge_patch
 
 
 class JobApi(Resource):
@@ -37,6 +38,34 @@ class JobApi(Resource):
                                "ID in message JSON ({}).".format(job_id,
                                                                  job_id_json))
         # Try and update Job
+        updated_job = self.jobs.update(job_new)
+        if updated_job is None:
+            abort(404, message="Job {} not found".format(job_id_json))
+        else:
+            return updated_job, 200, {'Content-Type': 'application/json'}
+
+    def patch(self, job_id):
+        # Require Job to exist in order to amend it
+        job_old = self.jobs.get_by_id(job_id)
+        if job_old is None:
+            self.abort_if_not_found(job_id)
+        # Get Job JSON if present
+        job_partial = request.json
+        if job_partial is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Check job_id route parameter consistent with id in JSON data (if
+        # provided).
+        # NOTE: For patches it is ok for ID not to exist in the JSON
+        job_id_json = job_partial.get("id")
+        if job_id_json is not None and job_id != job_id_json:
+            abort(409, message="Job ID in URL ({}) does not match job "
+                               "ID in message JSON ({}).".format(job_id,
+                                                                 job_id_json))
+        # Try and patch Job
+        job_new = json_merge_patch.merge(job_old, job_partial)
+        # Require patched Job to be valid
+        if not is_valid_job_json(job_new):
+            abort(400, message="Applying patch results in invalid Job JSON")
         updated_job = self.jobs.update(job_new)
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_id_json))

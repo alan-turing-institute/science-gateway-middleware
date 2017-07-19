@@ -15,3 +15,4 @@ paramiko
 pytest
 flake8
 flask-restful
+json-merge-patch
