@@ -2,9 +2,7 @@ from flask import Flask, jsonify, abort, request, make_response
 from flask_httpauth import HTTPBasicAuth
 from .ssh import ssh
 from secrets import *
-import json
 from os import makedirs
-from os.path import dirname
 from mako.template import Template
 
 
@@ -219,6 +217,7 @@ def build_command(input_data):
     # a simple command that multiplies 2 numbers
     return 'echo "$(({0} * {1}))"'.format(input_data['length'],
                                           input_data['width'])
+
 
 if __name__ == '__main__':
     app.run()

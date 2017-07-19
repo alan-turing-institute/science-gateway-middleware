@@ -1,4 +1,3 @@
-import os
 from flask_restful import Resource, abort, request
 from middleware.job.model import is_valid_job_json
 from middleware.job_information_manager import job_information_manager as JIM
