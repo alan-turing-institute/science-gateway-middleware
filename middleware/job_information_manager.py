@@ -101,7 +101,13 @@ class job_information_manager():
         Set the debug flag to print stdout to the terminal, and to enable
         logging in ./logs/ssh.log
         '''
+        results = []
+
         for script in self.script_list:
             remote_location = os.path.join(self.simulation_root,
                                            script["destination_path"])
-            self._run_remote_script(script, remote_location, debug=debug)
+            script_name = os.path.basename(script['source_uri'])
+            err = self._run_remote_script(script_name, remote_location,
+                                          debug=debug)
+            results.append(err)
+        return results
