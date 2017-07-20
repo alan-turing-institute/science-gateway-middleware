@@ -195,6 +195,39 @@ class TestJobApi(unittest.TestCase):
         assert response_to_json(job_response) is None
         assert jobs.get_by_id(job_id) is None
 
+    # === POST tests (patching) ===
+    def test_patch_with_valid_json_and_correct_id(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        job_response_1 = client.post("/job", data=json.dumps(job),
+                                     content_type='application/json')
+
+        # complete json with same id as before
+        dest_path = 'project/case/'
+        template_src = "./middleware/resources/templates/Blue.nml"
+        script_src = "./middleware/resources/scripts/start_job.sh"
+
+        job_final = {"id": job_id,
+                     "templates": [{"source_uri": template_src,
+                                    "destination_path": dest_path}],
+                     "scripts": [{"source_uri": script_src,
+                                  "destination_path": dest_path}],
+                     "parameters": {"viscosity_properties":
+                                    {"viscosity_phase_1": 0.09}},
+                     "inputs": []}
+
+        job_response_2 = client.post("/job/{}".format(job_id),
+                                     data=json.dumps(job_final),
+                                     content_type='application/json')
+
+        assert job_response_1.status_code == 200
+        assert job_response_2.status_code == 201
+
 
 class TestJobsApi(object):
 
