@@ -2,6 +2,7 @@ from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
 from middleware.app import create_app
 import unittest
+import unittest.mock as mock
 import pytest
 from werkzeug.exceptions import NotFound
 import json
@@ -23,6 +24,10 @@ def response_to_json(response):
     if not data:
         return None
     return json.loads(data)
+
+
+def mock_api_post(job_id):
+    return {"std out": [job_id], "std err": [job_id]}, 201
 
 
 class TestJobApi(unittest.TestCase):
@@ -201,7 +206,9 @@ class TestJobApi(unittest.TestCase):
         assert jobs.get_by_id(job_id) is None
 
     # === POST tests (patching) ===
-    def test_patch_with_valid_json_and_correct_id(self):
+    @mock.patch('middleware.job.api.JobApi.post', side_effect=mock_api_post)
+    def test_patch_with_valid_json_and_correct_id(self, mock_post):
+
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 
@@ -209,8 +216,8 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        job_response_1 = client.post("/job", data=json.dumps(job),
-                                     content_type='application/json')
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
 
         # complete json with same id as before
         dest_path = 'project/case/'
@@ -226,12 +233,14 @@ class TestJobApi(unittest.TestCase):
                                     {"viscosity_phase_1": 0.09}},
                      "inputs": []}
 
-        job_response_2 = client.post("/job/{}".format(job_id),
-                                     data=json.dumps(job_final),
-                                     content_type='application/json')
+        job_response = client.post("/job/{}".format(job_id),
+                                   data=json.dumps(job_final),
+                                   content_type='application/json')
 
-        assert job_response_1.status_code == 200
-        assert job_response_2.status_code == 201
+        result = {"std out": [job_id], "std err": [job_id]}
+
+        assert response_to_json(job_response) == result
+        assert job_response.status_code == 201
 
     # === PATCH tests (Partial UPDATE) ===
     def test_patch_with_no_job_id_returns_error_with_404_status(self):
