@@ -1,11 +1,11 @@
+import json
+import pytest
+import unittest
+import unittest.mock as mock
+from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
 from middleware.app import create_app
-import unittest
-import unittest.mock as mock
-import pytest
-from werkzeug.exceptions import NotFound
-import json
 
 
 @pytest.fixture
