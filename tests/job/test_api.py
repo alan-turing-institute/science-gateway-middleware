@@ -13,6 +13,11 @@ def test_client(job_repository=JobRepositoryMemory()):
     return app.test_client()
 
 
+@pytest.fixture(autouse=True)
+def app_config(monkeypatch):
+    monkeypatch.setenv('APP_CONFIG_FILE', '../config/travis.py')
+
+
 def response_to_json(response):
     data = response.get_data(as_text=True)
     if not data:
