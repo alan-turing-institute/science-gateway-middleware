@@ -1,7 +1,7 @@
 import os
 from mako.template import Template
 from middleware.ssh import ssh
-from secrets import *
+from instance.config import *
 
 
 class job_information_manager():
