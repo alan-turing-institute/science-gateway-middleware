@@ -17,3 +17,4 @@ pytest
 flake8
 flask-restful
 mako
+json-merge-patch

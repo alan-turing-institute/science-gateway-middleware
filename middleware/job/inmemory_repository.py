@@ -10,7 +10,7 @@ class JobRepositoryMemory():
         return (job_id in self._jobs)
 
     def create(self, job):
-        job_id = job["id"]
+        job_id = job.get("id")
         if not self.exists(job_id):
             # Add job if it is not already in job list
             self._jobs[job_id] = job
@@ -25,7 +25,7 @@ class JobRepositoryMemory():
             return None
 
     def update(self, job):
-        job_id = job["id"]
+        job_id = job.get("id")
         if self.exists(job_id):
             # Replace job if already in job list
             self._jobs[job_id] = job
@@ -40,3 +40,6 @@ class JobRepositoryMemory():
             return None
         else:
             return None
+
+    def list_ids(self):
+        return [key for key, val in self._jobs.items()]

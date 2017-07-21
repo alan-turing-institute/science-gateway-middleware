@@ -228,9 +228,133 @@ class TestJobApi(unittest.TestCase):
         assert job_response_1.status_code == 200
         assert job_response_2.status_code == 201
 
+    # === PATCH tests (Partial UPDATE) ===
+    def test_patch_with_no_job_id_returns_error_with_404_status(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+        job_response = client.patch("/job/")
+        assert job_response.status_code == 404
+        # No content check as we are expecting the standard 404 error message
+        # TODO: Get the 404 response defined for the app and compare it here
+        assert len(jobs._jobs) == 0
+
+    def test_patch_with_empty_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3,
+               "width": 4, "depth": 5}}
+        jobs.create(job)
+        job = None
+        client = test_client(jobs)
+        job_response = client.patch("/job/{}".format(job_id),
+                                    data=json.dumps(job),
+                                    content_type='application/json-patch+json')
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_patch_with_nonjson_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3,
+               "width": 4, "depth": 5}}
+        jobs.create(job)
+        invalid_json = "{key-with-no-value}"
+        client = test_client(jobs)
+        # We don't add content_type='application/json' because, if we do the
+        # framework catches invalid JSON before it gets to our response handler
+        job_response = client.patch("/job/{}".format(job_id),
+                                    data=invalid_json)
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_patch_with_nonexistent_job_id_returns_error_with_404_status(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_response = client.patch("/job/{}".format(job_id))
+        error_message = {"message": "Job {} not found".format(job_id)}
+        assert job_response.status_code == 404
+        assert response_to_json(job_response) == error_message
+
+    def test_patch_with_mismatched_job_id_returns_error_with_409_status(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id_url = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_existing = {"id": job_id_url, "parameters": {"height": 3,
+                        "width": 4, "depth": 5}}
+        jobs.create(job_existing)
+        job_id_json = "59540b31-0454-4875-a00f-94eb4d81a09c"
+        job_new = {"id": job_id_json, "parameters": {"height":
+                   7, "green": "low", "depth": None}}
+        client = test_client(jobs)
+        job_response = client.patch(
+                        "/job/{}".format(job_id_url), data=json.dumps(job_new),
+                        content_type='application/merge-patch+json')
+        error_message = {"message": "Job ID in URL ({}) does not match job "
+                         "ID in message JSON ({}).".format(job_id_url,
+                                                           job_id_json)}
+        assert job_response.status_code == 409
+        assert response_to_json(job_response) == error_message
+        assert jobs.get_by_id(job_id_url) == job_existing
+        assert jobs.get_by_id(job_id_json) is None
+
+    def test_patch_with_existing_job_id_returns_new_job_with_200_status(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_original = {"id": job_id, "parameters": {"height": 3,
+                        "width": 4, "depth": 5}}
+        jobs.create(job_original)
+        job_patch = {"parameters": {"height":
+                     7, "green": "low", "depth": None}}
+        job_new_expected = {"id": job_id, "parameters": {"height": 7,
+                            "width": 4, "green": "low"}}
+        client = test_client(jobs)
+        job_response = client.patch(
+                        "/job/{}".format(job_id),
+                        data=json.dumps(job_patch),
+                        content_type='application/merge-patch+json')
+        assert job_response.status_code == 200
+        assert response_to_json(job_response) == job_new_expected
+        assert jobs.get_by_id(job_id) == job_new_expected
+
 
 class TestJobsApi(object):
 
+    # === GET tests (LIST) ===
+    def test_get_returns_object_summary_list(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id_1 = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_1 = {"id": job_id_1, "parameters": {"height": 11, "width": 12,
+                 "depth": 13}}
+        job_id_2 = "53835db6-87cb-4dd8-a91f-5c98100c0b82"
+        job_2 = {"id": job_id_2, "parameters": {"height": 21, "width": 22,
+                 "depth": 23}}
+        job_id_3 = "781692cc-b71c-469e-a8e9-938c2fda89f2"
+        job_3 = {"id": job_id_3, "parameters": {"height": 31, "width": 32,
+                 "depth": 33}}
+        jobs.create(job_1)
+        jobs.create(job_2)
+        jobs.create(job_3)
+        client = test_client(jobs)
+
+        def job_uri(job_id):
+            return "/job/{}".format(job_id)
+
+        expected_response = [{"id": job_id_1, "uri": job_uri(job_id_1)},
+                             {"id": job_id_2, "uri": job_uri(job_id_2)},
+                             {"id": job_id_3, "uri": job_uri(job_id_3)}]
+        job_response = client.get("/job")
+        assert job_response.status_code == 200
+        # Both lists of dictionaries need to have same sort order to
+        # successfully compare
+        assert response_to_json(job_response).sort(key=lambda x: x["id"]) == \
+            expected_response.sort(key=lambda x: x["id"])
+
+    # === POST tests (CREATE) ===
     def test_post_for_nonexistent_job_returns_job_with_200_status(self):
         jobs = JobRepositoryMemory()
         # Create job
