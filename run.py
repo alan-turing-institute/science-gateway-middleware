@@ -7,4 +7,4 @@ from middleware.app import create_app
 job_repository = JobRepositoryMemory()
 # Create an app backed by the appropriate repository
 app = create_app(job_repository)
-app.run(debug=True)
+app.run()
