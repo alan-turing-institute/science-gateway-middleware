@@ -195,6 +195,98 @@ class TestJobApi(unittest.TestCase):
         assert response_to_json(job_response) is None
         assert jobs.get_by_id(job_id) is None
 
+    # === PATCH tests (Partial UPDATE) ===
+    def test_patch_with_no_job_id_returns_error_with_404_status(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+        job_response = client.patch("/job/")
+        assert job_response.status_code == 404
+        # No content check as we are expecting the standard 404 error message
+        # TODO: Get the 404 response defined for the app and compare it here
+        assert len(jobs._jobs) == 0
+
+    def test_patch_with_empty_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3,
+               "width": 4, "depth": 5}}
+        jobs.create(job)
+        job = None
+        client = test_client(jobs)
+        job_response = client.patch("/job/{}".format(job_id),
+                                    data=json.dumps(job),
+                                    content_type='application/json-patch+json')
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_patch_with_nonjson_body_returns_error_with_400_status(self):
+        jobs = JobRepositoryMemory()
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3,
+               "width": 4, "depth": 5}}
+        jobs.create(job)
+        invalid_json = "{key-with-no-value}"
+        client = test_client(jobs)
+        # We don't add content_type='application/json' because, if we do the
+        # framework catches invalid JSON before it gets to our response handler
+        job_response = client.patch("/job/{}".format(job_id),
+                                    data=invalid_json)
+        error_message = {"message": "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_patch_with_nonexistent_job_id_returns_error_with_404_status(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_response = client.patch("/job/{}".format(job_id))
+        error_message = {"message": "Job {} not found".format(job_id)}
+        assert job_response.status_code == 404
+        assert response_to_json(job_response) == error_message
+
+    def test_patch_with_mismatched_job_id_returns_error_with_409_status(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id_url = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_existing = {"id": job_id_url, "parameters": {"height": 3,
+                        "width": 4, "depth": 5}}
+        jobs.create(job_existing)
+        job_id_json = "59540b31-0454-4875-a00f-94eb4d81a09c"
+        job_new = {"id": job_id_json, "parameters": {"height":
+                   7, "green": "low", "depth": None}}
+        client = test_client(jobs)
+        job_response = client.patch(
+                        "/job/{}".format(job_id_url), data=json.dumps(job_new),
+                        content_type='application/merge-patch+json')
+        error_message = {"message": "Job ID in URL ({}) does not match job "
+                         "ID in message JSON ({}).".format(job_id_url,
+                                                           job_id_json)}
+        assert job_response.status_code == 409
+        assert response_to_json(job_response) == error_message
+        assert jobs.get_by_id(job_id_url) == job_existing
+        assert jobs.get_by_id(job_id_json) is None
+
+    def test_patch_with_existing_job_id_returns_new_job_with_200_status(self):
+        jobs = JobRepositoryMemory()
+        # Create job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_original = {"id": job_id, "parameters": {"height": 3,
+                        "width": 4, "depth": 5}}
+        jobs.create(job_original)
+        job_patch = {"parameters": {"height":
+                     7, "green": "low", "depth": None}}
+        job_new_expected = {"id": job_id, "parameters": {"height": 7,
+                            "width": 4, "green": "low"}}
+        client = test_client(jobs)
+        job_response = client.patch(
+                        "/job/{}".format(job_id),
+                        data=json.dumps(job_patch),
+                        content_type='application/merge-patch+json')
+        assert job_response.status_code == 200
+        assert response_to_json(job_response) == job_new_expected
+        assert jobs.get_by_id(job_id) == job_new_expected
+
 
 class TestJobsApi(object):
 
