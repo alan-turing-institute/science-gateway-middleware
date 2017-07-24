@@ -68,7 +68,7 @@ class TestJIM(object):
         manager._apply_patch(template_path, parameters, destination_path)
 
         # eg the string "42.0"
-        intended_value = job["parameters"]["viscosity_properties"]["viscosity_phase_1"]
+        in_val = job["parameters"]["viscosity_properties"]["viscosity_phase_1"]
 
         # read patched file
         with open(destination_path, "r") as f:
@@ -78,5 +78,5 @@ class TestJIM(object):
             patched = re.search(r"^\s+viscosity_phase_1\s+=\s+(\S+)\s+!", line)
             if patched:
                 patched_value = patched.group(1)
-                assert patched_value == intended_value
+                assert patched_value == in_val
                 break

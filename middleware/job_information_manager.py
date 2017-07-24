@@ -107,8 +107,9 @@ class job_information_manager():
             remote_location = os.path.join(self.simulation_root,
                                            script["destination_path"])
             script_name = os.path.basename(script['source_uri'])
-            out, err, exit_code = self._run_remote_script(script_name, remote_location,
-                                               debug=debug)
+            out, err, exit_code = self._run_remote_script(script_name,
+                                                          remote_location,
+                                                          debug=debug)
             std_outs.append(out)
             std_errs.append(err)
             exit_codes.append(exit_code)
