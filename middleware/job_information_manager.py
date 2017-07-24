@@ -13,7 +13,7 @@ class job_information_manager():
     Needs a better, descriptive name.
     '''
 
-    def __init__(self, request, simulation_root=''):
+    def __init__(self, job, simulation_root=''):
         '''
         Create a manager object, which is populated with ssh information from
         secrets.py and the job information passed via http post in the api.
@@ -28,10 +28,11 @@ class job_information_manager():
 
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
-        self.job_id = request.json['id']
-        self.template_list = request.json['templates']
-        self.parameter_patch = request.json['parameters']
-        self.script_list = request.json['scripts']
+        self.job = job
+        self.job_id = job['id']
+        self.template_list = job['templates']
+        self.parameter_patch = job['parameters']
+        self.script_list = job['scripts']
 
         self.simulation_root = simulation_root
 
@@ -63,7 +64,7 @@ class job_information_manager():
             os.makedirs(tmp_path, exist_ok=True)
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
-            connection.secure_copy(tmp_file, destination_path)
+            # connection.secure_copy(tmp_file, destination_path)
         connection.close_connection()
 
     def transfer_scripts(self):

@@ -85,16 +85,14 @@ class JobApi(Resource):
 
     def post(self, job_id):
         '''
-        Method to patch job info
+        Submit/run the job using current parameters data in the database
         '''
 
-        # TODO LRM (l.mason@imperial.ac.uk) add a configuration system,
-        # see http://flask.pocoo.org/docs/0.12/config/
-        # all cluster paths are relative to this location
-        # later, make into parameter that can be set from science-gateway-web
-        simulation_root = ''
+        simulation_root = '' # this needs to be stored in the job data structure
+        job, response, content_type  = self.get(job_id)
 
-        manager = JIM(request, simulation_root=simulation_root)
+        manager = JIM(job, simulation_root=simulation_root)
+        print(manager.parameter_patch)
 
         manager.patch_and_transfer()
         manager.transfer_scripts()
@@ -102,7 +100,6 @@ class JobApi(Resource):
 
         # TODO add an actual check on "success"
         result = {"std out": out, "std err": err}
-
         return result, 201
 
 
