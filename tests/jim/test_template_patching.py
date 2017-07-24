@@ -1,10 +1,8 @@
 import pytest
-from middleware.job_information_manager import job_information_manager as JIM
-from werkzeug.test import EnvironBuilder
-from werkzeug.wrappers import Request
-
 import os
 import re
+from middleware.job_information_manager import job_information_manager as JIM
+from instance.config import *
 
 job = {
     "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
@@ -35,21 +33,23 @@ class TestJIM(object):
 
     def test_constructor(self):
 
-        # These variables should come from instance/config.py
-        username = ''
-        ssh_host = ''
-        port = 22
-
-        # Some testing data
-        simulation_root = 'path/to/test'
-        job = {'id': '1234', 'templates': 'test_template',
-               'scripts': 'test_script', 'parameters': 'viscosity'}
+        # This block allows us to test against local secrets or the
+        # defaults generated when running our CI tests.
+        secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT']
+        if all(x in globals() for x in secrets):
+            username = SSH_USR
+            hostname = SSH_HOSTNAME
+            port = SSH_PORT
+        else:
+            username = 'test_user'
+            hostname = 'test_host'
+            port = 22
 
         # Create a manager
         jim = JIM(job, simulation_root)
 
         assert jim.username == username
-        assert jim.hostname == ssh_host
+        assert jim.hostname == hostname
         assert jim.port == port
         assert jim.simulation_root == simulation_root
         assert jim.job_id == job['id']

@@ -16,12 +16,19 @@ class job_information_manager():
     def __init__(self, job, simulation_root=''):
         '''
         Create a manager object, which is populated with ssh information from
-        secrets.py and the job information passed via http post in the api.
+        instance/config.py and job information passed via http post in the api.
         '''
-        # gathering the needed info from our secrets file
-        self.username = SSH_USR
-        self.hostname = SSH_HOSTNAME
-        self.port = SSH_PORT
+        # Gathering the needed info from our secrets file. If the info is not
+        # there, populate the instance variables with dummy data.
+        secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT']
+        if all(x in globals() for x in secrets):
+            self.username = SSH_USR
+            self.hostname = SSH_HOSTNAME
+            self.port = SSH_PORT
+        else:
+            self.username = 'test_user'
+            self.hostname = 'test_host'
+            self.port = 22
 
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
