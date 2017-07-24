@@ -13,5 +13,4 @@ build: off
 test_script:
   - ps: mkdir -p instance
   - ps: touch instance/config.py
-  - ps: cd ..
   - "%PYTHON%\\python.exe -m pytest"
