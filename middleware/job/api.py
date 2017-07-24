@@ -88,8 +88,8 @@ class JobApi(Resource):
         Submit/run the job using current parameters data in the database
         '''
 
-        simulation_root = '' # this needs to be stored in the job data structure
-        job, response, content_type  = self.get(job_id)
+        simulation_root = ''  # this needs to be stored in job data structure
+        job, response, content_type = self.get(job_id)
 
         manager = JIM(job, simulation_root=simulation_root)
         print(manager.parameter_patch)
