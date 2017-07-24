@@ -96,10 +96,10 @@ class JobApi(Resource):
 
         manager.patch_and_transfer()
         manager.transfer_scripts()
-        out, err = manager.run_remote_scripts()
+        out, err, exit_codes = manager.run_remote_scripts()
 
         # TODO add an actual check on "success"
-        result = {"std out": out, "std err": err}
+        result = {"stdout": out, "stderr": err, "exit_codes": exit_codes}
         return result, 201
 
 

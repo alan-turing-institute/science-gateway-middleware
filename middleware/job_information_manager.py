@@ -87,10 +87,10 @@ class job_information_manager():
         '''
         connection = ssh(self.hostname, self.username, self.port, debug=True)
         command = "cd {}; bash {}".format(remote_path, script_name)
-        out, err = connection.pass_command(command)
+        out, err, exit_code = connection.pass_command(command)
         if debug:
             print(out)
-        return out, err
+        return out, err, exit_code
 
     def run_remote_scripts(self, debug=True):
         '''
@@ -101,13 +101,15 @@ class job_information_manager():
         '''
         std_errs = []
         std_outs = []
+        exit_codes = []
 
         for script in self.script_list:
             remote_location = os.path.join(self.simulation_root,
                                            script["destination_path"])
             script_name = os.path.basename(script['source_uri'])
-            out, err = self._run_remote_script(script_name, remote_location,
+            out, err, exit_code = self._run_remote_script(script_name, remote_location,
                                                debug=debug)
             std_outs.append(out)
             std_errs.append(err)
-        return std_outs, std_errs
+            exit_codes.append(exit_code)
+        return std_outs, std_errs, exit_codes
