@@ -21,10 +21,7 @@ class job_information_manager():
         # gathering the needed info from our secrets file
         self.username = SSH_USR
         self.hostname = SSH_HOSTNAME
-        if SSH_PORT:
-            self.port = SSH_PORT
-        else:
-            self.port = 22
+        self.port = SSH_PORT
 
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
