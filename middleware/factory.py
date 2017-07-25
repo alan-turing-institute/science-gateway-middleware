@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from middleware.job.api import JobApi, JobsApi
-from middleware.job.inmemory_repository import JobRepositoryMemory
+
 
 def create_app(job_repository):
     app = Flask("app", instance_relative_config=True)
