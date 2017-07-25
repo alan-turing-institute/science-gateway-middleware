@@ -5,7 +5,7 @@ import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
-from middleware.app import create_app
+from middleware.factory import create_app
 
 
 @pytest.fixture
