@@ -60,15 +60,15 @@ class job_information_manager():
             template_file = template["source_uri"]
             template_filename = os.path.basename(template_file)
 
-            # destination_path = os.path.join(self.simulation_root,
-            #                                template["destination_path"])
+            destination_path = os.path.join(self.simulation_root,
+                                           template["destination_path"])
 
             tmp_path = os.path.join('tmp', template["destination_path"])
             tmp_file = os.path.join(tmp_path, template_filename)
             os.makedirs(tmp_path, exist_ok=True)
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
-            # connection.secure_copy(tmp_file, destination_path)
+            connection.secure_copy(tmp_file, destination_path)
         connection.close_connection()
 
     def transfer_scripts(self):

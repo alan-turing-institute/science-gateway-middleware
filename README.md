@@ -68,6 +68,16 @@ git remote add azure $AZURE_REMOTE
 git push azure master
 ```
 
+## Middleware private key
+
+For ssh communication with the remote cluster, we assume that a private key exists in `./keys/azure`. The corresponding public key must be added to `~/.ssh/authorized_keys` on the remote cluster. To set this up, use:
+
+```
+mkdir keys
+ssh-keygen -t rsa -b 4096 -C "Azure" -f ./keys/azure -q -N ""
+ssh <user>@<server> "echo \"`cat ./keys/azure.pub`\" >> .ssh/authorized_keys"
+```
+
 ## Testing
 
 Tests can be run via `python -m pytest`.

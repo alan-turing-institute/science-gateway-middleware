@@ -18,14 +18,23 @@ class ssh():
         hostname that has never been connected to before. Currently that will
         cause a failure which is not handled.
         '''
+
         if debug:
-            os.makedirs(os.path.dirname('.logs/ssh.log'), exist_ok=True)
-            paramiko.util.log_to_file('.logs/ssh.log')
+            log_path = os.path.join('.logs', 'ssh.log')
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            paramiko.util.log_to_file(log_path)
+
         self.client = paramiko.SSHClient()
-        self.client.load_system_host_keys()
+        # self.client.load_system_host_keys() # disable for Azure deployment
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        # for Azure deployment, assume a private RSA key
+        # exists within the keys directory
+        key_path = os.path.join("keys", "azure")
+        k = paramiko.RSAKey.from_private_key_file(key_path)
+
         self.client.connect(hostname, port=port, username=username,
-                            look_for_keys=True)
+                            pkey=k)
 
     def pass_command(self, command):
         '''
