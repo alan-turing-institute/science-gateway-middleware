@@ -63,7 +63,7 @@ az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --s
 Push the `master` branch of the middleware repository to Azure:
 
 ```shell
-AZURE_REMOTE=$(az webapp deployment source config-local-git --name $APP_NAME --resource-group $APP_NAME --query url --output tsv # fetch the remote uri for the app git repository)
+AZURE_REMOTE=$(az webapp deployment source config-local-git --name $APP_NAME --resource-group $APP_NAME --query url --output tsv) # fetch the remote uri for the app git repository
 git remote add azure $AZURE_REMOTE
 git push azure master
 ```
