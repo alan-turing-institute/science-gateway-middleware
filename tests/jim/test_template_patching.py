@@ -87,7 +87,7 @@ class TestJIM(object):
         template_path = job["templates"][0]["source_uri"]
         template_filename = os.path.basename(template_path)
         parameters = job["parameters"]
-        destination_path = os.path.join(tmpdir, template_filename)
+        destination_path = os.path.join(tmpdir.strpath, template_filename)
 
         manager._apply_patch(template_path, parameters, destination_path)
 
