@@ -7,16 +7,15 @@
 
 Currently this is a skeleton app that is designed to take values via `HTTP POST`, build a bash command to multiply them together and run that command via ssh on a remote server.
 
+## Local deployment
 
-## Deployment
-
-This code is tested on `python 3.6` and all dependencies can be installed via `pip`:
+This code is tested on `python 3.4` and all dependencies can be installed via `pip`:
 
 ```
 pip install -r requirements.txt
 ```
 
-At present this app uses a `secrets.py` file to store login details. For obvious reasons this is not committed with the rest of the code, but can be created locally. The code expects a `secrets.py` file placed in the root of the directory with the following variables:
+At present this app uses a `config.py` file to store login details. For obvious reasons this is not committed with the rest of the code, but can be created locally. The code expects a `config.py` file placed in a root-level `instance` of the directory with the following variables:
 
 ```
 USERNAME = "<a username>"
@@ -30,61 +29,43 @@ SSH_PORT = <optional port to connect via, defaults to 22>
 
 The `SHH_*` variables will need to point to `science-gateway-cluster` but at present I have been testing this via one of UCL's servers. The ssh code assumes that you already have ssh keys configured on the machine where the app is running, and has limited error handling if this is not the case.
 
-### Local deployment
-#### views.py entrypoint
-```
-git clone git@github.com:alan-turing-institute/science-gateway-middleware.git
-cd science-gateway-middleware/middleware
-export FLASK_APP=views.py
-export FLASK_DEBUG=1
-flask run
-```
-#### app.py entrypoint
-`./run.sh`
+The middleware can be hosted locally on `localhost` via the `middleware/app.py` entry point. To achieve this, run the following command:
 
-## Usage
-
-#### views.py entrypoint
-This app is designed to provide an example of how the middleware will interact with the front end and the cluster. The app currently receives two values, `length` and `width` as a `json`, eg:
-
-```
-{"length":5, "width": 10}
+```shell
+./run_development.sh
 ```
 
-via an `HTTP POST` request:
+## Azure deployment
 
-```
-curl -u <username>:<password> -i -H "Content-Type: application/json" -X POST -d '{"length":5, "width": 10}' http://localhost:5000/post
-```
+To create an MS Azure Web App Service run the following sequence of commands. First, choose a name for the app (note, the resource group, app service plan and web app will all share this name, but unique names could be set for each if needed).
 
-Where in this case the app is running on a local machine for testing and username and password must match the `USERNAME` and `PASSWORD` values in the `secrets.py` file discussed above.
-
-The flask app parses the length and width values out of the json and constructs a simple bash command to multiply them together:
-
-```
-echo "$(({5} * 10))"
+```shell
+APP_NAME=Science-Gateway-Middleware
 ```
 
-This command is sent via ssh to the server detailed in `secrets.py`, which executes the command, and returns the product to the flask app, where it is returned as the result of the original `POST` request:
+Set a username and password for the Web App Service:
 
 ```
-HTTP/1.0 201 CREATED
-Content-Type: text/html; charset=utf-8
-Content-Length: 3
-Server: Werkzeug/0.12.2 Python/3.6.1
-Date: Mon, 26 Jun 2017 10:49:31 GMT
-
-50
+az login
+az webapp deployment user set --user-name <username> --password <password>
 ```
 
-#### app.py entrypoint
-**Create Job:**
+Deploy the web app:
+
+```shell
+az group create --name $APP_NAME --location westeurope
+az appservice plan create --name $APP_NAME --resource-group $APP_NAME --sku B1
+az webapp create --name $APP_NAME --resource-group $APP_NAME --plan $APP_NAME
+az webapp config set --python-version 3.4 --name $APP_NAME --resource-group $APP_NAME # set python version
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_FILE=../config/production.py # set flask environment variables
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"id": "<uuid>", "parameters": {"height": 3,"width": 4,"depth": 5}}' http://localhost:5000/job
-```
-**Retrieve Job:**
-```
-curl -i -H "Content-Type: application/json" -X GET http://localhost:5000/job/<uuid>
+
+Push the `master` branch of the middleware repository to Azure:
+
+```shell
+AZURE_REMOTE=$(az webapp deployment source config-local-git --name $APP_NAME --resource-group $APP_NAME --query url --output tsv # fetch the remote uri for the app git repository)
+git remote add azure $AZURE_REMOTE
+git push azure master
 ```
 
 ## Testing
