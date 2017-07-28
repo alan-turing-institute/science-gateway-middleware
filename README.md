@@ -57,6 +57,9 @@ az group create --name $APP_NAME --location westeurope
 az appservice plan create --name $APP_NAME --resource-group $APP_NAME --sku B1
 az webapp create --name $APP_NAME --resource-group $APP_NAME --plan $APP_NAME
 az webapp config set --python-version 3.4 --name $APP_NAME --resource-group $APP_NAME # set python version
+
+az webapp config show --name $APP_NAME --resource-group $APP_NAME
+
 az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_FILE=../config/production.py # set flask environment variables
 ```
 
@@ -68,15 +71,17 @@ git remote add azure $AZURE_REMOTE
 git push azure master
 ```
 
-## Middleware private key
+## Middleware keys
 
 For ssh communication with the remote cluster, we assume that a private key exists in `./keys/azure`. The corresponding public key must be added to `~/.ssh/authorized_keys` on the remote cluster. To set this up, use:
 
-```
+```shell
 mkdir keys
 ssh-keygen -t rsa -b 4096 -C "Azure" -f ./keys/azure -q -N ""
 ssh <user>@<server> "echo \"`cat ./keys/azure.pub`\" >> .ssh/authorized_keys"
 ```
+
+For Azure deployment, the `azure` key can be manually transferred to `D:\home\site\wwwroot\keys` via ftp file transfer. Get the ftp address through `FTP HOST NAME` the Azure portal (under App Service > Properties) – an example FTP address is `ftp://waws-prod-am2-047.ftp.azurewebsites.windows.net`. Use an ftp client to transfer the private key to the appropriate subdirectory `keys/azure`.
 
 ## Testing
 
