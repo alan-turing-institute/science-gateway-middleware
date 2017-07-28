@@ -1,6 +1,5 @@
 from middleware.job.inmemory_repository import JobRepositoryMemory
-from middleware.app import create_app
-
+from middleware.factory import create_app
 
 # Use in-memory repository for now.
 # TODO: Make this configurable

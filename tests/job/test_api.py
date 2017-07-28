@@ -1,10 +1,11 @@
+import json
+import pytest
+import unittest
+import unittest.mock as mock
+from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
-from middleware.app import create_app
-import unittest
-import pytest
-from werkzeug.exceptions import NotFound
-import json
+from middleware.factory import create_app
 
 
 @pytest.fixture
@@ -13,11 +14,20 @@ def test_client(job_repository=JobRepositoryMemory()):
     return app.test_client()
 
 
+@pytest.fixture(autouse=True)
+def app_config(monkeypatch):
+    monkeypatch.setenv('APP_CONFIG_FILE', '../config/travis.py')
+
+
 def response_to_json(response):
     data = response.get_data(as_text=True)
     if not data:
         return None
     return json.loads(data)
+
+
+def mock_api_post(job_id):
+    return {"std out": [job_id], "std err": [job_id]}, 201
 
 
 class TestJobApi(unittest.TestCase):
@@ -194,6 +204,43 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 204
         assert response_to_json(job_response) is None
         assert jobs.get_by_id(job_id) is None
+
+    # === POST tests (patching) ===
+    @mock.patch('middleware.job.api.JobApi.post', side_effect=mock_api_post)
+    def test_patch_with_valid_json_and_correct_id(self, mock_post):
+
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        # complete json with same id as before
+        dest_path = 'project/case/'
+        template_src = "./middleware/resources/templates/Blue.nml"
+        script_src = "./middleware/resources/scripts/start_job.sh"
+
+        job_final = {"id": job_id,
+                     "templates": [{"source_uri": template_src,
+                                    "destination_path": dest_path}],
+                     "scripts": [{"source_uri": script_src,
+                                  "destination_path": dest_path}],
+                     "parameters": {"viscosity_properties":
+                                    {"viscosity_phase_1": 0.09}},
+                     "inputs": []}
+
+        job_response = client.post("/job/{}".format(job_id),
+                                   data=json.dumps(job_final),
+                                   content_type='application/json')
+
+        result = {"std out": [job_id], "std err": [job_id]}
+
+        assert response_to_json(job_response) == result
+        assert job_response.status_code == 201
 
     # === PATCH tests (Partial UPDATE) ===
     def test_patch_with_no_job_id_returns_error_with_404_status(self):

@@ -1,6 +1,7 @@
+import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job.model import is_valid_job_json, job_summary_json
-import json_merge_patch
+from middleware.job_information_manager import job_information_manager as JIM
 
 
 class JobApi(Resource):
@@ -81,6 +82,25 @@ class JobApi(Resource):
         self.jobs.delete(job_id)
         deleted_job = self.jobs.get_by_id(job_id)
         return deleted_job, 204
+
+    def post(self, job_id):
+        '''
+        Submit/run the job using current parameters data in the database
+        '''
+
+        simulation_root = ''  # this needs to be stored in job data structure
+        job, response, content_type = self.get(job_id)
+
+        manager = JIM(job, simulation_root=simulation_root)
+        print(manager.parameter_patch)
+
+        manager.patch_and_transfer()
+        manager.transfer_scripts()
+        out, err, exit_codes = manager.run_remote_scripts()
+
+        # TODO add an actual check on "success"
+        result = {"stdout": out, "stderr": err, "exit_codes": exit_codes}
+        return result, 201
 
 
 class JobsApi(Resource):

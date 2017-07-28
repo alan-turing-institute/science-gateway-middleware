@@ -3,7 +3,9 @@ language: python
 matrix:
   include:
     - python: 3.6
-script:
+script:  # Handles creating a blank config file so imports dont fail
+  - mkdir -p instance
+  - touch instance/config.py
   - pytest
   - flake8 middleware/ --ignore=F403,F405
 install:

@@ -1,8 +1,9 @@
 import paramiko
 import os
+from scp import SCPClient
 
 
-class ssh:
+class ssh():
     '''
     A simple class around a basic paramiko ssh connection to make things easier
     to understand.
@@ -32,7 +33,18 @@ class ssh:
         No error handling, stderr is ignored.
         '''
         stdin, stdout, stderr = self.client.exec_command(command)
-        return stdout.read().decode("utf-8")
+        exit_code = stdout.channel.recv_exit_status()
+        stdout = stdout.read().decode("utf-8")
+        stderr = stderr.read().decode("utf-8")
+
+        return stdout, stderr, exit_code
+
+    def secure_copy(self, filename, destination_path):
+        '''
+        Use SCPClient to copy files over an ssh connection.
+        '''
+        with SCPClient(self.client.get_transport()) as scp:
+            scp.put(filename, destination_path)
 
     def close_connection(self):
         '''
