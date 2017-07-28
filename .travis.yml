@@ -6,6 +6,7 @@ matrix:
     - python: 3.4
     - python: 3.5
     - python: 3.6
+    - python: 3.4.1
 
 script:  # Handles creating a blank config file so imports dont fail
   - mkdir -p instance
