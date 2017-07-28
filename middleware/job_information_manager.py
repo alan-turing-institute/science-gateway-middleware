@@ -61,7 +61,7 @@ class job_information_manager():
             template_filename = os.path.basename(template_file)
 
             destination_path = os.path.join(self.simulation_root,
-                                           template["destination_path"])
+                                            template["destination_path"])
 
             tmp_path = os.path.join('tmp', template["destination_path"])
             tmp_file = os.path.join(tmp_path, template_filename)
