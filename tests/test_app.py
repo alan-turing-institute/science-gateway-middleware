@@ -65,5 +65,6 @@ class TestApp(object):
         '''
         app = app_wrapper()
         WSGI_ALT = parse_web_config(app)
+        basename = app.name.split('.')[0]
 
-        assert WSGI_ALT == 'middleware.app.app'
+        assert WSGI_ALT == '{}.app.app'.format(basename)
