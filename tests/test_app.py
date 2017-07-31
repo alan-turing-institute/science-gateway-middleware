@@ -1,6 +1,6 @@
 import os
 import pytest
-from lxml import etree
+import xml.etree.cElementTree as ET
 from middleware.app import app_wrapper
 
 
@@ -18,16 +18,12 @@ def parse_web_config(app):
     the file web.config
     '''
     web_config_location = build_web_config_path(app)
-    doc = etree.parse(web_config_location)
-
-    keys = doc.xpath('/configuration/appSettings/add/@key')
-    values = doc.xpath('/configuration/appSettings/add/@value')
-
+    doc = ET.ElementTree(file=web_config_location)
     key_to_find = 'WSGI_ALT_VIRTUALENV_HANDLER'
+    element = doc.find('appSettings/add[@key="{}"]'.format(key_to_find))
 
-    # Check that the key exists, and if it does, return its value
-    if key_to_find in keys:
-        return values[keys.index(key_to_find)]
+    if element is not None:
+        return element.attrib['value']
     else:
         return None
 
