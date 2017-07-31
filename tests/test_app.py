@@ -23,9 +23,11 @@ def parse_web_config(app):
     keys = doc.xpath('/configuration/appSettings/add/@key')
     values = doc.xpath('/configuration/appSettings/add/@value')
 
+    key_to_find = 'WSGI_ALT_VIRTUALENV_HANDLER'
+
     # Check that the key exists, and if it does, return its value
-    if 'WSGI_ALT_VIRTUALENV_HANDLER' in keys:
-        return values[keys.index('WSGI_ALT_VIRTUALENV_HANDLER')]
+    if key_to_find in keys:
+        return values[keys.index(key_to_find)]
     else:
         return None
 

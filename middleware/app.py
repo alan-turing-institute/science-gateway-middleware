@@ -10,6 +10,7 @@ def app_wrapper():
 
     return app
 
+
 if __name__ == "__main__":
     app = app_wrapper()
     app.run()
