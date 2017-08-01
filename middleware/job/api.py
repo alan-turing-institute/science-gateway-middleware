@@ -147,6 +147,9 @@ class RUNApi(Resource):
         manager = JIM(job, simulation_root='')
         remote_path, remote_script = manager.get_action_script('RUN')
 
-        a, b, c = manager._run_remote_script(remote_script, remote_path)
-        result = {"stdout": a, "stderr": b, "exit_code": c}
-        return result, 200
+        if remote_script:
+            a, b, c = manager._run_remote_script(remote_script, remote_path)
+            result = {"stdout": a, "stderr": b, "exit_code": c}
+            return result, 200
+        else:
+            return abort(400, message="RUN script not found")

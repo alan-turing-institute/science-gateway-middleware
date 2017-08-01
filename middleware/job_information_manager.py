@@ -124,17 +124,23 @@ class job_information_manager():
 
     def get_action_script(self, action):
         '''
-        Pass in the job and the required action and this method will return
-        the joined path and script which corresponds to that action
+        Pass in the job and the required action (eg 'RUN' or 'CANCEL')
+        and this method will return the remote path and script which
+        corresponds to that action
         '''
+        to_run = None
 
         # Cycle through the list of scripts to to get the RUN script
         for i, s in enumerate(self.script_list):
             if s['action'] == action:
                 to_run = self.script_list[i]
+                break
 
-        script_name = os.path.basename(to_run['source_uri'])
-        script_path = os.path.join(self.simulation_root,
-                                   to_run["destination_path"])
+        if to_run:
+            script_name = os.path.basename(to_run['source_uri'])
+            script_path = os.path.join(self.simulation_root,
+                                       to_run["destination_path"])
 
-        return script_path, script_name
+            return script_path, script_name
+        else:
+            return None, None
