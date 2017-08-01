@@ -26,7 +26,19 @@ def create_app(job_repository):
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
+    api.add_resource(SETUPApi, '/SETUP/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
     api.add_resource(RUNApi, '/RUN/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(PROGRESSApi, '/PROGRESS/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(CANCELApi, '/CANCEL/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
