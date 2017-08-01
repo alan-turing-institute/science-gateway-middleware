@@ -135,6 +135,28 @@ class JobsApi(Resource):
             return job, 200, {'Content-Type': 'application/json'}
 
 
+class actionHandler():
+    '''
+    Class to abstract the the identification and execution of the action api.
+    '''
+    def run_verb(self, job, verb):
+        '''
+        Given a verb as a string (eg 'RUN' or 'CANCEL') and a job, execute the
+        script on the remote server
+        '''
+
+        manager = JIM(job, simulation_root='')
+        remote_path, remote_script = manager.get_action_script(verb)
+
+        # Ensure we have a script to run before trying to run it
+        if remote_script:
+            a, b, c = manager._run_remote_script(remote_script, remote_path)
+            result = {"stdout": a, "stderr": b, "exit_code": c}
+            return result, 200
+        else:
+            return abort(400, message="{} script not found".format(verb))
+
+
 class RUNApi(Resource):
     '''API endpoint called to run a job on the cluster (POST)'''
     def __init__(self, **kwargs):
@@ -144,13 +166,6 @@ class RUNApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        manager = JIM(job, simulation_root='')
-        remote_path, remote_script = manager.get_action_script('RUN')
+        handler = actionHandler()
 
-        # Ensure we have a script to run before trying to run it
-        if remote_script:
-            a, b, c = manager._run_remote_script(remote_script, remote_path)
-            result = {"stdout": a, "stderr": b, "exit_code": c}
-            return result, 200
-        else:
-            return abort(400, message="RUN script not found")
+        return handler.run_verb(job, 'RUN')
