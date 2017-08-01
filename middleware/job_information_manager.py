@@ -130,17 +130,17 @@ class job_information_manager():
         '''
         to_run = None
 
-        # Cycle through the list of scripts to to get the RUN script
+        # Cycle through the list of scripts to to get the action script
         for i, s in enumerate(self.script_list):
             if s['action'] == action:
                 to_run = self.script_list[i]
                 break
 
+        # If the script isn't found, return None, None
         if to_run:
             script_name = os.path.basename(to_run['source_uri'])
             script_path = os.path.join(self.simulation_root,
                                        to_run["destination_path"])
-
             return script_path, script_name
         else:
             return None, None
