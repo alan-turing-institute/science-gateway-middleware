@@ -2,6 +2,7 @@ import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job.model import is_valid_job_json, job_summary_json
 from middleware.job_information_manager import job_information_manager as JIM
+import os
 
 
 class JobApi(Resource):
@@ -87,12 +88,10 @@ class JobApi(Resource):
         '''
         Submit/run the job using current parameters data in the database
         '''
-
         simulation_root = ''  # this needs to be stored in job data structure
         job, response, content_type = self.get(job_id)
 
         manager = JIM(job, simulation_root=simulation_root)
-        print(manager.parameter_patch)
 
         manager.patch_and_transfer()
         manager.transfer_scripts()
@@ -134,3 +133,20 @@ class JobsApi(Resource):
         else:
             job = self.jobs.create(job)
             return job, 200, {'Content-Type': 'application/json'}
+
+
+class RUNApi(Resource):
+    '''API endpoint called to run a job on the cluster (POST)'''
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def post(self, job_id):
+
+        job = self.jobs.get_by_id(job_id)
+        manager = JIM(job, simulation_root='')
+        remote_path, remote_script = manager.get_action_script('RUN')
+
+        a, b, c = manager._run_remote_script(remote_script, remote_path)
+        result = {"stdout": a, "stderr": b, "exit_code": c}
+        return result, 200

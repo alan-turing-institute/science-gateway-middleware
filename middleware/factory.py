@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from middleware.job.api import JobApi, JobsApi
+from middleware.job.api import JobApi, JobsApi, RUNApi
 
 
 def create_app(job_repository):
@@ -25,4 +25,9 @@ def create_app(job_repository):
     api.add_resource(JobsApi, '/job',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
+
+    api.add_resource(RUNApi, '/RUN/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
     return app
