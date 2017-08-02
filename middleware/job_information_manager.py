@@ -13,7 +13,7 @@ class job_information_manager():
     Needs a better, descriptive name.
     '''
 
-    def __init__(self, job, simulation_root=''):
+    def __init__(self, job):
         '''
         Create a manager object, which is populated with ssh information from
         instance/config.py and job information passed via http post in the api.
@@ -37,8 +37,12 @@ class job_information_manager():
         self.template_list = job['templates']
         self.parameter_patch = job['parameters']
         self.script_list = job['scripts']
+        self.inputs_list = job['inputs']
+        self.simulation_root = ''
 
-        self.simulation_root = simulation_root
+        for inputs in self.inputs_list:
+            if inputs.get('simulation_root'):
+                self.simulation_root = inputs['simulation_root']
 
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
