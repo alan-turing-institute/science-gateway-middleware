@@ -142,9 +142,9 @@ class SetupApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        handler = actionHandler()
+        manager = JIM(job)
 
-        return handler.run_verb(job, 'SETUP')
+        return manager.setup(request)
 
 
 class ProgressApi(Resource):
