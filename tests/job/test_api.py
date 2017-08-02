@@ -1,7 +1,6 @@
 import json
 import pytest
 import unittest
-import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
@@ -24,10 +23,6 @@ def response_to_json(response):
     if not data:
         return None
     return json.loads(data)
-
-
-def mock_api_post(job_id):
-    return {"std out": [job_id], "std err": [job_id]}, 201
 
 
 class TestJobApi(unittest.TestCase):
@@ -205,9 +200,8 @@ class TestJobApi(unittest.TestCase):
         assert response_to_json(job_response) is None
         assert jobs.get_by_id(job_id) is None
 
-    # === POST tests (patching) ===
-    @mock.patch('middleware.job.api.JobApi.post', side_effect=mock_api_post)
-    def test_patch_with_valid_json_and_correct_id(self, mock_post):
+    # === POST tests  ===
+    def test_post_with_valid_json_correct_id_returns_new_job_success_200(self):
 
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
@@ -219,28 +213,79 @@ class TestJobApi(unittest.TestCase):
         _ = client.post("/job", data=json.dumps(job),
                         content_type='application/json')
 
-        # complete json with same id as before
-        dest_path = 'project/case/'
-        template_src = "./middleware/resources/templates/Blue.nml"
-        script_src = "./middleware/resources/scripts/start_job.sh"
-
-        job_final = {"id": job_id,
-                     "templates": [{"source_uri": template_src,
-                                    "destination_path": dest_path}],
-                     "scripts": [{"source_uri": script_src,
-                                  "destination_path": dest_path}],
-                     "parameters": {"viscosity_properties":
-                                    {"viscosity_phase_1": 0.09}},
-                     "inputs": []}
-
         job_response = client.post("/job/{}".format(job_id),
-                                   data=json.dumps(job_final),
+                                   data=json.dumps(job),
                                    content_type='application/json')
 
-        result = {"std out": [job_id], "std err": [job_id]}
+        assert response_to_json(job_response) == job
+        assert job_response.status_code == 200
 
-        assert response_to_json(job_response) == result
-        assert job_response.status_code == 201
+    def test_post_with_valid_json_and_incorrect_id_returns_error_404(self):
+
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        job = {"id": job_id[::-1], "parameters": {"height": 3}}
+
+        job_response = client.post("/job/{}".format(job_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        error_message = {"message": "Job {} not found".format(job_id[::-1])}
+
+        assert response_to_json(job_response) == error_message
+        assert job_response.status_code == 404
+
+    def test_post_with_missing_json_returns_error_400(self):
+
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        job_response = client.post("/job/{}".format(job_id),
+                                   data=None,
+                                   content_type=None)
+
+        error_message = {"message": "Message body could not be parsed as JSON"}
+
+        assert response_to_json(job_response) == error_message
+        assert job_response.status_code == 400
+
+    def test_post_with_invalid_json_returns_error_400(self):
+
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        broken_json = {'test': 5}
+
+        job_response = client.post("/job/{}".format(job_id),
+                                   data=json.dumps(broken_json),
+                                   content_type='application/json')
+
+        error_message = {"message": "Message body is not valid Job JSON"}
+
+        assert response_to_json(job_response) == error_message
+        assert job_response.status_code == 400
 
     # === PATCH tests (Partial UPDATE) ===
     def test_patch_with_no_job_id_returns_error_with_404_status(self):

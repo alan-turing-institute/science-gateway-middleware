@@ -97,8 +97,7 @@ class JobApi(Resource):
             updated_job = self.jobs.update(request.json)
             return updated_job, 200, {'Content-Type': 'application/json'}
         else:
-            job = self.jobs.create(job)
-            return job, 200, {'Content-Type': 'application/json'}
+            abort(404, message="Job {} not found".format(job_id))
 
 
 class JobsApi(Resource):
