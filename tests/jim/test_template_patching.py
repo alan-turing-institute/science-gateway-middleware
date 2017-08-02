@@ -26,7 +26,27 @@ job = {
     "inputs": []
 }
 
-simulation_root = ""
+job2 = {
+    "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+    "templates": [
+        {
+            "source_uri": "./resources/templates/Blue.nml",
+            "destination_path": "project/case/"
+        }
+    ],
+    "scripts": [
+        {
+            "source_uri": "./resources/scripts/start_job.sh",
+            "destination_path": "project/case/"
+        }
+    ],
+    "parameters": {
+        "viscosity_properties": {
+            "viscosity_phase_1": "42.0"
+        }
+    },
+    "inputs": [{"simulation_root": "/home/"}]
+}
 
 
 def abstract_getting_secrets():
@@ -47,24 +67,42 @@ def abstract_getting_secrets():
 
 class TestJIM(object):
 
-    def test_constructor(self):
+    def test_constructor_no_simulation_root(self):
 
         username, hostname, port = abstract_getting_secrets()
 
         # Create a manager
-        jim = JIM(job, simulation_root)
+        jim = JIM(job)
 
         assert jim.username == username
         assert jim.hostname == hostname
         assert jim.port == port
-        assert jim.simulation_root == simulation_root
         assert jim.job_id == job['id']
         assert jim.template_list == job['templates']
         assert jim.parameter_patch == job['parameters']
         assert jim.script_list == job['scripts']
+        assert jim.inputs_list == job['inputs']
+        assert jim.simulation_root == ''
+
+    def test_constructor_with_simulation_root(self):
+
+        username, hostname, port = abstract_getting_secrets()
+
+        # Create a manager
+        jim = JIM(job2)
+
+        assert jim.username == username
+        assert jim.hostname == hostname
+        assert jim.port == port
+        assert jim.job_id == job2['id']
+        assert jim.template_list == job2['templates']
+        assert jim.parameter_patch == job2['parameters']
+        assert jim.script_list == job2['scripts']
+        assert jim.inputs_list == job2['inputs']
+        assert jim.simulation_root == '/home/'
 
     def test_apply_patch(self, tmpdir):
-        manager = JIM(job, simulation_root=simulation_root)
+        manager = JIM(job)
 
         template_path = job["templates"][0]["source_uri"]
         template_filename = os.path.basename(template_path)
