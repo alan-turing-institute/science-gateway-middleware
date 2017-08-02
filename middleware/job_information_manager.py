@@ -144,3 +144,61 @@ class job_information_manager():
             return script_path, script_name
         else:
             return None, None
+
+    '''
+    Class to abstract the the identification and execution of the action api.
+    move this into JIM - need to think about if we need separate verb methods
+    for run and setup and the others
+    '''
+    def run(self, request):
+        '''
+
+        '''
+        if request.json is None:
+            # All we need to do is execute the run script
+            remote_path, remote_script = self.get_action_script('RUN')
+
+            if remote_script:
+                a, b, c = self._run_remote_script(remote_script, remote_path)
+                result = {"stdout": a, "stderr": b, "exit_code": c}
+                return result, 200
+            else:
+                return abort(400, message="{} script not found".format(verb))
+
+        else:
+            # need to patch and recopy before execution or just call setup?
+            pass
+
+    def setup(self, request):
+        '''
+
+        '''
+        if request.json is None:
+            # no new information to be added to job, just patch, copy
+            # execute setup
+
+            # PATCH EVERYTHING
+
+            # COPY EVERYTHING
+
+            # EXECUTE SETUP script
+            remote_path, remote_script = self.get_action_script('SETUP')
+
+            if remote_script:
+                a, b, c = self._run_remote_script(remote_script, remote_path)
+                result = {"stdout": a, "stderr": b, "exit_code": c}
+                return result, 200
+            else:
+                return abort(400, message="{} script not found".format(verb))
+
+    def progress(self):
+        '''
+
+        '''
+        pass
+
+    def cancel(self):
+        '''
+
+        '''
+        pass
