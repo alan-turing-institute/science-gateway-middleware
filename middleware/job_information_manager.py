@@ -1,5 +1,4 @@
 import os
-from flask_restful import abort, request
 from mako.template import Template
 from middleware.ssh import ssh
 from instance.config import *
@@ -119,13 +118,9 @@ class job_information_manager():
             result = {"stdout": a, "stderr": b, "exit_code": c}
             return result, 200
         else:
-            return abort(400, message="{} script not found".format(verb))
+            result = {'message': '{} script not found'.format(action)}
+            return result, 400
 
-    '''
-    Class to abstract the the identification and execution of the action api.
-    move this into JIM - need to think about if we need separate verb methods
-    for run and setup and the others
-    '''
     def run(self, request):
         '''
 
@@ -153,11 +148,10 @@ class job_information_manager():
 
             # EXECUTE SETUP script
             return self.run_action_script()
-            
+
         else:
             # We have been given a new JSON, so we need to update the job first
             pass
-
 
     def progress(self):
         '''
