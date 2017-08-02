@@ -110,11 +110,11 @@ class job_information_manager():
 
         # If the script isn't found, return a 400 error
         if to_run:
-            script_path = os.path.basename(to_run['source_uri'])
+            script_name = os.path.basename(to_run['source_uri'])
             script_path = os.path.join(self.simulation_root,
                                        to_run["destination_path"])
 
-            a, b, c = self._run_remote_script(script_path, script_path)
+            a, b, c = self._run_remote_script(script_name, script_path)
             result = {"stdout": a, "stderr": b, "exit_code": c}
             return result, 200
         else:
@@ -127,7 +127,7 @@ class job_information_manager():
         '''
         if request.json is None:
             # All we need to do is execute the run script
-            return self.run_action_script()
+            return self.run_action_script('RUN')
 
         else:
             # need to patch and recopy before execution, so pass to setup
@@ -147,7 +147,7 @@ class job_information_manager():
             self.transfer_files()
 
             # EXECUTE SETUP script
-            return self.run_action_script()
+            return self.run_action_script('SETUP')
 
         else:
             # We have been given a new JSON, so we need to update the job first
