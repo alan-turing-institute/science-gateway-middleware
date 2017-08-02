@@ -121,46 +121,41 @@ class job_information_manager():
             result = {'message': '{} script not found'.format(action)}
             return result, 400
 
-    def run(self, request):
+    def run(self):
         '''
-
+        This is the RUN behaviour for this job manager. This method ignores
+        any data passed as part of the request.
         '''
-        if request.json is None:
-            # All we need to do is execute the run script
-            return self.run_action_script('RUN')
+        # All we need to do is execute the run script
+        return self.run_action_script('RUN')
 
-        else:
-            # need to patch and recopy before execution, so pass to setup
-            return self.setup(request)
-
-    def setup(self, request):
+    def setup(self):
         '''
-
+        This is the SETUP behaviour for this job manager. This method ignores
+        any data passed as part of the request.
         '''
-        if request.json is None:
-            # no new information to be added to job
+        # PATCH EVERYTHING
+        self.bulk_patch()
 
-            # PATCH EVERYTHING
-            self.bulk_patch()
+        # COPY EVERYTHING
+        self.transfer_files()
 
-            # COPY EVERYTHING
-            self.transfer_files()
-
-            # EXECUTE SETUP script
-            return self.run_action_script('SETUP')
-
-        else:
-            # We have been given a new JSON, so we need to update the job first
-            pass
+        # EXECUTE SETUP SCRIPT
+        return self.run_action_script('SETUP')
 
     def progress(self):
         '''
-
+        This is the PROGRESS behaviour for this job manager. Method ignores
+        any data passed as part of the request.
+        TODO: Figure out how to track progress and add that code here!
         '''
-        pass
+        # Execute the progress script
+        return self.run_action_script('PROGRESS')
 
     def cancel(self):
         '''
-
+        This is the CANCEL behaviour for this job manager. Method ignores
+        any data passed as part of the request.
         '''
-        pass
+        # Execute the cancel script
+        return self.run_action_script('CANCEL')

@@ -144,7 +144,7 @@ class SetupApi(Resource):
         job = self.jobs.get_by_id(job_id)
         manager = JIM(job)
 
-        return manager.setup(request)
+        return manager.setup()
 
 
 class ProgressApi(Resource):
@@ -156,9 +156,9 @@ class ProgressApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        handler = actionHandler()
+        manager = JIM(job)
 
-        return handler.run_verb(job, 'PROGRESS')
+        return manager.progress()
 
 
 class CancelApi(Resource):
@@ -170,9 +170,9 @@ class CancelApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        handler = actionHandler()
+        manager = JIM(job)
 
-        return handler.run_verb(job, 'CANCEL')
+        return manager.cancel()
 
 
 class RunApi(Resource):
@@ -186,4 +186,4 @@ class RunApi(Resource):
         job = self.jobs.get_by_id(job_id)
         manager = JIM(job)
 
-        return manager.run(request)
+        return manager.run()
