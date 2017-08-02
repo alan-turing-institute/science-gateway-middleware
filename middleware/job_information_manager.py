@@ -130,7 +130,7 @@ class job_information_manager():
             return self.run_action_script()
 
         else:
-            # need to patch and recopy before execution or just call setup?
+            # need to patch and recopy before execution, so pass to setup
             return self.setup(request)
 
     def setup(self, request):
