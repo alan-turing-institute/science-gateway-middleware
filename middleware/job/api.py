@@ -85,21 +85,20 @@ class JobApi(Resource):
         return deleted_job, 204
 
     def post(self, job_id):
-        '''
-        Submit/run the job using current parameters data in the database
-        '''
-        simulation_root = ''  # this needs to be stored in job data structure
-        job, response, content_type = self.get(job_id)
+        job = request.json
+        if job is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(job):
+            abort(400, message="Message body is not valid Job JSON")
+        job_id = job.get("id")
 
-        manager = JIM(job, simulation_root=simulation_root)
-
-        manager.patch_and_transfer()
-        manager.transfer_scripts()
-        out, err, exit_codes = manager.run_remote_scripts()
-
-        # TODO add an actual check on "success"
-        result = {"stdout": out, "stderr": err, "exit_codes": exit_codes}
-        return result, 201
+        if self.jobs.exists(job_id):
+            updated_job = self.jobs.update(request.json)
+            return updated_job, 200, {'Content-Type': 'application/json'}
+        else:
+            job = self.jobs.create(job)
+            return job, 200, {'Content-Type': 'application/json'}
 
 
 class JobsApi(Resource):
@@ -138,6 +137,8 @@ class JobsApi(Resource):
 class actionHandler():
     '''
     Class to abstract the the identification and execution of the action api.
+    move this into JIM - need to think about if we need separate verb methods
+    for run and setup and the others
     '''
     def run_verb(self, job, verb):
         '''
