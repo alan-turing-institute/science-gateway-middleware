@@ -90,7 +90,7 @@ class job_information_manager():
         Method to run a given script, located in a remote location.
         Set the debug flag to print stdout to the terminal, and to enable
         logging in ./logs/ssh.log
-        Shouldnt be called directly, access via the run_remote_scripts method.
+        Shouldnt be called directly.
         '''
         connection = ssh(self.hostname, self.username, self.port, debug=True)
         command = "cd {}; bash {}".format(remote_path, script_name)
@@ -98,29 +98,6 @@ class job_information_manager():
         if debug:
             print(out)
         return out, err, exit_code
-
-    def run_remote_scripts(self, debug=True):
-        '''
-        Wrapper around _run_remote_script to simplify the interface and allow
-        mutiple scripts to be run sequentially on a remote server.
-        Set the debug flag to print stdout to the terminal, and to enable
-        logging in ./logs/ssh.log
-        '''
-        std_errs = []
-        std_outs = []
-        exit_codes = []
-
-        for script in self.script_list:
-            remote_location = os.path.join(self.simulation_root,
-                                           script["destination_path"])
-            script_name = os.path.basename(script['source_uri'])
-            out, err, exit_code = self._run_remote_script(script_name,
-                                                          remote_location,
-                                                          debug=debug)
-            std_outs.append(out)
-            std_errs.append(err)
-            exit_codes.append(exit_code)
-        return std_outs, std_errs, exit_codes
 
     def get_action_script(self, action):
         '''
