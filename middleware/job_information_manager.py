@@ -65,18 +65,19 @@ class job_information_manager():
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
 
-    def transfer_scripts(self):
+    def transfer_files(self):
         '''
-        Method to copy multiple scripts to the cluster using single
+        Method to copy all needed files to the cluster using a single
         ssh connection.
         '''
         connection = ssh(self.hostname, self.username, self.port, debug=True)
 
-        for file_object in self.script_list:
-            file_full_path = file_object["source_uri"]
-            destination_path = os.path.join(self.simulation_root,
-                                            file_object["destination_path"])
-            connection.secure_copy(file_full_path, destination_path)
+        for file_list in [self.script_list, self.template_list]:
+            for file_object in self.script_list:
+                file_full_path = file_object["source_uri"]
+                dest_path = os.path.join(self.simulation_root,
+                                         file_object["destination_path"])
+                connection.secure_copy(file_full_path, dest_path)
         connection.close_connection()
 
     def _run_remote_script(self, script_name, remote_path, debug=True):
@@ -145,12 +146,14 @@ class job_information_manager():
 
         '''
         if request.json is None:
-            # no new information to be added to job, just patch, copy
+            # no new information to be added to job, just patch, copy files &
             # execute setup
 
             # PATCH EVERYTHING
+            self.bulk_patch()
 
             # COPY EVERYTHING
+            self.transfer_files()
 
             # EXECUTE SETUP script
             remote_path, remote_script = self.get_action_script('SETUP')
