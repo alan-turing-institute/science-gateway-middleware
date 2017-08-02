@@ -1,4 +1,5 @@
 import os
+from flask_restful import abort, request
 from mako.template import Template
 from middleware.ssh import ssh
 from instance.config import *
@@ -94,10 +95,10 @@ class job_information_manager():
             print(out)
         return out, err, exit_code
 
-    def get_action_script(self, action):
+    def run_action_script(self, action):
         '''
         Pass in the job and the required action (eg 'RUN' or 'CANCEL')
-        and this method will return the remote path and script which
+        and this method will run the remote script which
         corresponds to that action
         '''
         to_run = None
@@ -108,14 +109,17 @@ class job_information_manager():
                 to_run = self.script_list[i]
                 break
 
-        # If the script isn't found, return None, None
+        # If the script isn't found, return a 400 error
         if to_run:
-            script_name = os.path.basename(to_run['source_uri'])
+            script_path = os.path.basename(to_run['source_uri'])
             script_path = os.path.join(self.simulation_root,
                                        to_run["destination_path"])
-            return script_path, script_name
+
+            a, b, c = self._run_remote_script(script_path, script_path)
+            result = {"stdout": a, "stderr": b, "exit_code": c}
+            return result, 200
         else:
-            return None, None
+            return abort(400, message="{} script not found".format(verb))
 
     '''
     Class to abstract the the identification and execution of the action api.
@@ -128,26 +132,18 @@ class job_information_manager():
         '''
         if request.json is None:
             # All we need to do is execute the run script
-            remote_path, remote_script = self.get_action_script('RUN')
-
-            if remote_script:
-                a, b, c = self._run_remote_script(remote_script, remote_path)
-                result = {"stdout": a, "stderr": b, "exit_code": c}
-                return result, 200
-            else:
-                return abort(400, message="{} script not found".format(verb))
+            return self.run_action_script()
 
         else:
             # need to patch and recopy before execution or just call setup?
-            pass
+            return self.setup(request)
 
     def setup(self, request):
         '''
 
         '''
         if request.json is None:
-            # no new information to be added to job, just patch, copy files &
-            # execute setup
+            # no new information to be added to job
 
             # PATCH EVERYTHING
             self.bulk_patch()
@@ -156,14 +152,12 @@ class job_information_manager():
             self.transfer_files()
 
             # EXECUTE SETUP script
-            remote_path, remote_script = self.get_action_script('SETUP')
+            return self.run_action_script()
+            
+        else:
+            # We have been given a new JSON, so we need to update the job first
+            pass
 
-            if remote_script:
-                a, b, c = self._run_remote_script(remote_script, remote_path)
-                result = {"stdout": a, "stderr": b, "exit_code": c}
-                return result, 200
-            else:
-                return abort(400, message="{} script not found".format(verb))
 
     def progress(self):
         '''
