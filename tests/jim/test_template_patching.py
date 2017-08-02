@@ -1,7 +1,6 @@
 import pytest
 import os
 import re
-import unittest.mock as mock
 from middleware.job_information_manager import job_information_manager as JIM
 from instance.config import *
 
@@ -46,10 +45,6 @@ def abstract_getting_secrets():
     return username, hostname, port
 
 
-def mock_run_remote_script(script_name, remote_path, debug=True):
-    return 'out', 'err', 5
-
-
 class TestJIM(object):
 
     def test_constructor(self):
@@ -67,19 +62,6 @@ class TestJIM(object):
         assert jim.template_list == job['templates']
         assert jim.parameter_patch == job['parameters']
         assert jim.script_list == job['scripts']
-
-    @mock.patch(('middleware.job_information_manager.job_information_manager.'
-                 '_run_remote_script'), side_effect=mock_run_remote_script)
-    def test_run_list_of_scripts(self, mock_run):
-
-        username, hostname, port = abstract_getting_secrets()
-
-        jim = JIM(job, simulation_root)
-        stdout, stderr, errcode = jim.run_remote_scripts()
-
-        assert stdout == ['out']
-        assert stderr == ['err']
-        assert errcode == [5]
 
     def test_apply_patch(self, tmpdir):
         manager = JIM(job, simulation_root=simulation_root)
