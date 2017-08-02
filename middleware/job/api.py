@@ -157,7 +157,7 @@ class actionHandler():
             return abort(400, message="{} script not found".format(verb))
 
 
-class SETUPApi(Resource):
+class SetupApi(Resource):
     '''API endpoint called to setup a job on the cluster (POST)'''
     def __init__(self, **kwargs):
         # Inject job service
@@ -171,7 +171,7 @@ class SETUPApi(Resource):
         return handler.run_verb(job, 'SETUP')
 
 
-class PROGRESSApi(Resource):
+class ProgressApi(Resource):
     '''API endpoint called to check the progress a job on the cluster (POST)'''
     def __init__(self, **kwargs):
         # Inject job service
@@ -185,7 +185,7 @@ class PROGRESSApi(Resource):
         return handler.run_verb(job, 'PROGRESS')
 
 
-class CANCELApi(Resource):
+class CancelApi(Resource):
     '''API endpoint called to cancel a job on the cluster (POST)'''
     def __init__(self, **kwargs):
         # Inject job service
@@ -199,7 +199,7 @@ class CANCELApi(Resource):
         return handler.run_verb(job, 'CANCEL')
 
 
-class RUNApi(Resource):
+class RunApi(Resource):
     '''API endpoint called to run a job on the cluster (POST)'''
     def __init__(self, **kwargs):
         # Inject job service

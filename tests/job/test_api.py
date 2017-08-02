@@ -202,7 +202,6 @@ class TestJobApi(unittest.TestCase):
 
     # === POST tests  ===
     def test_post_with_valid_json_correct_id_returns_new_job_success_200(self):
-
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 
@@ -221,7 +220,6 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 200
 
     def test_post_with_valid_json_and_incorrect_id_returns_error_404(self):
-
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 
@@ -244,7 +242,6 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 404
 
     def test_post_with_missing_json_returns_error_400(self):
-
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 
@@ -265,7 +262,6 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 400
 
     def test_post_with_invalid_json_returns_error_400(self):
-
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 

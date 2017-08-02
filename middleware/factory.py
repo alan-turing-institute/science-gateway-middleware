@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
-from middleware.job.api import (JobApi, JobsApi, RUNApi, SETUPApi, CANCELApi,
-                                PROGRESSApi)
+from middleware.job.api import (JobApi, JobsApi, RunApi, SetupApi, CancelApi,
+                                ProgressApi)
 
 
 def create_app(job_repository):
@@ -27,19 +27,19 @@ def create_app(job_repository):
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(SETUPApi, '/SETUP/<string:job_id>',
+    api.add_resource(SetupApi, '/setup/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(RUNApi, '/RUN/<string:job_id>',
+    api.add_resource(RunApi, '/run/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(PROGRESSApi, '/PROGRESS/<string:job_id>',
+    api.add_resource(ProgressApi, '/progress/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(CANCELApi, '/CANCEL/<string:job_id>',
+    api.add_resource(CancelApi, '/cancel/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
