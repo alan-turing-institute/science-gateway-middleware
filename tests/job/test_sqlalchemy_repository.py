@@ -1,12 +1,12 @@
 import pytest
 from flask import Flask
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
-from middleware.factory import create_app
 from middleware.database import db as _db
 from middleware.job.models import Job, Parameter
 from copy import deepcopy
 
 TEST_DB_URI = 'sqlite://'
+
 
 @pytest.fixture(scope='session')
 def app(request):
@@ -24,6 +24,7 @@ def app(request):
     request.addfinalizer(teardown)
     return app
 
+
 @pytest.fixture(scope='session')
 def db(app, request):
     """Session-wide test database"""
@@ -35,6 +36,7 @@ def db(app, request):
 
     request.addfinalizer(teardown)
     return _db
+
 
 @pytest.fixture(scope='function')
 def session(db, request):
@@ -197,10 +199,13 @@ class TestJobRepositorySQLAlchemy(object):
         job_returned = repo.create(job_orig)
         # Copy original and change a field
         job_updated = deepcopy(job_orig)
+        # Deep copy creates new ID, so we need to set it to match original job
+        # for this test
+        job_updated.id = job_orig.id
         job_updated.parameters[0].value = "new"
         # Try and create the updated object in the rep
         job_returned = repo.create(job_updated)
-        job_stored = session.query(Job).filter_by(id=job_orig.id)
+        job_stored = session.query(Job).filter_by(id=job_orig.id).first()
         assert job_returned is None
         assert job_stored is job_orig
 

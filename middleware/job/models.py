@@ -1,5 +1,6 @@
 from middleware.database import db
 from copy import deepcopy
+from uuid import uuid4
 
 
 class Job(db.Model):
@@ -9,6 +10,12 @@ class Job(db.Model):
     templates = db.relationship("Template", back_populates="job")
     scripts = db.relationship("Script", back_populates="job")
     inputs = db.relationship("Input", back_populates="job")
+
+    def __init__(self, id=None):
+        if id is not None:
+            self.id = id
+        else:
+            self.id = str(uuid4())
 
     def __deepcopy__(self, memo):
         new_job = Job()
