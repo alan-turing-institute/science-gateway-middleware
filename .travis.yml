@@ -8,9 +8,10 @@ matrix:
     - python: 3.6
     - python: 3.4.1
 
+env:
+  - APP_CONFIG_NAME=test
+
 script:  # Handles creating a blank config file so imports dont fail
-  - mkdir -p instance
-  - touch instance/config.py
   - pytest
   - flake8 middleware/ --ignore=F403,F405
 install:

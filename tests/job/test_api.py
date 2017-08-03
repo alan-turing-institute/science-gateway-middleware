@@ -5,19 +5,14 @@ import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
-from middleware.factory import create_app
+from middleware.app import create_app
 
+CONFIG_NAME = "test"
 
 @pytest.fixture
 def test_client(job_repository=JobRepositoryMemory()):
-    app = create_app(job_repository)
+    app = create_app(CONFIG_NAME, job_repository)
     return app.test_client()
-
-
-@pytest.fixture(autouse=True)
-def app_config(monkeypatch):
-    monkeypatch.setenv('APP_CONFIG_FILE', '../config/travis.py')
-
 
 def response_to_json(response):
     data = response.get_data(as_text=True)
