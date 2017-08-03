@@ -16,7 +16,7 @@ class JobApi(Resource):
             abort(404, message="Job {} not found".format(job_id))
 
     def get(self, job_id):
-        self.abort_if_not_found(job_id)
+        # self.abort_if_not_found(job_id) HACK
         job = self.jobs.get_by_id(job_id)
         return job, 200, {'Content-Type': 'application/json'}
 
