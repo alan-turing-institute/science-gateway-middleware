@@ -32,7 +32,7 @@ def create_app(config_name, job_repository):
     if isinstance(job_repository, JobRepositorySqlAlchemy):
         db = SQLAlchemy(app)
         ma = Marshmallow(app)
-    
+
     app._job_repository = job_repository
 
     api = Api(app)
@@ -57,8 +57,9 @@ def create_app(config_name, job_repository):
 
 
 if __name__ == "__main__":
-    config_name = sys.env('APP_CONFIG_NAME')
+    config_name = os.environ.get('APP_CONFIG_NAME')
     if not config_name:
         config_name = 'test'
-    app = create_app(config_name)
+    job_repository = JobRepositoryMemory()
+    app = create_app(config_name, job_repository)
     app.run()

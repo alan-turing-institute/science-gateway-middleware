@@ -15,8 +15,8 @@ from middleware.job.db_schema import (
 )
 
 
-class JobRepositoryMemorySQL():
-    '''Job service backed by an in-memory SQL repository for job storage.'''
+class JobRepositorySqlAlchemy():
+    '''Job service backed by an SQLAlchemy provided database.'''
 
     def __init__(self):
         pass
@@ -48,7 +48,7 @@ class JobRepositoryMemorySQL():
 
     def update(self, job):
         job_id = job.get("id")
-        if self.exists(job_id):
+        # if self.exists(job_id):
 
             # TODO implement SQLAlchemy update procedure
 

@@ -1,2 +1,1 @@
-export FLASK_APP=run.py
-flask run.py
+python middleware/app.py
