@@ -3,8 +3,6 @@ import os
 import re
 import unittest.mock as mock
 from middleware.job_information_manager import job_information_manager as JIM
-from tests.helpers import ensure_instance_config_exists
-ensure_instance_config_exists()
 from instance.config import *
 
 job = {
