@@ -23,6 +23,9 @@ PASSWORD = "<a password>"
 SSH_USR = "<username to connect to remote server>"
 SSH_HOSTNAME = "<ip address of server to ssh into>"
 SSH_PORT = <optional port to connect via, defaults to 22>
+# SQLALCHEMY_DATABASE_URI = 'sqlite://'
+SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 ```
 
 `USERNAME` and `PASSWORD` are set to provide a mock up of http password authentication which is used to restrict access to the `POST` method.
