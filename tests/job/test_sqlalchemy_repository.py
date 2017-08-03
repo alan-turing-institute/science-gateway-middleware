@@ -4,6 +4,7 @@ from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.factory import create_app
 from middleware.database import db as _db
 from middleware.job.models import Job, Parameter
+from copy import deepcopy
 
 TEST_DB_URI = 'sqlite://'
 
@@ -55,7 +56,7 @@ def session(db, request):
     return session
 
 
-def job1():
+def new_job1():
     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
     job = Job(id=job_id)
     job.parameters.append(Parameter(name="j1p1", value="j1v1"))
@@ -63,7 +64,7 @@ def job1():
     return job
 
 
-def job2():
+def new_job2():
     job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
     job = Job(id=job_id)
     job.parameters.append(Parameter(name="j2p1", value="j2v1"))
@@ -73,9 +74,9 @@ def job2():
 
 class TestJobModels(object):
 
-    def test_job_is_fully_stored_in_orm(self, session):
+    def test_single_job_is_fully_stored_in_orm(self, session):
         # Store new Job
-        job_orig = job1()
+        job_orig = new_job1()
         session.add(job_orig)
         session.commit()
         # Try to read the same job back from the database
@@ -93,6 +94,27 @@ class TestJobModels(object):
         # NOTE: These are actually the same object
         assert id(job_db) == id(job_orig)
 
+    def test_multiple_jobs_are_fully_stored_in_orm(self, session):
+        # Store new Jobs
+        job1_orig = new_job1()
+        job2_orig = new_job2()
+        session.add(job1_orig)
+        session.add(job2_orig)
+        session.commit()
+        # Try to read the same jobs back from the database
+        jobs1_db = session.query(Job).filter_by(id=job1_orig.id)
+        jobs2_db = session.query(Job).filter_by(id=job2_orig.id)
+        # Should only retrieve one job for a given ID
+        assert jobs1_db.count() == 1
+        assert jobs2_db.count() == 1
+        # Jobs should have identical fields
+        job1_db = jobs1_db.first()
+        job2_db = jobs2_db.first()
+        # Test retrieved jobs are the same as their originals and different to
+        # each other
+        assert job1_db == job1_orig
+        assert job2_db == job2_orig
+
 
 class TestJobRepositorySQLAlchemy(object):
     # Notes: We use dictionary.get(key) rather than dictionary[key] to ensure
@@ -107,7 +129,7 @@ class TestJobRepositorySQLAlchemy(object):
     def test_exists_for_existing_job_returns_true(self, session):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job independently of repo
-        job_orig = job1()
+        job_orig = new_job1()
         session.add(job_orig)
         session.commit()
         # Check repo thinks job exists
@@ -117,7 +139,7 @@ class TestJobRepositorySQLAlchemy(object):
     def test_exists_for_nonexistent_job_returns_false(self, session):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job independently of repo
-        job_orig = job1()
+        job_orig = new_job1()
         session.add(job_orig)
         session.commit()
         fetch_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
@@ -127,7 +149,7 @@ class TestJobRepositorySQLAlchemy(object):
     def test_exists_for_none_returns_false(self, session):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job independently of repo
-        job_orig = job1()
+        job_orig = new_job1()
         session.add(job_orig)
         session.commit()
         job_returned = repo.exists(None)
@@ -136,7 +158,7 @@ class TestJobRepositorySQLAlchemy(object):
     def test_get_existing_job_by_id_returns_job(self, session):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job independently of repo
-        job_orig = job1()
+        job_orig = new_job1()
         session.add(job_orig)
         session.commit()
         job_returned = repo.get_by_id(job_orig.id)
@@ -145,36 +167,43 @@ class TestJobRepositorySQLAlchemy(object):
     def test_get_nonexistent_job_by_id_returns_none(self, session):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job independently of repo
-        job_orig = job1()
+        job_orig = new_job1()
         session.add(job_orig)
         session.commit()
         fetch_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
         job_returned = repo.get_by_id(fetch_id)
         assert job_returned is None
 
-    # def test_create_nonexistent_job_creates_job(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job = {"id": job_id,
-    #            "parameters": {"height": 3, "width": 4, "depth": 5}}
-    #     job_returned = repo.create(job)
-    #     job_stored = repo._jobs.get(job_id)
-    #     assert job_returned == job
-    #     assert job_stored == job
-    #
-    # def test_create_existing_job_returns_none(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_initial = {"id": job_id, "parameters": {"height": 3, "width": 4,
-    #                    "depth": 5}}
-    #     job_updated = {"id": job_id, "purple": {"circle": "street",
-    #                    "triangle": "road", "square": "avenue"}}
-    #     repo._jobs[job_id] = job_initial
-    #     job_returned = repo.create(job_updated)
-    #     job_stored = repo._jobs.get(job_id)
-    #     assert job_returned is None
-    #     assert job_stored is job_initial
-    #
+    def test_create_nonexistent_job_creates_job(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        job_orig = new_job1()
+        # Store job using repo create()
+        job_returned = repo.create(job_orig)
+        # Try to read the same job back independent of the repo
+        jobs_stored = session.query(Job).filter_by(id=job_orig.id)
+        # Should only retrieve one job for a given ID
+        assert jobs_stored.count() == 1
+        # Jobs should have identical fields
+        job_stored = jobs_stored.first()
+        # We are relying on the Job objects retaining their reference (Python
+        # ID) when they are stored via the ORM layer
+        assert job_returned == job_orig
+        assert job_stored == job_orig
+
+    def test_create_job_with_existing_id_returns_none(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        # Store new Job in repo
+        job_orig = new_job1()
+        job_returned = repo.create(job_orig)
+        # Copy original and change a field
+        job_updated = deepcopy(job_orig)
+        job_updated.parameters[0].value = "new"
+        # Try and create the updated object in the rep
+        job_returned = repo.create(job_updated)
+        job_stored = session.query(Job).filter_by(id=job_orig.id)
+        assert job_returned is None
+        assert job_stored is job_orig
+
     # def test_update_replaces_existing_job_completely(self):
     #     repo = JobRepositorySqlAlchemy()
     #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"

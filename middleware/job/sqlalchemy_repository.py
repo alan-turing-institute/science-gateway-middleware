@@ -26,11 +26,10 @@ class JobRepositorySqlAlchemy():
         return count > 0
 
     def create(self, job):
-        job_id = job.get("id")
+        job_id = job.id
         if not self.exists(job_id):
             # Add job if it is not already in job list
-            db_content, errors = JobSchema().load(job)
-            self._session.add(db_content)
+            self._session.add(job)
             self._session.commit()
             return self.get_by_id(job_id)
         else:
