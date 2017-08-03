@@ -66,3 +66,13 @@ class TestApp(object):
         basename = app.name.split('.')[0]
 
         assert WSGI_ALT == '{}.app.app'.format(basename)
+
+    def test_run_py(self):
+        '''
+        Test that the run.py file also works
+        '''
+        from run import app_wrapper as run_py_app_wrapper
+
+        app = run_py_app_wrapper()
+
+        assert app.name == 'middleware.factory'
