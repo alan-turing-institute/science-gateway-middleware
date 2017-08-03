@@ -1,12 +1,12 @@
-from middleware.core import db
-from middleware.job.db_models import (
+from middleware.database import db
+from middleware.job.models import (
     Job,
     Parameter,
     Template,
     Input,
     Script
 )
-from middleware.job.db_schema import (
+from middleware.job.schema import (
     JobSchema,
     ParameterSchema,
     TemplateSchema,

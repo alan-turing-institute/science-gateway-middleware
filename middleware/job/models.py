@@ -1,4 +1,4 @@
-from middleware.core import db
+from middleware.database import db
 
 
 class Job(db.Model):
