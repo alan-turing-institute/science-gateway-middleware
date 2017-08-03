@@ -27,7 +27,8 @@ def response_to_json(response):
 
 
 def mock_api_post(job_id):
-    return {"std out": [job_id], "std err": [job_id]}, 201
+    return ({"std out": [job_id], "std err": [job_id], "exit_codes": [job_id]},
+            201)
 
 
 class TestJobApi(unittest.TestCase):
@@ -237,7 +238,8 @@ class TestJobApi(unittest.TestCase):
                                    data=json.dumps(job_final),
                                    content_type='application/json')
 
-        result = {"std out": [job_id], "std err": [job_id]}
+        result = {"std out": [job_id], "std err": [job_id],
+                  "exit_codes": [job_id]}
 
         assert response_to_json(job_response) == result
         assert job_response.status_code == 201
