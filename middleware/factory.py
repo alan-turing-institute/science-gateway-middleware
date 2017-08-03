@@ -19,12 +19,17 @@ def create_app(config_name, job_repository):
     # TODO: Remove the conditional here. This is only to let us still inject
     # job_repository explicitly while we refactor to make data store dependency
     # purely set in configuration
+    # NOTE: We'll need to add
+    #   job_repository = JobRepositorySqlAlchemy(db.session)
+    # Add it after db.create_all() to be safe.
+    # NOTE: Also remove the job_repository injection from factory.py
+    # NOTE: Keep app._job_repository as we'll need this for our API tests when
+    # we are no longer injecting the repo at app creation
     if isinstance(job_repository, JobRepositorySqlAlchemy):
         db.init_app(app)
         ma.init_app(app)
         db.create_all(app=app)
-        app._db = db
-        app._ma = ma
+        job_repository._session = db.session
 
     app._job_repository = job_repository
 

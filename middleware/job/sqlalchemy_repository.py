@@ -1,4 +1,3 @@
-from middleware.database import db
 from middleware.job.models import (
     Job,
     Parameter,
@@ -18,33 +17,27 @@ from middleware.job.schema import (
 class JobRepositorySqlAlchemy():
     '''Job service backed by an SQLAlchemy provided database.'''
 
-    def __init__(self):
+    def __init__(self, session):
+        self._session = session
         pass
 
     def exists(self, job_id):
-        exists_boolean = db.session.query(
-            db.exists().where(Job.id == job_id)
-        ).scalar()
-        return exists_boolean
+        count = self._session.query(Job.id).filter_by(id=job_id).count()
+        return count > 0
 
     def create(self, job):
         job_id = job.get("id")
         if not self.exists(job_id):
             # Add job if it is not already in job list
             db_content, errors = JobSchema().load(job)
-            db.session.add(db_content)
-            db.session.commit()
+            self._session.add(db_content)
+            self._session.commit()
             return self.get_by_id(job_id)
         else:
             return None
 
     def get_by_id(self, job_id):
-        if self.exists(job_id):
-            job_object = Job.query.filter_by(id=job_id).first()
-            job_json = JobSchema().dump(job_object).data
-            return job_json
-        else:
-            return None
+        return Job.query.filter_by(id=job_id).first()
 
     def update(self, job):
         job_id = job.get("id")
@@ -62,7 +55,7 @@ class JobRepositorySqlAlchemy():
         if self.exists(job_id):
             # If job exists, remove job from dictionary and return removed job
             Job.query.filter_by(id=job_id).delete()
-            db.session.commit()
+            self._session.commit()
             return None
         else:
             return None
