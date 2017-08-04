@@ -11,22 +11,22 @@ from middleware.job.models import (
 
 class ParameterSchema(ma.ModelSchema):
     class Meta:
-        model = Parameter
+        fields = ('name', 'value')
 
 
 class TemplateSchema(ma.ModelSchema):
     class Meta:
-        model = Template
+        fields = ('source_uri', 'destination_path')
 
 
 class ScriptSchema(ma.ModelSchema):
     class Meta:
-        model = Script
+        fields = ('source_uri', 'destination_path')
 
 
 class InputSchema(ma.ModelSchema):
     class Meta:
-        model = Input
+        fields = ('source_uri', 'destination_path')
 
 
 class JobSchema(ma.ModelSchema):
@@ -37,3 +37,11 @@ class JobSchema(ma.ModelSchema):
     templates = ma.List(ma.Nested(TemplateSchema))
     scripts = ma.List(ma.Nested(ScriptSchema))
     inputs = ma.List(ma.Nested(InputSchema))
+
+
+def job_to_json(job):
+    """"Convert a Job object to json via its associated
+    ModelSchema class
+    """
+    print(JobSchema().dump(job).data)
+    return JobSchema().dump(job).data
