@@ -223,7 +223,7 @@ class TestJobModels(object):
         job2.scripts[0].destination_path = "changed"
         assert job1 != job2
 
-    def test_full_jobs_differing_only_by_swapped_scriptt_order_equal(self):
+    def test_full_jobs_differing_only_by_swapped_script_order_equal(self):
         # Ordering of parameters should not matter for equivalence
         job1 = new_job1()
         job2 = new_job1()
