@@ -1,6 +1,7 @@
 import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
+from middleware.job.schema import job_to_json
 
 
 def is_valid_job_json(job):
@@ -30,7 +31,8 @@ class JobApi(Resource):
     def get(self, job_id):
         self.abort_if_not_found(job_id)
         job = self.jobs.get_by_id(job_id)
-        return job, 200, {'Content-Type': 'application/json'}
+        job_json = job_to_json(job)
+        return job_json, 200, {'Content-Type': 'application/json'}
 
     def put(self, job_id):
         # Require Job to exist in order to amend it
