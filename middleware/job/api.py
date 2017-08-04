@@ -2,7 +2,6 @@ import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job.model import is_valid_job_json, job_summary_json
 from middleware.job_information_manager import job_information_manager as JIM
-import os
 
 
 class JobApi(Resource):
