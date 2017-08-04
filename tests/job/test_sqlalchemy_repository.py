@@ -39,7 +39,7 @@ def db(app, request):
 
 @pytest.fixture(scope='function')
 def session(db, request):
-    """Session-wide test database session"""
+    """Function-wide SQLAlchemy session for each test"""
     connection = db.engine.connect()
     transaction = connection.begin()
 
