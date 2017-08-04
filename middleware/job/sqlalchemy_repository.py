@@ -39,16 +39,12 @@ class JobRepositorySqlAlchemy():
         return Job.query.filter_by(id=job_id).first()
 
     def update(self, job):
-        job_id = job.get("id")
-        # if self.exists(job_id):
-
-            # TODO implement SQLAlchemy update procedure
-
-        return None
-
-        #     return self.get_by_id(job_id)
-        # else:
-        #     return None
+        job_id = job.id
+        if self.exists(job_id):
+            self._session.merge(job)
+        # Return result of querying repo for Job. This will be None if the Job
+        # did not already exist in the repo and the updated Job if it did
+        return self.get_by_id(job_id)
 
     def delete(self, job_id):
         if self.exists(job_id):

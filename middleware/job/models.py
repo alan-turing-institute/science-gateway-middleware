@@ -1,5 +1,4 @@
 from middleware.database import db
-from copy import deepcopy
 from uuid import uuid4
 
 
@@ -17,14 +16,21 @@ class Job(db.Model):
         else:
             self.id = str(uuid4())
 
-    def __deepcopy__(self, memo):
-        new_job = Job()
-        new_job.user = self.user
-        new_job.parameters = deepcopy(self.parameters, memo)
-        new_job.templates = deepcopy(self.templates, memo)
-        new_job.scripts = deepcopy(self.scripts, memo)
-        new_job.inputs = deepcopy(self.inputs, memo)
-        return new_job
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.id == other.id and
+                    self.user == other.user and
+                    sorted(self.parameters) == sorted(other.parameters) and
+                    sorted(self.templates) == sorted(other.templates) and
+                    sorted(self.scripts) == sorted(other.scripts) and
+                    sorted(self.inputs) == sorted(other.inputs)
+                    )
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
 
 
 class Parameter(db.Model):
@@ -34,11 +40,30 @@ class Parameter(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
     job = db.relationship("Job", back_populates="parameters")
 
-    def __deepcopy__(self, memo):
-        new_parameter = Parameter()
-        new_parameter.name = self.name
-        new_parameter.value = self.value
-        return new_parameter
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.name == other.name and
+                    self.value == other.value
+                    )
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        # Need to support < operator for sorting
+        if isinstance(other, self.__class__):
+            # We have no strong view of a canonical sort order but do want to
+            # be able to sort consistently to allow comparison of lists so we
+            # just sort by hash, which hashes all fields used for equality
+            # checking
+            return self.__hash__() < other.__hash__()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash((self.name, self.value))
 
 
 class Template(db.Model):
@@ -48,11 +73,30 @@ class Template(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
     job = db.relationship("Job", back_populates="templates")
 
-    def __deepcopy__(self, memo):
-        new_template = Template()
-        new_template.source_uri = self.source_uri
-        new_template.destination_path = self.destination_path
-        return new_template
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.source_uri == other.source_uri and
+                    self.destination_path == other.destination_path
+                    )
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        # Need to support < operator for sorting
+        if isinstance(other, self.__class__):
+            # We have no strong view of a canonical sort order but do want to
+            # be able to sort consistently to allow comparison of lists so we
+            # just sort by hash, which hashes all fields used for equality
+            # checking
+            return self.__hash__() < other.__hash__()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash((self.source_uri, self.destination_path))
 
 
 class Script(db.Model):
@@ -63,12 +107,31 @@ class Script(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
     job = db.relationship("Job", back_populates="scripts")
 
-    def __deepcopy__(self, memo):
-        new_script = Script()
-        new_script.command = self.command
-        new_script.source_uri = self.source_uri
-        new_script.destination_path = self.destination_path
-        return new_script
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.command == other.command and
+                    self.source_uri == other.source_uri and
+                    self.destination_path == other.destination_path
+                    )
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        # Need to support < operator for sorting
+        if isinstance(other, self.__class__):
+            # We have no strong view of a canonical sort order but do want to
+            # be able to sort consistently to allow comparison of lists so we
+            # just sort by hash, which hashes all fields used for equality
+            # checking
+            return self.__hash__() < other.__hash__()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash((self.command, self.source_uri, self.destination_path))
 
 
 class Input(db.Model):
@@ -78,7 +141,27 @@ class Input(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
     job = db.relationship("Job", back_populates="inputs")
 
-    def __deepcopy__(self):
-        new_input = Input()
-        new_input.source_uri = self.source_uri
-        new_input.destination_path = self.destination_path
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.source_uri == other.source_uri and
+                    self.destination_path == other.destination_path
+                    )
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        # Need to support < operator for sorting
+        if isinstance(other, self.__class__):
+            # We have no strong view of a canonical sort order but do want to
+            # be able to sort consistently to allow comparison of lists so we
+            # just sort by hash, which hashes all fields used for equality
+            # checking
+            return self.__hash__() < other.__hash__()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash((self.source_uri, self.destination_path))

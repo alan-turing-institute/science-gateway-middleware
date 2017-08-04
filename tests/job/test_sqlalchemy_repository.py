@@ -2,8 +2,7 @@ import pytest
 from flask import Flask
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.database import db as _db
-from middleware.job.models import Job, Parameter
-from copy import deepcopy
+from middleware.job.models import Job, Parameter, Template, Script, Input
 
 TEST_DB_URI = 'sqlite://'
 
@@ -61,16 +60,42 @@ def session(db, request):
 def new_job1():
     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
     job = Job(id=job_id)
-    job.parameters.append(Parameter(name="j1p1", value="j1v1"))
-    job.parameters.append(Parameter(name="j1p2", value="j1v2"))
+    job.user = "j1user"
+    job.parameters.append(Parameter(name="j1p1name", value="j1p1value"))
+    job.parameters.append(Parameter(name="j1p2name", value="j1p2value"))
+    job.templates.append(Template(source_uri="j1t1source",
+                                  destination_path="j1t1_dest"))
+    job.templates.append(Template(source_uri="j1t2source",
+                                  destination_path="j1t2_dest"))
+    job.scripts.append(Script(command="j1s1command", source_uri="j1s1source",
+                              destination_path="j1s1_dest"))
+    job.scripts.append(Script(command="j1s2command", source_uri="j1s2source",
+                              destination_path="j212_dest"))
+    job.inputs.append(Input(source_uri="j1i1source",
+                            destination_path="j1i1_dest"))
+    job.inputs.append(Input(source_uri="j1i2source",
+                            destination_path="j1i2_dest"))
     return job
 
 
 def new_job2():
     job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
     job = Job(id=job_id)
-    job.parameters.append(Parameter(name="j2p1", value="j2v1"))
-    job.parameters.append(Parameter(name="j2p2", value="j2v2"))
+    job.user = "j2user"
+    job.parameters.append(Parameter(name="j2p1name", value="j2p1value"))
+    job.parameters.append(Parameter(name="j2p2name", value="j2p2value"))
+    job.templates.append(Template(source_uri="j2t1source",
+                                  destination_path="j2t1_dest"))
+    job.templates.append(Template(source_uri="j2t2source",
+                                  destination_path="j2t2_dest"))
+    job.scripts.append(Script(command="j2s1command", source_uri="j2s1source",
+                              destination_path="j2s1_dest"))
+    job.scripts.append(Script(command="j2s2command", source_uri="j2s2source",
+                              destination_path="j2s2_dest"))
+    job.inputs.append(Input(source_uri="j2i1source",
+                            destination_path="j2i1_dest"))
+    job.inputs.append(Input(source_uri="j2i2source",
+                            destination_path="j2i2_dest"))
     return job
 
 
@@ -117,6 +142,120 @@ class TestJobModels(object):
         assert job1_db == job1_orig
         assert job2_db == job2_orig
 
+    def test_fully_identical_jobs_evaluate_as_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        assert job1 == job2
+
+    def test_full_jobs_differing_only_by_id_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.id = "ad460823-370c-48dd-a09f-a7564bb458f1"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_user_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.user = ""
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_param_name_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.parameters[0].name = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_param_value_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.parameters[0].value = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_swapped_param_order_equal(self):
+        # Ordering of parameters should not matter for equivalence
+        job1 = new_job1()
+        job2 = new_job1()
+        temp = job2.parameters[0]
+        job2.parameters[0] = job2.parameters[1]
+        job2.parameters[1] = temp
+        assert job2.parameters[1] == job1.parameters[0]
+        assert job2.parameters[0] == job1.parameters[1]
+        assert job1 == job2
+
+    def test_full_jobs_differing_only_by_template_source_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.templates[0].source_uri = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_template_dest_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.templates[0].destination_path = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_swapped_template_order_equal(self):
+        # Ordering of parameters should not matter for equivalence
+        job1 = new_job1()
+        job2 = new_job1()
+        temp = job2.templates[0]
+        job2.templates[0] = job2.templates[1]
+        job2.templates[1] = temp
+        assert job2.templates[1] == job1.templates[0]
+        assert job2.templates[0] == job1.templates[1]
+        assert job1 == job2
+
+    def test_full_jobs_differing_only_by_script_command_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.scripts[0].command = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_script_source_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.scripts[0].source_uri = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_script_dest_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.scripts[0].destination_path = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_swapped_scriptt_order_equal(self):
+        # Ordering of parameters should not matter for equivalence
+        job1 = new_job1()
+        job2 = new_job1()
+        temp = job2.scripts[0]
+        job2.scripts[0] = job2.scripts[1]
+        job2.scripts[1] = temp
+        assert job2.scripts[1] == job1.scripts[0]
+        assert job2.scripts[0] == job1.scripts[1]
+        assert job1 == job2
+
+    def test_full_jobs_differing_only_by_input_source_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.inputs[0].source_uri = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_input_dest_not_equal(self):
+        job1 = new_job1()
+        job2 = new_job1()
+        job2.inputs[0].destination_path = "changed"
+        assert job1 != job2
+
+    def test_full_jobs_differing_only_by_swapped_input_order_equal(self):
+        # Ordering of parameters should not matter for equivalence
+        job1 = new_job1()
+        job2 = new_job1()
+        temp = job2.inputs[0]
+        job2.inputs[0] = job2.inputs[1]
+        job2.inputs[1] = temp
+        assert job2.inputs[1] == job1.inputs[0]
+        assert job2.inputs[0] == job1.inputs[1]
+        assert job1 == job2
 
 class TestJobRepositorySQLAlchemy(object):
     # Notes: We use dictionary.get(key) rather than dictionary[key] to ensure
@@ -196,12 +335,9 @@ class TestJobRepositorySQLAlchemy(object):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job in repo
         job_orig = new_job1()
-        job_returned = repo.create(job_orig)
-        # Copy original and change a field
-        job_updated = deepcopy(job_orig)
-        # Deep copy creates new ID, so we need to set it to match original job
-        # for this test
-        job_updated.id = job_orig.id
+        repo.create(job_orig)
+        # Create identical job and update a single field
+        job_updated = new_job1()
         job_updated.parameters[0].value = "new"
         # Try and create the updated object in the rep
         job_returned = repo.create(job_updated)
@@ -209,35 +345,40 @@ class TestJobRepositorySQLAlchemy(object):
         assert job_returned is None
         assert job_stored is job_orig
 
-    # def test_update_replaces_existing_job_completely(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_initial = {"id": job_id, "parameters": {"height": 3, "width": 4,
-    #                    "depth": 5}}
-    #     job_updated = {"id": job_id, "purple": {"circle": "street",
-    #                    "triangle": "road", "square": "avenue"}}
-    #     repo._jobs[job_id] = job_initial
-    #     job_returned = repo.update(job_updated)
-    #     job_stored = repo._jobs.get(job_id)
-    #     assert job_returned == job_updated
-    #     assert job_stored == job_updated
-    #
-    # def test_update_nonexistent_job_returns_none(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     job_id_initial = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_initial = {"id": job_id_initial, "parameters": {"height": 3,
-    #                    "width": 4, "depth": 5}}
-    #     job_id_updated = "ad460823-370c-48dd-a09f-a7564bb458f1"
-    #     job_updated = {"id": job_id_updated, "purple": {"circle": "street",
-    #                    "triangle": "road", "square": "avenue"}}
-    #     repo._jobs[job_id_initial] = job_initial
-    #     job_returned = repo.update(job_updated)
-    #     job_stored_updated = repo._jobs.get(job_id_updated)
-    #     job_stored_initial = repo._jobs.get(job_id_initial)
-    #     assert job_returned is None
-    #     assert job_stored_updated is None
-    #     assert job_stored_initial == job_initial
-    #
+    def test_update_replaces_existing_job_completely(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        # Store new Job in repo
+        job_orig = new_job1()
+        repo.create(job_orig)
+        # Create identical job and update a single field
+        job_updated = new_job1()
+        job_updated.parameters[0].value = "new"
+        # Try and update the original object with the copy
+        job_returned = repo.update(job_updated)
+        job_stored = session.query(Job).filter_by(id=job_orig.id).first()
+        assert job_returned == job_updated
+        assert job_stored == job_updated
+
+    def test_update_nonexistent_job_returns_none(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        # Store new Job in repo
+        job_orig = new_job1()
+        repo.create(job_orig)
+        # Create identical job and update a single field and also change ID
+        job_updated = new_job1()
+        job_updated.parameters[0].value = "new"
+        job_updated.id = "ad460823-370c-48dd-a09f-a7564bb458f1"
+        # Try and update the original object with the copy
+        job_returned = repo.update(job_updated)
+        # Try and fetch job by original and updated IDs
+        job_stored_updated = \
+            session.query(Job).filter_by(id=job_updated.id).first()
+        job_stored_orig = \
+            session.query(Job).filter_by(id=job_orig.id).first()
+        assert job_returned is None
+        assert job_stored_updated is None
+        assert job_stored_orig == job_orig
+
     # def test_delete_existing_job_deletes_job(self):
     #     repo = JobRepositorySqlAlchemy()
     #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
