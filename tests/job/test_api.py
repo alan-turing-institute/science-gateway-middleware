@@ -5,14 +5,16 @@ import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
-from middleware.app import create_app
+from middleware.factory import create_app
 
 CONFIG_NAME = "test"
+
 
 @pytest.fixture
 def test_client(job_repository=JobRepositoryMemory()):
     app = create_app(CONFIG_NAME, job_repository)
     return app.test_client()
+
 
 def response_to_json(response):
     data = response.get_data(as_text=True)
@@ -211,8 +213,8 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         # complete json with same id as before
         dest_path = 'project/case/'

@@ -1,3 +1,3 @@
-export FLASK_APP=run.py
+export FLASK_APP=middleware/app.py
 export APP_CONFIG_NAME=production
-flask run.py
+flask run
