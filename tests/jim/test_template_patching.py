@@ -1,6 +1,7 @@
 import pytest
 import os
 import re
+import unittest.mock as mock
 from middleware.job_information_manager import job_information_manager as JIM
 from instance.config import *
 
@@ -65,6 +66,14 @@ def abstract_getting_secrets():
     return username, hostname, port
 
 
+def mock_mkdir(path, exist_ok=True):
+    return True
+
+
+def mock_apply_patch(template_path, parameters, destination_path):
+    return template_path, parameters, destination_path
+
+
 class TestJIM(object):
 
     def test_constructor_no_simulation_root(self):
@@ -124,3 +133,23 @@ class TestJIM(object):
                 patched_value = patched.group(1)
                 assert patched_value == in_val
                 break
+
+    @mock.patch('os.makedirs', side_effect=mock_mkdir)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_apply_patch', side_effect=mock_apply_patch)
+    def test_bulk_patch_path_construction(self, mock_patch, mock_mkdirs):
+        manager = JIM(job)
+
+        manager.bulk_patch()
+
+        calls = mock_patch.call_args[0]
+
+        exp_filename = os.path.basename(job['templates'][0]['source_uri'])
+
+        exp_path_1 = job['templates'][0]['source_uri']
+        exp_path_2 = '{}{}{}'.format('tmp/',
+                                     job['templates'][0]['destination_path'],
+                                     exp_filename)
+
+        assert calls[0] == exp_path_1
+        assert calls[2] == exp_path_2
