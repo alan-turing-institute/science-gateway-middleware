@@ -139,17 +139,15 @@ class TestJIM(object):
                 '_apply_patch', side_effect=mock_apply_patch)
     def test_bulk_patch_path_construction(self, mock_patch, mock_mkdirs):
         manager = JIM(job)
-
         manager.bulk_patch()
 
         calls = mock_patch.call_args[0]
 
         exp_filename = os.path.basename(job['templates'][0]['source_uri'])
-
         exp_path_1 = job['templates'][0]['source_uri']
-        exp_path_2 = '{}{}{}'.format('tmp/',
-                                     job['templates'][0]['destination_path'],
-                                     exp_filename)
+        exp_path_2 = os.path.join('tmp/',
+                                  job['templates'][0]['destination_path'],
+                                  exp_filename)
 
         assert calls[0] == exp_path_1
         assert calls[2] == exp_path_2
