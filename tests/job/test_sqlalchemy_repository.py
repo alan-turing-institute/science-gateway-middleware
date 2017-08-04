@@ -400,22 +400,15 @@ class TestJobRepositorySQLAlchemy(object):
         job_stored = session.query(Job).filter_by(id=job_orig.id).first()
         assert job_returned is None
         assert job_stored == job_orig
-    #
-    # def test_list_ids_returns_all_ids(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     # Add multiple jobs to repo
-    #     job_id_1 = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_1 = {"id": job_id_1, "parameters": {"height": 11, "width": 12,
-    #              "depth": 13}}
-    #     job_id_2 = "53835db6-87cb-4dd8-a91f-5c98100c0b82"
-    #     job_2 = {"id": job_id_2, "parameters": {"height": 21, "width": 22,
-    #              "depth": 23}}
-    #     job_id_3 = "781692cc-b71c-469e-a8e9-938c2fda89f2"
-    #     job_3 = {"id": job_id_3, "parameters": {"height": 31, "width": 32,
-    #              "depth": 33}}
-    #     repo._jobs[job_id_1] = job_1
-    #     repo._jobs[job_id_2] = job_2
-    #     repo._jobs[job_id_3] = job_3
-    #     list_expected = [key for key, val in repo._jobs.items()]
-    #     list_returned = repo.list_ids()
-    #     assert list_returned == list_expected
+
+    def test_list_ids_returns_all_ids(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        # Store multiple jobs in repo
+        job1 = new_job1()
+        job2 = new_job2()
+        session.add(job1)
+        session.add(job2)
+        session.commit()
+        list_expected = [job1.id, job2.id]
+        list_returned = repo.list_ids()
+        assert sorted(list_returned) == sorted(list_expected)
