@@ -257,6 +257,7 @@ class TestJobModels(object):
         assert job2.inputs[0] == job1.inputs[1]
         assert job1 == job2
 
+
 class TestJobRepositorySQLAlchemy(object):
     # Notes: We use dictionary.get(key) rather than dictionary[key] to ensure
     # we get None rather than KeyError if the key does not exist
@@ -379,28 +380,26 @@ class TestJobRepositorySQLAlchemy(object):
         assert job_stored_updated is None
         assert job_stored_orig == job_orig
 
-    # def test_delete_existing_job_deletes_job(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job = {"id": job_id,
-    #            "parameters": {"height": 3, "width": 4, "depth": 5}}
-    #     repo._jobs[job_id] = job
-    #     job_returned = repo.delete(job_id)
-    #     job_stored = repo._jobs.get(job_id)
-    #     assert job_returned is None
-    #     assert job_stored is None
-    #
-    # def test_delete_nonexistent_job_returns_none(self):
-    #     repo = JobRepositorySqlAlchemy()
-    #     job_id_initial = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_initial = {"id": job_id_initial, "parameters": {"height": 3,
-    #                    "width": 4, "depth": 5}}
-    #     job_id_updated = "ad460823-370c-48dd-a09f-a7564bb458f1"
-    #     repo._jobs[job_id_initial] = job_initial
-    #     job_returned = repo.delete(job_id_updated)
-    #     job_stored = repo._jobs.get(job_id_initial)
-    #     assert job_returned is None
-    #     assert job_stored == job_initial
+    def test_delete_existing_job_deletes_job(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        # Store new Job in repo
+        job_orig = new_job1()
+        repo.create(job_orig)
+        job_returned = repo.delete(job_orig.id)
+        job_stored = session.query(Job).filter_by(id=job_orig.id).first()
+        assert job_returned is None
+        assert job_stored is None
+
+    def test_delete_nonexistent_job_returns_none(self, session):
+        repo = JobRepositorySqlAlchemy(session)
+        # Store new Job in repo
+        job_orig = new_job1()
+        repo.create(job_orig)
+        job_id_updated = "ad460823-370c-48dd-a09f-a7564bb458f1"
+        job_returned = repo.delete(job_id_updated)
+        job_stored = session.query(Job).filter_by(id=job_orig.id).first()
+        assert job_returned is None
+        assert job_stored == job_orig
     #
     # def test_list_ids_returns_all_ids(self):
     #     repo = JobRepositorySqlAlchemy()
