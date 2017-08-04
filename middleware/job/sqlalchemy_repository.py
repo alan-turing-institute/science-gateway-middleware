@@ -56,5 +56,6 @@ class JobRepositorySqlAlchemy():
             return None
 
     def list_ids(self):
-        # For some reason, we get a listof tuples back with empty secodn # elements when we put Job.id in the query
+        # For some reason, we get a listof tuples back with empty second
+        # elements when we put Job.id in the query
         return [id[0] for id in self._session.query(Job.id)]
