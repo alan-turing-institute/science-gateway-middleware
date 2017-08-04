@@ -258,6 +258,11 @@ class TestJobModels(object):
         assert job1 == job2
 
 
+# TODO
+# class TestJobSchema(object):
+#     pass
+
+
 class TestJobRepositorySQLAlchemy(object):
     # Notes: We use dictionary.get(key) rather than dictionary[key] to ensure
     # we get None rather than KeyError if the key does not exist
