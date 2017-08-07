@@ -1,6 +1,7 @@
 import json
 import pytest
 import unittest
+import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
@@ -16,6 +17,10 @@ def test_client(job_repository=JobRepositoryMemory()):
 @pytest.fixture(autouse=True)
 def app_config(monkeypatch):
     monkeypatch.setenv('APP_CONFIG_FILE', '../config/travis.py')
+
+
+def mock_run_remote(script_name, remote_path, debug=True):
+    return script_name, 'err', '0'
 
 
 def response_to_json(response):
@@ -374,6 +379,116 @@ class TestJobApi(unittest.TestCase):
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_new_expected
         assert jobs.get_by_id(job_id) == job_new_expected
+
+
+class TestRunApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_run_with_valid_id(self, mock_run):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create full job
+        job = {
+            "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "templates": [
+                {
+                    "source_uri": "./resources/templates/Blue.nml",
+                    "destination_path": "project/case/"
+                }
+            ],
+            "scripts": [
+                {"source_uri": "./resources/scripts/start_job.sh",
+                 "destination_path": "project/case/", "action": "RUN"},
+                {"source_uri": "./resources/scripts/cancel_job.sh",
+                 "destination_path": "project/case/", "action": "CANCEL"},
+                {"source_uri": "./resources/scripts/progress_job.sh",
+                 "destination_path": "project/case/", "action": "PROGRESS"},
+                {"source_uri": "./resources/scripts/setup_job.sh",
+                 "destination_path": "project/case/", "action": "SETUP"}
+            ],
+            "parameters": {
+                "viscosity_properties": {
+                    "viscosity_phase_1": "42.0"
+                }
+            },
+            "inputs": []
+        }
+
+        job_id = job['id']
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        job_response = client.post("/run/{}".format(job_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'start_job.sh'
+        assert job_response.status_code == 200
+
+    def test_run_with_invalid_id(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        wrong_id = "2s3"
+
+        job_response = client.post("/run/{}".format(wrong_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/run/{0}] but did you mean '
+                                   '/run/<string:job_id> ?').format(wrong_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404
+
+    def test_run_with_no_json(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        job_response = client.post("/run/{}".format(job_id))
+
+        err_message = {'message': ('Message body could not be parsed as JSON')}
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 400
+
+    def test_run_with_invalid_json(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        broken_json = {'test': 5}
+
+        job_response = client.post("/run/{}".format(job_id),
+                                   data=json.dumps(broken_json),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Message body is not valid Job JSON')}
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 400
 
 
 class TestJobsApi(object):
