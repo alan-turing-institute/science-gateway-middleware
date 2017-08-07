@@ -129,7 +129,10 @@ class job_information_manager():
         This is the RUN behaviour for this job manager. This method ignores
         any data passed as part of the request.
         '''
-        # All we need to do is execute the run script
+        # Call setup to ensure that the latest params and files are loaded
+        self.setup()
+
+        # Now execute the run script
         return self.run_action_script('RUN')
 
     def setup(self):

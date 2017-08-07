@@ -23,6 +23,14 @@ def mock_run_remote(script_name, remote_path, debug=True):
     return script_name, 'err', '0'
 
 
+def mock_patch_all():
+    return True
+
+
+def mock_transfer_all():
+    return True
+
+
 def response_to_json(response):
     data = response.get_data(as_text=True)
     if not data:
@@ -385,7 +393,11 @@ class TestRunApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
-    def test_run_with_valid_id(self, mock_run):
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'patch_all_templates', side_effect=mock_patch_all)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'transfer_all_files', side_effect=mock_transfer_all)
+    def test_run_with_valid_id(self, mock_transfer, mock_patch, mock_run):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 
@@ -495,7 +507,11 @@ class TestSetupApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
-    def test_setup_with_valid_id(self, mock_run):
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'patch_all_templates', side_effect=mock_patch_all)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'transfer_all_files', side_effect=mock_transfer_all)
+    def test_setup_with_valid_id(self, mock_transfer, mock_patch, mock_run):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
 
