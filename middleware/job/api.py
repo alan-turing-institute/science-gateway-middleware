@@ -141,9 +141,11 @@ class SetupApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        manager = JIM(job)
-
-        return manager.setup()
+        if job:
+            manager = JIM(job)
+            return manager.setup()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
 
 
 class ProgressApi(Resource):
@@ -155,9 +157,11 @@ class ProgressApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        manager = JIM(job)
-
-        return manager.progress()
+        if job:
+            manager = JIM(job)
+            return manager.progress()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
 
 
 class CancelApi(Resource):
@@ -169,9 +173,11 @@ class CancelApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        manager = JIM(job)
-
-        return manager.cancel()
+        if job:
+            manager = JIM(job)
+            return manager.cancel()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
 
 
 class RunApi(Resource):
@@ -183,6 +189,8 @@ class RunApi(Resource):
     def post(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
-        manager = JIM(job)
-
-        return manager.run()
+        if job:
+            manager = JIM(job)
+            return manager.run()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
