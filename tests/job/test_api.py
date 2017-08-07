@@ -439,15 +439,15 @@ class TestRunApi(object):
         _ = client.post("/job", data=json.dumps(job),
                         content_type='application/json')
 
-        wrong_id = "2s3"
+        bad_id = "2s3"
 
-        job_response = client.post("/run/{}".format(wrong_id),
+        job_response = client.post("/run/{}".format(bad_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
                                    'this URI [/run/{0}] but did you mean '
-                                   '/run/<string:job_id> ?').format(wrong_id)}
+                                   '/run/<string:job_id> ?').format(bad_id)}
 
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
@@ -549,15 +549,15 @@ class TestSetupApi(object):
         _ = client.post("/job", data=json.dumps(job),
                         content_type='application/json')
 
-        wrong_id = "2s3"
+        bad_id = "2s3"
 
-        job_response = client.post("/setup/{}".format(wrong_id),
+        job_response = client.post("/setup/{}".format(bad_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
                                    'this URI [/setup/{0}] but did you mean '
-                                   '/setup/<string:job_id> ?').format(wrong_id)}
+                                   '/setup/<string:job_id> ?').format(bad_id)}
 
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
