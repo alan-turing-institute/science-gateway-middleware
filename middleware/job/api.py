@@ -1,7 +1,7 @@
 import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
-from middleware.job.schema import job_to_json
+from middleware.job.schema import job_to_json, JobSchema
 
 
 def is_valid_job_json(job):
@@ -40,20 +40,32 @@ class JobApi(Resource):
         if job_old is None:
             self.abort_if_not_found(job_id)
         # Get Job JSON if present
-        job_new = request.json
-        if job_new is None:
+        job_json = request.json
+        if job_json is None:
             abort(400, message="Message body could not be parsed as JSON")
-        # Require valid Job JSON
-        if not is_valid_job_json(job_new):
+        # Require ID field to be present in JSON body
+        job_id_json = job_json.get("id")
+        if job_id_json is None:
             abort(400, message="Message body is not valid Job JSON")
-        # Check job_id route parameter consistent with JSON data
-        job_id_json = job_new.get("id")
+        # Check job_id route parameter consistent with provided Job data
         if job_id != job_id_json:
             abort(409, message="Job ID in URL ({}) does not match job "
                                "ID in message JSON ({}).".format(job_id,
                                                                  job_id_json))
-        # Try and update Job
-        updated_job = self.jobs.update(job_new)
+        # Try and create Job object from JSON
+        try:
+            # Update existing Job from Job JSON
+            # NOTE: We really want to do a complete replace here, but we can't
+            # figure out how to get a new Job object from JSON without
+            # specifiying the session in the Schema definition, which breaks
+            # testing
+            print(job_json)
+            print(job_to_json(job_old))
+            updated_job = JobSchema().load(job_json, instance=job_old)
+            # Persist Job object to repository
+            updated_job = self.jobs.update(updated_job)
+        except:
+            abort(409, message="Could not create Job from JSON")
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_id_json))
         else:
