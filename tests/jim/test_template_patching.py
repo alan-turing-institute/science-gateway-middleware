@@ -3,6 +3,7 @@ import os
 import re
 import unittest.mock as mock
 from middleware.job_information_manager import job_information_manager as JIM
+from middleware.ssh import ssh
 from instance.config import *
 
 job = {
@@ -72,6 +73,14 @@ def mock_mkdir(path, exist_ok=True):
 
 def mock_apply_patch(template_path, parameters, destination_path):
     return template_path, parameters, destination_path
+
+
+def mock_secure_copy(full_file_path, destination_path):
+    return full_file_path, destination_path
+
+
+def mock_close():
+    return True
 
 
 class TestJIM(object):
@@ -151,3 +160,17 @@ class TestJIM(object):
 
         assert calls[0] == exp_path_1
         assert calls[2] == exp_path_2
+
+    @mock.patch('middleware.ssh.ssh.close_connection', side_effect=mock_close)
+    @mock.patch('middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
+    def test_transfer_files(self, mock_copy, mock_close):
+        manager = JIM(job2)
+        with mock.patch.object(ssh, '__init__',
+                               lambda self, *args, **kwargs: None):
+            manager.transfer_files()
+            calls = mock_copy.call_args[0]
+
+        exp_path = os.path.join(job2['inputs'][0]['simulation_root'],
+                                job2['scripts'][0]['destination_path'])
+
+        assert calls[1] == exp_path
