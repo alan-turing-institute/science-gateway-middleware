@@ -36,7 +36,7 @@ class JobRepositorySqlAlchemy():
             return None
 
     def get_by_id(self, job_id):
-        return Job.query.filter_by(id=job_id).first()
+        return self._session.query(Job).filter_by(id=job_id).first()
 
     def update(self, job):
         job_id = job.id
