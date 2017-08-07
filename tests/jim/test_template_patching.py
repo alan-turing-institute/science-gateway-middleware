@@ -171,11 +171,11 @@ class TestJIM(object):
 
     @mock.patch('middleware.ssh.ssh.close_connection', side_effect=mock_close)
     @mock.patch('middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
-    def test_transfer_files(self, mock_copy, mock_close):
+    def test_transfer_all_files(self, mock_copy, mock_close):
         manager = JIM(job2)
         with mock.patch.object(ssh, '__init__',
                                lambda self, *args, **kwargs: None):
-            manager.transfer_files()
+            manager.transfer_all_files()
             calls = mock_copy.call_args[0]
 
         exp_path = os.path.join(job2['inputs'][0]['simulation_root'],

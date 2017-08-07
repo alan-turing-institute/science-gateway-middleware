@@ -69,7 +69,7 @@ class job_information_manager():
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
 
-    def transfer_files(self):
+    def transfer_all_files(self):
         '''
         Method to copy all needed files to the cluster using a single
         ssh connection.
@@ -142,7 +142,7 @@ class job_information_manager():
         self.patch_all_templates()
 
         # COPY EVERYTHING
-        self.transfer_files()
+        self.transfer_all_files()
 
         # EXECUTE SETUP SCRIPT
         return self.run_action_script('SETUP')
