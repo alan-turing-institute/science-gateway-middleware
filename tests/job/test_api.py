@@ -601,6 +601,151 @@ class TestSetupApi(object):
         assert job_response.status_code == 400
 
 
+class TestCancelApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_cancel_with_valid_id(self, mock_run):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create full job
+        job = {
+            "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "templates": [
+                {
+                    "source_uri": "./resources/templates/Blue.nml",
+                    "destination_path": "project/case/"
+                }
+            ],
+            "scripts": [
+                {"source_uri": "./resources/scripts/start_job.sh",
+                 "destination_path": "project/case/", "action": "RUN"},
+                {"source_uri": "./resources/scripts/cancel_job.sh",
+                 "destination_path": "project/case/", "action": "CANCEL"},
+                {"source_uri": "./resources/scripts/progress_job.sh",
+                 "destination_path": "project/case/", "action": "PROGRESS"},
+                {"source_uri": "./resources/scripts/setup_job.sh",
+                 "destination_path": "project/case/", "action": "SETUP"}
+            ],
+            "parameters": {
+                "viscosity_properties": {
+                    "viscosity_phase_1": "42.0"
+                }
+            },
+            "inputs": []
+        }
+
+        job_id = job['id']
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        job_response = client.post("/cancel/{}".format(job_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'cancel_job.sh'
+        assert job_response.status_code == 200
+
+    def test_cancel_with_invalid_id(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        bad_id = "2s3"
+
+        job_response = client.post("/cancel/{}".format(bad_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/cancel/{0}] but did you mean '
+                                   '/cancel/<string:job_id> ?').format(bad_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404
+
+
+class TestProgressApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_progress_with_valid_id(self, mock_run):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create full job
+        job = {
+            "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "templates": [
+                {
+                    "source_uri": "./resources/templates/Blue.nml",
+                    "destination_path": "project/case/"
+                }
+            ],
+            "scripts": [
+                {"source_uri": "./resources/scripts/start_job.sh",
+                 "destination_path": "project/case/", "action": "RUN"},
+                {"source_uri": "./resources/scripts/cancel_job.sh",
+                 "destination_path": "project/case/", "action": "CANCEL"},
+                {"source_uri": "./resources/scripts/progress_job.sh",
+                 "destination_path": "project/case/", "action": "PROGRESS"},
+                {"source_uri": "./resources/scripts/setup_job.sh",
+                 "destination_path": "project/case/", "action": "SETUP"}
+            ],
+            "parameters": {
+                "viscosity_properties": {
+                    "viscosity_phase_1": "42.0"
+                }
+            },
+            "inputs": []
+        }
+
+        job_id = job['id']
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        job_response = client.post("/progress/{}".format(job_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'progress_job.sh'
+        assert job_response.status_code == 200
+
+    def test_cancel_with_invalid_id(self):
+        jobs = JobRepositoryMemory()
+        client = test_client(jobs)
+
+        # Create skeleton job
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job = {"id": job_id, "parameters": {"height": 3}}
+
+        _ = client.post("/job", data=json.dumps(job),
+                        content_type='application/json')
+
+        bad_id = "2s3"
+
+        job_response = client.post("/progress/{}".format(bad_id),
+                                   data=json.dumps(job),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/progress/{0}] but did '
+                                   'you mean /progress/'
+                                   '<string:job_id> ?').format(bad_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404
+
+
 class TestJobsApi(object):
 
     # === GET tests (LIST) ===
