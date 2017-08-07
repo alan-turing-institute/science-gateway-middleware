@@ -76,7 +76,9 @@ class job_information_manager():
         '''
         connection = ssh(self.hostname, self.username, self.port, debug=True)
 
-        for file_list in [self.script_list, self.template_list]:
+        all_files = [self.script_list, self.template_list, self.inputs_list]
+
+        for file_list in all_files:
             for file_object in self.script_list:
                 file_full_path = file_object["source_uri"]
                 dest_path = os.path.join(self.simulation_root,
