@@ -10,11 +10,17 @@ class Job(db.Model):
     scripts = db.relationship("Script", back_populates="job")
     inputs = db.relationship("Input", back_populates="job")
 
-    def __init__(self, id=None):
+    def __init__(self, id=None, user=None, parameters=[], templates=[],
+                 scripts=[], inputs=[]):
         if id is not None:
             self.id = id
         else:
             self.id = str(uuid4())
+        self.user = user
+        self.parameters = parameters
+        self.templates = templates
+        self.scripts = scripts
+        self.inputs = inputs
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
