@@ -99,7 +99,7 @@ def new_job2():
     return job
 
 
-class TestJobModels(object):
+class TestJobOrmPersistance(object):
 
     def test_single_job_is_fully_stored_in_orm(self, session):
         # Store new Job
@@ -141,121 +141,6 @@ class TestJobModels(object):
         # each other
         assert job1_db == job1_orig
         assert job2_db == job2_orig
-
-    def test_fully_identical_jobs_evaluate_as_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        assert job1 == job2
-
-    def test_full_jobs_differing_only_by_id_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.id = "ad460823-370c-48dd-a09f-a7564bb458f1"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_user_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.user = ""
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_param_name_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.parameters[0].name = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_param_value_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.parameters[0].value = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_swapped_param_order_equal(self):
-        # Ordering of parameters should not matter for equivalence
-        job1 = new_job1()
-        job2 = new_job1()
-        temp = job2.parameters[0]
-        job2.parameters[0] = job2.parameters[1]
-        job2.parameters[1] = temp
-        assert job2.parameters[1] == job1.parameters[0]
-        assert job2.parameters[0] == job1.parameters[1]
-        assert job1 == job2
-
-    def test_full_jobs_differing_only_by_template_source_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.templates[0].source_uri = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_template_dest_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.templates[0].destination_path = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_swapped_template_order_equal(self):
-        # Ordering of parameters should not matter for equivalence
-        job1 = new_job1()
-        job2 = new_job1()
-        temp = job2.templates[0]
-        job2.templates[0] = job2.templates[1]
-        job2.templates[1] = temp
-        assert job2.templates[1] == job1.templates[0]
-        assert job2.templates[0] == job1.templates[1]
-        assert job1 == job2
-
-    def test_full_jobs_differing_only_by_script_command_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.scripts[0].command = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_script_source_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.scripts[0].source_uri = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_script_dest_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.scripts[0].destination_path = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_swapped_script_order_equal(self):
-        # Ordering of parameters should not matter for equivalence
-        job1 = new_job1()
-        job2 = new_job1()
-        temp = job2.scripts[0]
-        job2.scripts[0] = job2.scripts[1]
-        job2.scripts[1] = temp
-        assert job2.scripts[1] == job1.scripts[0]
-        assert job2.scripts[0] == job1.scripts[1]
-        assert job1 == job2
-
-    def test_full_jobs_differing_only_by_input_source_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.inputs[0].source_uri = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_input_dest_not_equal(self):
-        job1 = new_job1()
-        job2 = new_job1()
-        job2.inputs[0].destination_path = "changed"
-        assert job1 != job2
-
-    def test_full_jobs_differing_only_by_swapped_input_order_equal(self):
-        # Ordering of parameters should not matter for equivalence
-        job1 = new_job1()
-        job2 = new_job1()
-        temp = job2.inputs[0]
-        job2.inputs[0] = job2.inputs[1]
-        job2.inputs[1] = temp
-        assert job2.inputs[1] == job1.inputs[0]
-        assert job2.inputs[0] == job1.inputs[1]
-        assert job1 == job2
 
 
 # TODO
