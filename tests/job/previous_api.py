@@ -301,8 +301,9 @@ class TestJobApi(unittest.TestCase):
                    7, "green": "low", "depth": None}}
         client = test_client(jobs)
         job_response = client.patch(
-                        "/job/{}".format(job_id_url), data=json.dumps(job_new),
-                        content_type='application/merge-patch+json')
+            "/job/{}".format(job_id_url),
+            data=json.dumps(job_new),
+            content_type='application/merge-patch+json')
         error_message = {"message": "Job ID in URL ({}) does not match job "
                          "ID in message JSON ({}).".format(job_id_url,
                                                            job_id_json)}
@@ -324,9 +325,9 @@ class TestJobApi(unittest.TestCase):
                             "width": 4, "green": "low"}}
         client = test_client(jobs)
         job_response = client.patch(
-                        "/job/{}".format(job_id),
-                        data=json.dumps(job_patch),
-                        content_type='application/merge-patch+json')
+            "/job/{}".format(job_id),
+            data=json.dumps(job_patch),
+            content_type='application/merge-patch+json')
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_new_expected
         assert jobs.get_by_id(job_id) == job_new_expected
