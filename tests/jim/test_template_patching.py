@@ -37,10 +37,14 @@ job2 = {
         }
     ],
     "scripts": [
-        {
-            "source_uri": "./resources/scripts/start_job.sh",
-            "destination_path": "project/case/"
-        }
+        {"source_uri": "./resources/scripts/start_job.sh",
+         "destination_path": "project/case/", "action": "RUN"},
+        {"source_uri": "./resources/scripts/cancel_job.sh",
+         "destination_path": "project/case/", "action": "CANCEL"},
+        {"source_uri": "./resources/scripts/progress_job.sh",
+         "destination_path": "project/case/", "action": "PROGRESS"},
+        {"source_uri": "./resources/scripts/setup_job.sh",
+         "destination_path": "project/case/", "action": "SETUP"}
     ],
     "parameters": {
         "viscosity_properties": {
@@ -81,6 +85,10 @@ def mock_secure_copy(full_file_path, destination_path):
 
 def mock_close():
     return True
+
+
+def mock_run_remote(script_name, remote_path, debug=True):
+    return script_name, 'err', '0'
 
 
 class TestJIM(object):
@@ -174,3 +182,32 @@ class TestJIM(object):
                                 job2['scripts'][0]['destination_path'])
 
         assert calls[1] == exp_path
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_run_action_script_valid_verbs(self, mock_run):
+        # Test that the 4 verbs work
+        for verb in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS']:
+
+            manager = JIM(job2)
+            message, code = manager.run_action_script(verb)
+
+            first_arg = mock_run.call_args[0][0]
+
+            exp_message = {'stdout': '{}'.format(first_arg),
+                           'stderr': 'err', 'exit_code': '0'}
+
+            assert code == 200
+            assert message == exp_message
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_run_action_script_invalid_verb(self, mock_run):
+        action = 'JUMP'
+        manager = JIM(job2)
+        message, code = manager.run_action_script(action)
+
+        exp_message = {'message': '{} script not found'.format(action)}
+
+        assert code == 400
+        assert message == exp_message
