@@ -29,7 +29,12 @@ def create_app(config_name, job_repository):
         db.init_app(app)
         ma.init_app(app)
         db.create_all(app=app)
-        job_repository._session = db.session
+        # If the provided repository has not had a session specified, then
+        # use the app db session.
+        # NOTE: We don't overwrite any existing specified session as we want to
+        # be able to pass in a session during testing
+        if job_repository._session is None:
+            job_repository._session = db.session
 
     app._job_repository = job_repository
 
