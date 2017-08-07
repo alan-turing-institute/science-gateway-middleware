@@ -51,24 +51,26 @@ job2 = {
             "viscosity_phase_1": "42.0"
         }
     },
-    "inputs": [{"simulation_root": "/home/"}]
+    "inputs": []
 }
 
 
 def abstract_getting_secrets():
     # This block allows us to test against local secrets or the
     # defaults generated when running our CI tests.
-    secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT']
+    secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT']
     if all(x in globals() for x in secrets):
         username = SSH_USR
         hostname = SSH_HOSTNAME
         port = SSH_PORT
+        simulation_root = SIM_ROOT
     else:
         username = 'test_user'
         hostname = 'test_host'
         port = 22
+        simulation_root = '/home/'
 
-    return username, hostname, port
+    return username, hostname, port, simulation_root
 
 
 def mock_mkdir(path, exist_ok=True):
@@ -95,7 +97,7 @@ class TestJIM(object):
 
     def test_constructor_no_simulation_root(self):
 
-        username, hostname, port = abstract_getting_secrets()
+        username, hostname, port, simulation_root = abstract_getting_secrets()
 
         # Create a manager
         jim = JIM(job)
@@ -108,11 +110,11 @@ class TestJIM(object):
         assert jim.parameter_patch == job['parameters']
         assert jim.script_list == job['scripts']
         assert jim.inputs_list == job['inputs']
-        assert jim.simulation_root == ''
+        assert jim.simulation_root == simulation_root
 
     def test_constructor_with_simulation_root(self):
 
-        username, hostname, port = abstract_getting_secrets()
+        username, hostname, port, simulation_root = abstract_getting_secrets()
 
         # Create a manager
         jim = JIM(job2)
@@ -125,7 +127,7 @@ class TestJIM(object):
         assert jim.parameter_patch == job2['parameters']
         assert jim.script_list == job2['scripts']
         assert jim.inputs_list == job2['inputs']
-        assert jim.simulation_root == '/home/'
+        assert jim.simulation_root == simulation_root
 
     def test_apply_patch(self, tmpdir):
         manager = JIM(job)
@@ -172,13 +174,14 @@ class TestJIM(object):
     @mock.patch('middleware.ssh.ssh.close_connection', side_effect=mock_close)
     @mock.patch('middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
     def test_transfer_all_files(self, mock_copy, mock_close):
+        username, hostname, port, simulation_root = abstract_getting_secrets()
         manager = JIM(job2)
         with mock.patch.object(ssh, '__init__',
                                lambda self, *args, **kwargs: None):
             manager.transfer_all_files()
             calls = mock_copy.call_args[0]
 
-        exp_path = os.path.join(job2['inputs'][0]['simulation_root'],
+        exp_path = os.path.join(simulation_root,
                                 job2['scripts'][0]['destination_path'])
 
         assert calls[1] == exp_path

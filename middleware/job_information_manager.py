@@ -20,15 +20,17 @@ class job_information_manager():
         '''
         # Gathering the needed info from our secrets file. If the info is not
         # there, populate the instance variables with dummy data.
-        secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT']
+        secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT']
         if all(x in globals() for x in secrets):
             self.username = SSH_USR
             self.hostname = SSH_HOSTNAME
             self.port = SSH_PORT
+            self.simulation_root = SIM_ROOT
         else:
             self.username = 'test_user'
             self.hostname = 'test_host'
             self.port = 22
+            self.simulation_root = '/home/'
 
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
@@ -38,11 +40,6 @@ class job_information_manager():
         self.parameter_patch = job['parameters']
         self.script_list = job['scripts']
         self.inputs_list = job['inputs']
-        self.simulation_root = ''
-
-        for inputs in self.inputs_list:
-            if inputs.get('simulation_root'):
-                self.simulation_root = inputs['simulation_root']
 
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
