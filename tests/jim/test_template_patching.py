@@ -154,7 +154,7 @@ class TestJIM(object):
 
         exp_filename = os.path.basename(job['templates'][0]['source_uri'])
         exp_path_1 = job['templates'][0]['source_uri']
-        exp_path_2 = os.path.join('tmp/',
+        exp_path_2 = os.path.join('tmp',
                                   job['templates'][0]['destination_path'],
                                   exp_filename)
 
