@@ -140,6 +140,14 @@ class SetupApi(Resource):
 
     def post(self, job_id):
 
+        updated_job = request.json
+
+        if updated_job is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(updated_job):
+            abort(400, message="Message body is not valid Job JSON")
+
         job = self.jobs.get_by_id(job_id)
         if job:
             manager = JIM(job)
@@ -187,6 +195,14 @@ class RunApi(Resource):
         self.jobs = kwargs['job_repository']
 
     def post(self, job_id):
+
+        updated_job = request.json
+
+        if updated_job is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(updated_job):
+            abort(400, message="Message body is not valid Job JSON")
 
         job = self.jobs.get_by_id(job_id)
         if job:
