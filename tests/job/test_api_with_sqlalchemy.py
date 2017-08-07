@@ -1,22 +1,18 @@
 import json
 import pytest
 from flask import Flask
-
-import unittest
-import unittest.mock as mock
 from werkzeug.exceptions import NotFound
-
 from middleware.factory import create_app
 from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.database import db as _db
 from middleware.job.models import Job, Parameter, Template, Script, Input
-
 from middleware.job.schema import job_to_json
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
+
 
 @pytest.fixture
 def test_client(job_repository=JobRepositoryMemory()):
@@ -54,11 +50,6 @@ def db(app, request):
     return _db
 
 
-
-
-# create a db connection that persists
-# for the entire pytest function scope
-
 @pytest.fixture(scope='function')
 def session(db, request):
     """Function-wide SQLAlchemy session for each test"""
@@ -77,7 +68,6 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
-
 
 
 def response_to_json(response):
@@ -112,7 +102,6 @@ def new_job1():
     return job
 
 
-
 class TestJobApi(object):
 
     def test_abort_if_not_found_throws_notfound_exception(self, session):
@@ -127,9 +116,9 @@ class TestJobApi(object):
         jobs = JobRepositorySqlAlchemy(session)
         client = test_client(jobs)
 
-        job1 = new_job1() # create a job object
-        job1_id = job1.id # extract its id
-        job1_json = job_to_json(job1) # store json representation
+        job1 = new_job1()  # create a job object
+        job1_id = job1.id  # extract its id
+        job1_json = job_to_json(job1)  # store json representation
 
         # add job to the database via the api
         jobs.create(job1)
@@ -178,7 +167,8 @@ class TestJobApi(object):
     #     job_response = client.put("/job/{}".format(job_id),
     #                               data=json.dumps(job),
     #                               content_type='application/json')
-    #     error_message = {"message": "Message body could not be parsed as JSON"}
+    #     error_message = {"message": \
+    #         "Message body could not be parsed as JSON"}
     #     assert job_response.status_code == 400
     #     assert response_to_json(job_response) == error_message
     #
@@ -191,10 +181,12 @@ class TestJobApi(object):
     #     invalid_json = "{key-with-no-value}"
     #     client = test_client(jobs)
     #     # We don't add content_type='application/json' because, if we do the
-    #     # framework catches invalid JSON before it gets to our response handler
+    #     # framework catches invalid JSON before it gets to our response
+    #     # handler
     #     job_response = client.put("/job/{}".format(job_id),
     #                               data=invalid_json)
-    #     error_message = {"message": "Message body could not be parsed as JSON"}
+    #     error_message = {"message": \
+    #         "Message body could not be parsed as JSON"}
     #     assert job_response.status_code == 400
     #     assert response_to_json(job_response) == error_message
     #
@@ -280,7 +272,7 @@ class TestJobApi(object):
     #     assert job_response.status_code == 404
     #     assert response_to_json(job_response) == error_message
     #
-    # def test_delete_with_existing_job_id_returns_new_job_with_204_status(self):
+    # def test_delete_for_existing_job_id_returns_none_with_204_status(self):
     #     jobs = JobRepositoryMemory()
     #     # Create job
     #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
@@ -351,7 +343,8 @@ class TestJobApi(object):
     #     job_response = client.patch("/job/{}".format(job_id),
     #                                 data=json.dumps(job),
     #                                 content_type='application/json-patch+json')
-    #     error_message = {"message": "Message body could not be parsed as JSON"}
+    #     error_message = {"message": \
+    #         "Message body could not be parsed as JSON"}
     #     assert job_response.status_code == 400
     #     assert response_to_json(job_response) == error_message
     #
@@ -364,14 +357,16 @@ class TestJobApi(object):
     #     invalid_json = "{key-with-no-value}"
     #     client = test_client(jobs)
     #     # We don't add content_type='application/json' because, if we do the
-    #     # framework catches invalid JSON before it gets to our response handler
+    #     # framework catches invalid JSON before it gets to our response
+    #     # handler
     #     job_response = client.patch("/job/{}".format(job_id),
     #                                 data=invalid_json)
-    #     error_message = {"message": "Message body could not be parsed as JSON"}
+    #     error_message = {"message": \
+    #         "Message body could not be parsed as JSON"}
     #     assert job_response.status_code == 400
     #     assert response_to_json(job_response) == error_message
     #
-    # def test_patch_with_nonexistent_job_id_returns_error_with_404_status(self):
+    # def test_patch_for_nonexistent_job_id_returns_error_with_404(self):
     #     jobs = JobRepositoryMemory()
     #     client = test_client(jobs)
     #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
@@ -380,7 +375,7 @@ class TestJobApi(object):
     #     assert job_response.status_code == 404
     #     assert response_to_json(job_response) == error_message
     #
-    # def test_patch_with_mismatched_job_id_returns_error_with_409_status(self):
+    # def test_patch_with_mismatched_job_id_returns_error_with_409(self):
     #     jobs = JobRepositoryMemory()
     #     # Create job
     #     job_id_url = "d769843b-6f37-4939-96c7-c382c3e74b46"
@@ -392,7 +387,8 @@ class TestJobApi(object):
     #                7, "green": "low", "depth": None}}
     #     client = test_client(jobs)
     #     job_response = client.patch(
-    #                     "/job/{}".format(job_id_url), data=json.dumps(job_new),
+    #                     "/job/{}".format(job_id_url),
+    #                     data=json.dumps(job_new),
     #                     content_type='application/merge-patch+json')
     #     error_message = {"message": "Job ID in URL ({}) does not match job "
     #                      "ID in message JSON ({}).".format(job_id_url,
@@ -402,7 +398,7 @@ class TestJobApi(object):
     #     assert jobs.get_by_id(job_id_url) == job_existing
     #     assert jobs.get_by_id(job_id_json) is None
     #
-    # def test_patch_with_existing_job_id_returns_new_job_with_200_status(self):
+    # def test_patch_with_existing_job_id_returns_new_job_with_200(self):
     #     jobs = JobRepositoryMemory()
     #     # Create job
     #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
@@ -453,7 +449,7 @@ class TestJobApi(object):
 #         assert job_response.status_code == 200
 #         # Both lists of dictionaries need to have same sort order to
 #         # successfully compare
-#         assert response_to_json(job_response).sort(key=lambda x: x["id"]) == \
+#         assert response_to_json(job_response).sort(key=lambda x: x["id"]) ==\
 #             expected_response.sort(key=lambda x: x["id"])
 #
 #     # === POST tests (CREATE) ===
@@ -493,7 +489,8 @@ class TestJobApi(object):
 #         client = test_client(jobs)
 #         job_response = client.post("/job", data=json.dumps(None),
 #                                    content_type='application/json')
-#         error_message = {"message": "Message body could not be parsed as JSON"}
+#         error_message = {"message": \
+#             "Message body could not be parsed as JSON"}
 #         assert job_response.status_code == 400
 #         assert response_to_json(job_response) == error_message
 #         assert len(jobs._jobs) == 0
@@ -503,9 +500,11 @@ class TestJobApi(object):
 #         invalid_json = "{key-with-no-value}"
 #         client = test_client(jobs)
 #         # We don't add content_type='application/json' because, if we do the
-#         # framework catches invalid JSON before it gets to our response handler
+#         # framework catches invalid JSON before it gets to our response
+#         # handler
 #         job_response = client.post("/job", data=invalid_json)
-#         error_message = {"message": "Message body could not be parsed as JSON"}
+#         error_message = {"message": \
+#              "Message body could not be parsed as JSON"}
 #         assert job_response.status_code == 400
 #         assert response_to_json(job_response) == error_message
 #
