@@ -154,9 +154,9 @@ class TestJIM(object):
     @mock.patch('os.makedirs', side_effect=mock_mkdir)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_apply_patch', side_effect=mock_apply_patch)
-    def test_bulk_patch_path_construction(self, mock_patch, mock_mkdirs):
+    def test_patch_templates_path_construction(self, mock_patch, mock_mkdirs):
         manager = JIM(job)
-        manager.bulk_patch()
+        manager.patch_all_templates()
 
         calls = mock_patch.call_args[0]
 

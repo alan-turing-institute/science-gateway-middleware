@@ -47,13 +47,13 @@ class job_information_manager():
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
         Method to apply a patch based on a supplied template file.
-        Access via the bulk_patch method.
+        Access via the patch_all_templates method.
         '''
         template = Template(filename=template_path)
         with open(destination_path, "w") as f:
             f.write(template.render(parameters=parameters))
 
-    def bulk_patch(self):
+    def patch_all_templates(self):
         '''
         Wrapper around the _apply_patch method which patches all files in
         self.template_list
@@ -139,7 +139,7 @@ class job_information_manager():
         any data passed as part of the request.
         '''
         # PATCH EVERYTHING
-        self.bulk_patch()
+        self.patch_all_templates()
 
         # COPY EVERYTHING
         self.transfer_files()
