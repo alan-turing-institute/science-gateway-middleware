@@ -56,7 +56,7 @@ def session(db, request):
     connection = db.engine.connect()
     transaction = connection.begin()
 
-    options = dict(bind=connection, binds={})
+    options = dict(bind=connection, binds={}, expire_on_commit=True)
     session = db.create_scoped_session(options=options)
 
     db.session = session
@@ -102,6 +102,27 @@ def new_job1():
     return job
 
 
+def new_job2():
+    job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
+    job = Job(id=job_id)
+    job.user = "j2user"
+    job.parameters.append(Parameter(name="j2p1name", value="j2p1value"))
+    job.parameters.append(Parameter(name="j2p2name", value="j2p2value"))
+    job.templates.append(Template(source_uri="j2t1source",
+                                  destination_path="j2t1_dest"))
+    job.templates.append(Template(source_uri="j2t2source",
+                                  destination_path="j2t2_dest"))
+    job.scripts.append(Script(command="j2s1command", source_uri="j2s1source",
+                              destination_path="j2s1_dest"))
+    job.scripts.append(Script(command="j2s2command", source_uri="j2s2source",
+                              destination_path="j2s2_dest"))
+    job.inputs.append(Input(source_uri="j2i1source",
+                            destination_path="j2i1_dest"))
+    job.inputs.append(Input(source_uri="j2i2source",
+                            destination_path="j2i2_dest"))
+    return job
+
+
 class TestJobApi(object):
 
     def test_abort_if_not_found_throws_notfound_exception(self, session):
@@ -112,7 +133,7 @@ class TestJobApi(object):
             api.abort_if_not_found(job_id)
 
     # === GET tests (READ) ===
-    def test_get_for_existing_job_returns_job_with_200_status(self, session):
+    def test_get_for_existing_job_returns_job_with_200(self, session):
         jobs = JobRepositorySqlAlchemy(session)
         client = test_client(jobs)
 
@@ -129,115 +150,111 @@ class TestJobApi(object):
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job1_json
 
-    # def test_get_for_nonexistent_job_returns_error_with_404_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     client = test_client(jobs)
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_response = client.get("/job/{}".format(job_id))
-    #     error_message = {"message": "Job {} not found".format(job_id)}
-    #     assert job_response.status_code == 404
-    #     assert response_to_json(job_response) == error_message
-    #
-    # def test_get_with_no_job_id_returns_error_with_404_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     client = test_client(jobs)
-    #     job_response = client.get("/job/")
-    #     assert job_response.status_code == 404
-    #     # No content check as we are expecting the standard 404 error message
-    #     # TODO: Get the 404 response defined for the app and compare it here
-    #
-    # # === PUT tests (UPDATE) ===
-    # def test_put_with_no_job_id_returns_error_with_404_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     client = test_client(jobs)
-    #     job_response = client.put("/job/")
-    #     assert job_response.status_code == 404
-    #     # No content check as we are expecting the standard 404 error message
-    #     # TODO: Get the 404 response defined for the app and compare it here
-    #     assert len(jobs._jobs) == 0
-    #
-    # def test_put_with_empty_body_returns_error_with_400_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job = {"id": job_id, "parameters": {"height": 3,
-    #            "width": 4, "depth": 5}}
-    #     jobs.create(job)
-    #     job = None
-    #     client = test_client(jobs)
-    #     job_response = client.put("/job/{}".format(job_id),
-    #                               data=json.dumps(job),
-    #                               content_type='application/json')
-    #     error_message = {"message": \
-    #         "Message body could not be parsed as JSON"}
-    #     assert job_response.status_code == 400
-    #     assert response_to_json(job_response) == error_message
-    #
-    # def test_put_with_nonjson_body_returns_error_with_400_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job = {"id": job_id, "parameters": {"height": 3,
-    #            "width": 4, "depth": 5}}
-    #     jobs.create(job)
-    #     invalid_json = "{key-with-no-value}"
-    #     client = test_client(jobs)
-    #     # We don't add content_type='application/json' because, if we do the
-    #     # framework catches invalid JSON before it gets to our response
-    #     # handler
-    #     job_response = client.put("/job/{}".format(job_id),
-    #                               data=invalid_json)
-    #     error_message = {"message": \
-    #         "Message body could not be parsed as JSON"}
-    #     assert job_response.status_code == 400
-    #     assert response_to_json(job_response) == error_message
-    #
-    # def test_put_with_mismatched_job_id_returns_error_with_409_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     # Create job
-    #     job_id_url = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_existing = {"id": job_id_url, "parameters": {"height": 3,
-    #                     "width": 4, "depth": 5}}
-    #     jobs.create(job_existing)
-    #     job_id_json = "59540b31-0454-4875-a00f-94eb4d81a09c"
-    #     job_new = {"id": job_id_json, "parameters": {"blue":
-    #                "high", "green": "low"}}
-    #     client = test_client(jobs)
-    #     job_response = client.put("/job/{}".format(job_id_url),
-    #                               data=json.dumps(job_new),
-    #                               content_type='application/json')
-    #     error_message = {"message": "Job ID in URL ({}) does not match job "
-    #                      "ID in message JSON ({}).".format(job_id_url,
-    #                                                        job_id_json)}
-    #     assert job_response.status_code == 409
-    #     assert response_to_json(job_response) == error_message
-    #     assert jobs.get_by_id(job_id_url) == job_existing
-    #     assert jobs.get_by_id(job_id_json) is None
-    #
-    # def test_put_with_nonexistent_job_id_returns_error_with_404_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     client = test_client(jobs)
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_response = client.put("/job/{}".format(job_id))
-    #     error_message = {"message": "Job {} not found".format(job_id)}
-    #     assert job_response.status_code == 404
-    #     assert response_to_json(job_response) == error_message
-    #
-    # def test_put_with_existing_job_id_returns_new_job_with_200_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     # Create job
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_original = {"id": job_id, "parameters": {"height": 3,
-    #                     "width": 4, "depth": 5}}
-    #     jobs.create(job_original)
-    #     job_new = {"id": job_id, "parameters": {"blue":
-    #                "high", "green": "low"}}
-    #     client = test_client(jobs)
-    #     job_response = client.put("/job/{}".format(job_id),
-    #                               data=json.dumps(job_new),
-    #                               content_type='application/json')
-    #     assert job_response.status_code == 200
-    #     assert response_to_json(job_response) == job_new
-    #     assert jobs.get_by_id(job_id) == job_new
-    #
+    def test_get_for_nonexistent_job_returns_error_with_404(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(jobs)
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_response = client.get("/job/{}".format(job_id))
+        error_message = {"message": "Job {} not found".format(job_id)}
+        assert job_response.status_code == 404
+        assert response_to_json(job_response) == error_message
+
+    def test_get_with_no_job_id_returns_error_with_404(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(jobs)
+        job_response = client.get("/job/")
+        assert job_response.status_code == 404
+        # No content check as we are expecting the standard 404 error message
+        # TODO: Get the 404 response defined for the app and compare it here
+
+    # === PUT tests (UPDATE) ===
+    def test_put_with_no_job_id_returns_error_with_404(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(jobs)
+        job_response = client.put("/job/")
+        assert job_response.status_code == 404
+        # No content check as we are expecting the standard 404 error message
+        # TODO: Get the 404 response defined for the app and compare it here
+        assert len(jobs.list_ids()) == 0
+
+    def test_put_with_empty_body_returns_error_with_400(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        job = new_job1()
+        jobs.create(job)
+        job_query = None
+        client = test_client(jobs)
+        job_response = client.put("/job/{}".format(job.id),
+                                  data=json.dumps(job_query),
+                                  content_type='application/json')
+        error_message = {"message":
+                         "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_put_with_nonjson_body_returns_error_with_400(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        job = new_job1()
+        jobs.create(job)
+        invalid_json = "{key-with-no-value}"
+        client = test_client(jobs)
+        # We don't add content_type='application/json' because, if we do the
+        # framework catches invalid JSON before it gets to our response
+        # handler
+        job_response = client.put("/job/{}".format(job.id),
+                                  data=invalid_json)
+        error_message = {"message":
+                         "Message body could not be parsed as JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
+
+    def test_put_with_mismatched_job_id_returns_error_with_409(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        job_existing = new_job1()
+        jobs.create(job_existing)
+        client = test_client(jobs)
+        # Use first job ID for URL, but provide a second, new job in JSON body
+        job_id_url = job_existing.id
+        job_new = new_job2()
+        job_json = job_new
+        job_id_json = job_json.id
+        job_response = client.put("/job/{}".format(job_id_url),
+                                  data=json.dumps(job_to_json(job_json)),
+                                  content_type='application/json')
+        job_existing == job_existing
+        error_message = {"message": "Job ID in URL ({}) does not match job "
+                         "ID in message JSON ({}).".format(job_id_url,
+                                                           job_id_json)}
+        assert job_response.status_code == 409
+        assert response_to_json(job_response) == error_message
+        assert jobs.get_by_id(job_id_url) == job_existing
+        assert jobs.get_by_id(job_id_json) is None
+
+    def test_put_with_nonexistent_job_id_returns_error_with_404(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(jobs)
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_response = client.put("/job/{}".format(job_id))
+        error_message = {"message": "Job {} not found".format(job_id)}
+        assert job_response.status_code == 404
+        assert response_to_json(job_response) == error_message
+
+    def test_put_with_existing_job_id_returns_new_job_with_200(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        # Create job
+        job_original = new_job1()
+        job_id_orig = job_original.id
+        jobs.create(job_original)
+        job_new = new_job2()
+        job_new.id = job_id_orig
+        client = test_client(jobs)
+        job_response = client.put("/job/{}".format(job_id_orig),
+                                  data=json.dumps(job_to_json(job_new)),
+                                  content_type='application/json')
+        print(response_to_json(job_response))
+        assert job_response.status_code == 200
+        assert response_to_json(job_response) == job_new
+        assert jobs.get_by_id(job_id_orig) == job_new
+
     # def test_put_with_invalid_job_json_returns_error_with_400_status(self):
     #     jobs = JobRepositoryMemory()
     #     # Create job
@@ -253,7 +270,7 @@ class TestJobApi(object):
     #     error_message = {"message": "Message body is not valid Job JSON"}
     #     assert job_response.status_code == 400
     #     assert response_to_json(job_response) == error_message
-    #
+
     # # === DELETE tests (DELETE) ===
     # def test_delete_with_no_job_id_returns_error_with_404_status(self):
     #     jobs = JobRepositoryMemory()
