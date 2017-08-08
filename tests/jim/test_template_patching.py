@@ -161,8 +161,12 @@ class TestJIM(object):
         manager = JIM(job)
 
         manager.patch_all_templates()
-        expected = [{'source_uri': 'tmp/project/case/Blue.nml',
-                     'destination_path': 'project/case/'}]
+
+        dest = job['templates'][0]['destination_path']
+        src = os.path.join('tmp', dest,
+                           os.path.basename(job['templates'][0]['source_uri']))
+
+        expected = [{'source_uri': src, 'destination_path': dest}]
         assert manager.patched_templates == expected
 
     @mock.patch('os.makedirs', side_effect=mock_mkdir)
