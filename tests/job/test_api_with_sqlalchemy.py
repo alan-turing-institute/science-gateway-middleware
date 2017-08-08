@@ -263,8 +263,8 @@ class TestJobApi(object):
         client = test_client(jobs)
         invalid_job = {"no-id-field": "valid-json"}
         job_response = client.put("/job/{}".format(job_id_orig),
-                                    data=json.dumps(invalid_job),
-                                    content_type='application/json')
+                                  data=json.dumps(invalid_job),
+                                  content_type='application/json')
         error_message = {"message": "Message body is not valid Job JSON"}
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
@@ -278,28 +278,28 @@ class TestJobApi(object):
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
 
-    # def test_delete_with_nonexistent_job_returns_error_with_404_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     client = test_client(jobs)
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job_response = client.delete("/job/{}".format(job_id))
-    #     error_message = {"message": "Job {} not found".format(job_id)}
-    #     assert job_response.status_code == 404
-    #     assert response_to_json(job_response) == error_message
-    #
-    # def test_delete_for_existing_job_id_returns_none_with_204_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     # Create job
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job = {"id": job_id, "parameters": {"height": 3, "width": 4,
-    #            "depth": 5}}
-    #     jobs.create(job)
-    #     client = test_client(jobs)
-    #     job_response = client.delete("/job/{}".format(job_id))
-    #     assert job_response.status_code == 204
-    #     assert response_to_json(job_response) is None
-    #     assert jobs.get_by_id(job_id) is None
-    #
+    def test_delete_with_nonexistent_job_returns_error_with_404(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(jobs)
+        job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+        job_response = client.delete("/job/{}".format(job_id))
+        error_message = {"message": "Job {} not found".format(job_id)}
+        assert job_response.status_code == 404
+        assert response_to_json(job_response) == error_message
+
+    def test_delete_for_existing_job_id_returns_none_with_204(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        # Create job
+        job_orig = new_job1()
+        job_id_orig = job_orig.id
+        jobs.create(job_orig)
+        client = test_client(jobs)
+
+        job_response = client.delete("/job/{}".format(job_id_orig))
+        assert job_response.status_code == 204
+        assert response_to_json(job_response) is None
+        assert jobs.get_by_id(job_id_orig) is None
+
     # # === POST tests (patching) ===
     # @mock.patch('middleware.job.api.JobApi.post', side_effect=mock_api_post)
     # def test_patch_with_valid_json_and_correct_id(self, mock_post):
