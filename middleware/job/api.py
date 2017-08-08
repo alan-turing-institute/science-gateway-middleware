@@ -102,7 +102,6 @@ class JobApi(Resource):
             return job_to_json(updated_job), 200, {'Content-Type':
                                                    'application/json'}
 
-
     def delete(self, job_id):
         # Require job to exist in order to delete it
         job = self.jobs.get_by_id(job_id)
