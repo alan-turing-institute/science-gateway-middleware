@@ -204,9 +204,16 @@ class RunApi(Resource):
         if not is_valid_job_json(updated_job):
             abort(400, message="Message body is not valid Job JSON")
 
-        job = self.jobs.get_by_id(job_id)
-        if job:
-            manager = JIM(job)
+        job_old = self.jobs.get_by_id(job_id)
+        if job_old:
+            patched_job = json_merge_patch.merge(job_old, updated_job)
+            if not is_valid_job_json(patched_job):
+                abort(400, message=("Applying patch results in"
+                                    "invalid Job JSON"))
+            new_job = self.jobs.update(patched_job)
+
+            manager = JIM(new_job)
+            print(manager.parameter_patch)
             return manager.run()
         else:
             abort(404, message="Job {} not found".format(job_id))
