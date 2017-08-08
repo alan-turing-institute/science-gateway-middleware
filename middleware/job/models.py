@@ -5,10 +5,14 @@ from uuid import uuid4
 class Job(db.Model):
     id = db.Column(db.String, primary_key=True)
     user = db.Column(db.String)
-    parameters = db.relationship("Parameter", back_populates="job", lazy="subquery")
-    templates = db.relationship("Template", back_populates="job", lazy="subquery")
-    scripts = db.relationship("Script", back_populates="job", lazy="subquery")
-    inputs = db.relationship("Input", back_populates="job", lazy="subquery")
+    parameters = db.relationship("Parameter", back_populates="job",
+                                 lazy="subquery")
+    templates = db.relationship("Template", back_populates="job",
+                                lazy="subquery")
+    scripts = db.relationship("Script", back_populates="job",
+                              lazy="subquery")
+    inputs = db.relationship("Input", back_populates="job",
+                             lazy="subquery")
 
     def __init__(self, id=None, user=None, parameters=[], templates=[],
                  scripts=[], inputs=[]):
