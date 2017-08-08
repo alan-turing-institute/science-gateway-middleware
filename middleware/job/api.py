@@ -59,9 +59,7 @@ class JobApi(Resource):
             # figure out how to get a new Job object from JSON without
             # specifiying the session in the Schema definition, which breaks
             # testing
-            print(job_json)
-            print(job_to_json(job_old))
-            updated_job = JobSchema().load(job_json, instance=job_old)
+            updated_job = JobSchema().load(job_json, instance=job_old).data
             # Persist Job object to repository
             updated_job = self.jobs.update(updated_job)
         except:
@@ -69,7 +67,8 @@ class JobApi(Resource):
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_id_json))
         else:
-            return updated_job, 200, {'Content-Type': 'application/json'}
+            return job_to_json(updated_job), 200, {'Content-Type':
+                                                   'application/json'}
 
     def patch(self, job_id):
         # Require Job to exist in order to amend it
