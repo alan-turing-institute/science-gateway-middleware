@@ -207,9 +207,6 @@ class TestJobApi(object):
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
 
-    def dummy(job):
-        return job.id
-
     def test_put_with_mismatched_job_id_returns_error_with_409(self, session):
         jobs = JobRepositorySqlAlchemy(session)
         job_existing = new_job1()
@@ -220,8 +217,6 @@ class TestJobApi(object):
         job_new = new_job2()
         job_json = job_new
         job_id_json = job_json.id
-        self.dummy(job_id_url)
-        job_existing == job_existing
         job_response = client.put("/job/{}".format(job_id_url),
                                   data=json.dumps(job_to_json(job_json)),
                                   content_type='application/json')
