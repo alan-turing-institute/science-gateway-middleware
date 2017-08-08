@@ -139,6 +139,7 @@ class SetupApi(Resource):
         self.jobs = kwargs['job_repository']
 
     def post(self, job_id):
+        # TODO: Refactor to not duplicate JobApi.patch() functionality
 
         updated_job = request.json
 
@@ -198,6 +199,7 @@ class RunApi(Resource):
         self.jobs = kwargs['job_repository']
 
     def post(self, job_id):
+        # TODO: Refactor to not duplicate JobApi.patch() functionality
 
         updated_job = request.json
 
