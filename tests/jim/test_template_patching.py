@@ -111,6 +111,7 @@ class TestJIM(object):
         assert jim.script_list == job['scripts']
         assert jim.inputs_list == job['inputs']
         assert jim.simulation_root == simulation_root
+        assert jim.patched_templates == []
 
     def test_constructor_with_simulation_root(self):
 
@@ -128,6 +129,7 @@ class TestJIM(object):
         assert jim.script_list == job2['scripts']
         assert jim.inputs_list == job2['inputs']
         assert jim.simulation_root == simulation_root
+        assert jim.patched_templates == []
 
     def test_apply_patch(self, tmpdir):
         manager = JIM(job)
@@ -152,6 +154,16 @@ class TestJIM(object):
                 patched_value = patched.group(1)
                 assert patched_value == in_val
                 break
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_apply_patch', side_effect=mock_apply_patch)
+    def test_patched_templates_construction(self, mock_patch):
+        manager = JIM(job)
+
+        manager.patch_all_templates()
+        expected = [{'source_uri': 'tmp/project/case/Blue.nml',
+                     'destination_path': 'project/case/'}]
+        assert manager.patched_templates == expected
 
     @mock.patch('os.makedirs', side_effect=mock_mkdir)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
