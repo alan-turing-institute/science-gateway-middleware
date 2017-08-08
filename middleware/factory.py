@@ -7,7 +7,7 @@ from middleware.job.api import (JobApi, JobsApi, RunApi, SetupApi, CancelApi,
 
 def create_app(job_repository):
     app = Flask(__name__, instance_relative_config=True)
-    cors = CORS(app, resources={r"/*": {"origins": "*"}})
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     # Load the default configuration
     app.config.from_object('config.default')
