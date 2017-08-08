@@ -49,7 +49,7 @@ class JobRepositorySqlAlchemy():
     def delete(self, job_id):
         if self.exists(job_id):
             # If job exists, remove job from dictionary and return removed job
-            Job.query.filter_by(id=job_id).delete()
+            self._session.query(Job).filter_by(id=job_id).delete()
             self._session.commit()
             return None
         else:
