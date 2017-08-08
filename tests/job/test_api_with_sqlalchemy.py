@@ -250,26 +250,24 @@ class TestJobApi(object):
         job_response = client.put("/job/{}".format(job_id_orig),
                                   data=json.dumps(job_to_json(job_new)),
                                   content_type='application/json')
-        print(response_to_json(job_response))
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_to_json(job_new)
         assert jobs.get_by_id(job_id_orig) == job_new
 
-    # def test_put_with_invalid_job_json_returns_error_with_400_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     # Create job
-    #     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    #     job = {"id": job_id, "parameters": {"height": 3, "width": 4,
-    #            "depth": 5}}
-    #     jobs.create(job)
-    #     client = test_client(jobs)
-    #     invalid_job = {"no-id-field": "valid-json"}
-    #     job_response = client.put("/job/{}".format(job_id),
-    #                               data=json.dumps(invalid_job),
-    #                               content_type='application/json')
-    #     error_message = {"message": "Message body is not valid Job JSON"}
-    #     assert job_response.status_code == 400
-    #     assert response_to_json(job_response) == error_message
+    def test_put_with_invalid_job_json_returns_error_with_400_status(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        # Create job
+        job_orig = new_job1()
+        job_id_orig = job_orig.id
+        jobs.create(job_orig)
+        client = test_client(jobs)
+        invalid_job = {"no-id-field": "valid-json"}
+        job_response = client.put("/job/{}".format(job_id_orig),
+                                    data=json.dumps(invalid_job),
+                                    content_type='application/json')
+        error_message = {"message": "Message body is not valid Job JSON"}
+        assert job_response.status_code == 400
+        assert response_to_json(job_response) == error_message
 
     # # === DELETE tests (DELETE) ===
     # def test_delete_with_no_job_id_returns_error_with_404_status(self):
