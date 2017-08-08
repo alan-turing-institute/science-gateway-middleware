@@ -1,11 +1,12 @@
 from flask import Flask
 from flask_restful import Api
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
-from middleware.job.api import JobApi, JobsApi
+from middleware.job.api import JobApi, JobsApi, SetupApi, RunApi, ProgressApi,\
+    CancelApi
 from middleware.database import db, ma
 
 
-def create_app(config_name, job_repository):
+def create_app(config_name, job_repository=None):
     app = Flask(__name__, instance_relative_config=True)
 
     # Import environment specific variables from the supplied
@@ -25,17 +26,19 @@ def create_app(config_name, job_repository):
     # NOTE: Also remove the job_repository injection from factory.py
     # NOTE: Keep app._job_repository as we'll need this for our API tests when
     # we are no longer injecting the repo at app creation
-    if isinstance(job_repository, JobRepositorySqlAlchemy):
+    if job_repository is None:
+        # If not repo provided, nitialise new SQLAlchemy backed repository
         db.init_app(app)
         ma.init_app(app)
         db.create_all(app=app)
-        # If the provided repository has not had a session specified, then
-        # use the app db session.
-        # NOTE: We don't overwrite any existing specified session as we want to
-        # be able to pass in a session during testing
-        if job_repository._session is None:
-            job_repository._session = db.session
-
+        job_repository = JobRepositorySqlAlchemy(db.session)
+    elif isinstance(job_repository, JobRepositorySqlAlchemy):
+        # If SQLAlchemy repo provided, preserve session from provided repo
+        db.init_app(app)
+        ma.init_app(app)
+        db.create_all(app=app)
+        job_repository._session = db.session
+    # In all cases assign the repo to the app for easy access
     app._job_repository = job_repository
 
     api = Api(app)
@@ -46,4 +49,21 @@ def create_app(config_name, job_repository):
     api.add_resource(JobsApi, '/job',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
+
+    api.add_resource(SetupApi, '/setup/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(RunApi, '/run/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(ProgressApi, '/progress/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(CancelApi, '/cancel/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
     return app

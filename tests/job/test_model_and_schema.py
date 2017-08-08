@@ -1,5 +1,5 @@
 from middleware.job.models import Job, Parameter, Template, Script, Input
-from middleware.job.schema import job_to_json, JobSchema
+from middleware.job.schema import job_to_json, json_to_job, JobSchema
 from uuid import UUID, uuid4, uuid1
 
 
@@ -88,7 +88,7 @@ def new_job2_json():
 
 
 class TestModel(object):
-    def test_new_job_with_no_id_generatesa_uuid4_id(self):
+    def test_new_job_with_no_id_generates_uuid4_id(self):
         job = Job()
         # ID should be a uuid4 UUID
         assert UUID(job.id).version == 4
@@ -212,6 +212,18 @@ class TestModel(object):
         assert job2.inputs[1] == job1.inputs[0]
         assert job2.inputs[0] == job1.inputs[1]
         assert job1 == job2
+
+    def test_job_make_object(self):
+        job1_json = new_job1_json()
+        expected_job1 = new_job1()
+        job1 = JobSchema().make_job(job1_json)
+        assert job1 == expected_job1
+
+    def test_json_to_job(self):
+        job1_json = new_job1_json()
+        expected_job1 = new_job1()
+        job1 = json_to_job(job1_json)
+        assert job1 == expected_job1
 
     def test_job_to_json(self):
         job1 = new_job1()

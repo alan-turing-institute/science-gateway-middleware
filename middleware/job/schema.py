@@ -44,13 +44,33 @@ class JobSchema(ma.ModelSchema):
     scripts = ma.List(ma.Nested(ScriptSchema))
     inputs = ma.List(ma.Nested(InputSchema))
 
-    def make_object(self, data):
-        print(data)
-        return Job(**data)
+    def make_job(self, data):
+        assert 'id' in data, "Must specify Job ID"
+        parameters = ParameterSchema(many=True)\
+            .load(data.get("parameters")).data
+        templates = TemplateSchema(many=True).load(data.get("templates")).data
+        scripts = ScriptSchema(many=True).load(data.get("scripts")).data
+        inputs = InputSchema(many=True).load(data.get("inputs")).data
+        job = Job(id=data.get("id"), user=data.get("user"),
+                  parameters=parameters, templates=templates, scripts=scripts,
+                  inputs=inputs)
+        return job
 
 
 def job_to_json(job):
     """"Convert a Job object to json via its associated
     ModelSchema class
     """
-    return JobSchema().dump(job).data
+    json_dict = JobSchema().dump(job).data
+    # Sort lists
+    json_dict["parameters"] = sorted(json_dict["parameters"],
+                                     key=lambda p: p.get("name"))
+    return json_dict
+
+
+def json_to_job(job_json):
+    """"Convert Job json to a Job object via its associated
+    ModelSchema class
+    """
+    job = JobSchema().make_job(job_json)
+    return job
