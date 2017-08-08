@@ -37,6 +37,7 @@ class job_information_manager():
         self.job = job
         self.job_id = job['id']
         self.template_list = job['templates']
+        self.patched_templates = []
         self.parameter_patch = job['parameters']
         self.script_list = job['scripts']
         self.inputs_list = job['inputs']
@@ -55,7 +56,6 @@ class job_information_manager():
         Wrapper around the _apply_patch method which patches all files in
         self.template_list
         '''
-
         for template in self.template_list:
             template_file = template["source_uri"]
             template_filename = os.path.basename(template_file)
@@ -65,6 +65,10 @@ class job_information_manager():
             os.makedirs(tmp_path, exist_ok=True)
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
+            patched_paths = {'source_uri': tmp_file,
+                             'destination_path': template["destination_path"]}
+
+            self.patched_templates.append(patched_paths)
 
     def transfer_all_files(self):
         '''
@@ -73,10 +77,11 @@ class job_information_manager():
         '''
         connection = ssh(self.hostname, self.username, self.port, debug=True)
 
-        all_files = [self.script_list, self.template_list, self.inputs_list]
+        all_files = [self.script_list, self.patched_templates,
+                     self.inputs_list]
 
         for file_list in all_files:
-            for file_object in self.script_list:
+            for file_object in file_list:
                 file_full_path = file_object["source_uri"]
                 dest_path = os.path.join(self.simulation_root,
                                          file_object["destination_path"])
