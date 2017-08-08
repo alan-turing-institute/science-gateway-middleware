@@ -84,23 +84,19 @@ class JobApi(Resource):
         return deleted_job, 204
 
     def post(self, job_id):
-        '''
-        Submit/run the job using current parameters data in the database
-        '''
+        job = request.json
+        if job is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(job):
+            abort(400, message="Message body is not valid Job JSON")
+        job_id = job.get("id")
 
-        simulation_root = ''  # this needs to be stored in job data structure
-        job, response, content_type = self.get(job_id)
-
-        manager = JIM(job, simulation_root=simulation_root)
-        print(manager.parameter_patch)
-
-        manager.patch_and_transfer()
-        manager.transfer_scripts()
-        out, err, exit_codes = manager.run_remote_scripts()
-
-        # TODO add an actual check on "success"
-        result = {"stdout": out, "stderr": err, "exit_codes": exit_codes}
-        return result, 201
+        if self.jobs.exists(job_id):
+            updated_job = self.jobs.update(request.json)
+            return updated_job, 200, {'Content-Type': 'application/json'}
+        else:
+            abort(404, message="Job {} not found".format(job_id))
 
 
 class JobsApi(Resource):
@@ -134,3 +130,91 @@ class JobsApi(Resource):
         else:
             job = self.jobs.create(job)
             return job, 200, {'Content-Type': 'application/json'}
+
+
+class SetupApi(Resource):
+    '''API endpoint called to setup a job on the cluster (POST)'''
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def post(self, job_id):
+        # TODO: Refactor to not duplicate JobApi.patch() functionality
+
+        updated_job = request.json
+
+        if updated_job is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(updated_job):
+            abort(400, message="Message body is not valid Job JSON")
+
+        job_old = self.jobs.get_by_id(job_id)
+        if job_old:
+            patched_job = json_merge_patch.merge(job_old, updated_job)
+            new_job = self.jobs.update(patched_job)
+
+            manager = JIM(new_job)
+            return manager.setup()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
+
+
+class ProgressApi(Resource):
+    '''API endpoint called to check the progress a job on the cluster (POST)'''
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def post(self, job_id):
+
+        job = self.jobs.get_by_id(job_id)
+        if job:
+            manager = JIM(job)
+            return manager.progress()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
+
+
+class CancelApi(Resource):
+    '''API endpoint called to cancel a job on the cluster (POST)'''
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def post(self, job_id):
+
+        job = self.jobs.get_by_id(job_id)
+        if job:
+            manager = JIM(job)
+            return manager.cancel()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
+
+
+class RunApi(Resource):
+    '''API endpoint called to run a job on the cluster (POST)'''
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def post(self, job_id):
+        # TODO: Refactor to not duplicate JobApi.patch() functionality
+
+        updated_job = request.json
+
+        if updated_job is None:
+            abort(400, message="Message body could not be parsed as JSON")
+        # Require valid Job JSON
+        if not is_valid_job_json(updated_job):
+            abort(400, message="Message body is not valid Job JSON")
+
+        job_old = self.jobs.get_by_id(job_id)
+        if job_old:
+            patched_job = json_merge_patch.merge(job_old, updated_job)
+            new_job = self.jobs.update(patched_job)
+
+            manager = JIM(new_job)
+            return manager.run()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
