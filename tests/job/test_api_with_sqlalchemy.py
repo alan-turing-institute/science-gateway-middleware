@@ -254,7 +254,7 @@ class TestJobApi(object):
         assert response_to_json(job_response) == job_to_json(job_new)
         assert jobs.get_by_id(job_id_orig) == job_new
 
-    def test_put_with_invalid_job_json_returns_error_with_400_status(self, session):
+    def test_put_with_invalid_job_json_returns_error_with_400(self, session):
         jobs = JobRepositorySqlAlchemy(session)
         # Create job
         job_orig = new_job1()
@@ -269,15 +269,15 @@ class TestJobApi(object):
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
 
-    # # === DELETE tests (DELETE) ===
-    # def test_delete_with_no_job_id_returns_error_with_404_status(self):
-    #     jobs = JobRepositoryMemory()
-    #     client = test_client(jobs)
-    #     job_response = client.delete("/job/")
-    #     assert job_response.status_code == 404
-    #     # No content check as we are expecting the standard 404 error message
-    #     # TODO: Get the 404 response defined for the app and compare it here
-    #
+    # === DELETE tests (DELETE) ===
+    def test_delete_with_no_job_id_returns_error_with_404(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(jobs)
+        job_response = client.delete("/job/")
+        assert job_response.status_code == 404
+        # No content check as we are expecting the standard 404 error message
+        # TODO: Get the 404 response defined for the app and compare it here
+
     # def test_delete_with_nonexistent_job_returns_error_with_404_status(self):
     #     jobs = JobRepositoryMemory()
     #     client = test_client(jobs)
