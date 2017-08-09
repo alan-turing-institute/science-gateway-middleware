@@ -1,17 +1,4 @@
-from middleware.job.models import (
-    Job,
-    Parameter,
-    Template,
-    Input,
-    Script
-)
-from middleware.job.schema import (
-    JobSchema,
-    ParameterSchema,
-    TemplateSchema,
-    InputSchema,
-    ScriptSchema
-)
+from middleware.job.models import Job
 
 
 class JobRepositorySqlAlchemy():
