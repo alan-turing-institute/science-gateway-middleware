@@ -29,6 +29,7 @@ class JobRepositorySqlAlchemy():
         job_id = job.id
         if self.exists(job_id):
             self._session.merge(job)
+            self._session.commit()
         # Return result of querying repo for Job. This will be None if the Job
         # did not already exist in the repo and the updated Job if it did
         return self.get_by_id(job_id)
