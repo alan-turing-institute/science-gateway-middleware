@@ -12,10 +12,16 @@ env:
   - APP_CONFIG_NAME=test
 
 script:
-  - pytest
   - flake8 middleware/ --ignore=F401,F403,F405
+  - pytest
+  - coverage run tests.py
+
 install:
  - pip install -r requirements.txt
+ - pip install codecov
+
+after_success:
+  - codecov
 
 before_script:
  - "export PYTHONPATH=."
