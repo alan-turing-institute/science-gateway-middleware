@@ -35,13 +35,12 @@ class job_information_manager():
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
         self.job = job
-        self.job_id = job.id
-        self.template_list = job.templates
+        self.job_id = job['id']
+        self.template_list = job['templates']
         self.patched_templates = []
-        self.parameter_patch = job.parameters
-        self.script_list = job.scripts
-        self.inputs_list = job.inputs
-        self.user = job.user
+        self.parameter_patch = job['parameters']
+        self.script_list = job['scripts']
+        self.inputs_list = job['inputs']
 
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
@@ -58,15 +57,14 @@ class job_information_manager():
         self.template_list
         '''
         for template in self.template_list:
-            template_file = template.source_uri
+            template_file = template["source_uri"]
             template_filename = os.path.basename(template_file)
 
-            tmp_path = os.path.join('tmp', template.destination_path)
+            tmp_path = os.path.join('tmp', template["destination_path"])
             tmp_file = os.path.join(tmp_path, template_filename)
             os.makedirs(tmp_path, exist_ok=True)
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
-            # TODO: this will break with the new object model of jobs.
             patched_paths = {'source_uri': tmp_file,
                              'destination_path': template["destination_path"]}
 
@@ -84,9 +82,9 @@ class job_information_manager():
 
         for file_list in all_files:
             for file_object in file_list:
-                file_full_path = file_object.source_uri
+                file_full_path = file_object["source_uri"]
                 dest_path = os.path.join(self.simulation_root,
-                                         file_object.destination_path)
+                                         file_object["destination_path"])
                 connection.secure_copy(file_full_path, dest_path)
         connection.close_connection()
 
@@ -114,15 +112,15 @@ class job_information_manager():
 
         # Cycle through the list of scripts to to get the action script
         for i, s in enumerate(self.script_list):
-            if s.command == action:
+            if s['action'] == action:
                 to_run = self.script_list[i]
                 break
 
         # If the script isn't found, return a 400 error
         if to_run:
-            script_name = os.path.basename(to_run.source_uri)
+            script_name = os.path.basename(to_run['source_uri'])
             script_path = os.path.join(self.simulation_root,
-                                       to_run.destination_path)
+                                       to_run["destination_path"])
 
             a, b, c = self._run_remote_script(script_name, script_path)
             result = {"stdout": a, "stderr": b, "exit_code": c}
