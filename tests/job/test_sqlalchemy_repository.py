@@ -3,6 +3,7 @@ from flask import Flask
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.database import db as _db
 from middleware.job.models import Job, Parameter, Template, Script, Input
+from new_jobs import new_job1, new_job2
 
 TEST_DB_URI = 'sqlite://'
 
@@ -55,48 +56,6 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
-
-
-def new_job1():
-    job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    job = Job(id=job_id)
-    job.user = "j1user"
-    job.parameters.append(Parameter(name="j1p1name", value="j1p1value"))
-    job.parameters.append(Parameter(name="j1p2name", value="j1p2value"))
-    job.templates.append(Template(source_uri="j1t1source",
-                                  destination_path="j1t1_dest"))
-    job.templates.append(Template(source_uri="j1t2source",
-                                  destination_path="j1t2_dest"))
-    job.scripts.append(Script(command="j1s1command", source_uri="j1s1source",
-                              destination_path="j1s1_dest"))
-    job.scripts.append(Script(command="j1s2command", source_uri="j1s2source",
-                              destination_path="j212_dest"))
-    job.inputs.append(Input(source_uri="j1i1source",
-                            destination_path="j1i1_dest"))
-    job.inputs.append(Input(source_uri="j1i2source",
-                            destination_path="j1i2_dest"))
-    return job
-
-
-def new_job2():
-    job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
-    job = Job(id=job_id)
-    job.user = "j2user"
-    job.parameters.append(Parameter(name="j2p1name", value="j2p1value"))
-    job.parameters.append(Parameter(name="j2p2name", value="j2p2value"))
-    job.templates.append(Template(source_uri="j2t1source",
-                                  destination_path="j2t1_dest"))
-    job.templates.append(Template(source_uri="j2t2source",
-                                  destination_path="j2t2_dest"))
-    job.scripts.append(Script(command="j2s1command", source_uri="j2s1source",
-                              destination_path="j2s1_dest"))
-    job.scripts.append(Script(command="j2s2command", source_uri="j2s2source",
-                              destination_path="j2s2_dest"))
-    job.inputs.append(Input(source_uri="j2i1source",
-                            destination_path="j2i1_dest"))
-    job.inputs.append(Input(source_uri="j2i2source",
-                            destination_path="j2i2_dest"))
-    return job
 
 
 class TestJobOrmPersistance(object):
