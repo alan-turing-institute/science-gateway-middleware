@@ -1,6 +1,4 @@
 from middleware.database import ma
-from middleware.database import db
-
 from middleware.job.models import (
     Job,
     Parameter,
