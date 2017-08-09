@@ -167,13 +167,13 @@ def new_job4():
                                   destination_path="j4t1_dest"))
     job.templates.append(Template(source_uri="j4t2source",
                                   destination_path="j4t2_dest"))
-    job.scripts.append(Script(command="j4s1command", source_uri="j4s1source",
+    job.scripts.append(Script(command="RUN", source_uri="j4s1source",
                               destination_path="j3s1_dest"))
-    job.scripts.append(Script(command="j4s2command", source_uri="j4s2source",
+    job.scripts.append(Script(command="PROGRESS", source_uri="j4s2source",
                               destination_path="j4s2_dest"))
-    job.scripts.append(Script(command="j4s3command", source_uri="j4s3source",
+    job.scripts.append(Script(command="CANCEL", source_uri="j4s3source",
                               destination_path="j4s1_dest"))
-    job.scripts.append(Script(command="j4s4command", source_uri="j4s4source",
+    job.scripts.append(Script(command="SETUP", source_uri="j4s4source",
                               destination_path="j4s4_dest"))
     job.inputs.append(Input(source_uri="j4i1source",
                             destination_path="j4i1_dest"))
@@ -597,7 +597,7 @@ class TestRunApi(object):
                     content_type='application/json')
 
         job_response = client.post("/run/{}".format(job_id),
-                                   data=data=json.dumps(job_to_json(job)),
+                                   data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
         assert response_to_json(job_response)['stdout'] == 'run_job.sh'
@@ -686,7 +686,7 @@ class TestSetupApi(object):
                     content_type='application/json')
 
         job_response = client.post("/setup/{}".format(job_id),
-                                   data=data=json.dumps(job_to_json(job)),
+                                   data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
         assert response_to_json(job_response)['stdout'] == 'setup_job.sh'
