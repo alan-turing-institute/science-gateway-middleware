@@ -1,6 +1,7 @@
 import json
 import pytest
 from flask import Flask
+import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.factory import create_app
 from middleware.job.api import JobApi
@@ -68,6 +69,18 @@ def session(db, request):
 
     request.addfinalizer(teardown)
     return session
+
+
+def mock_run_remote(script_name, remote_path, debug=True):
+    return script_name, 'err', '0'
+
+
+def mock_patch_all():
+    return True
+
+
+def mock_transfer_all():
+    return True
 
 
 def response_to_json(response):
@@ -141,6 +154,31 @@ def new_job3():
                             destination_path="j3i1_dest"))
     job.inputs.append(Input(source_uri="j3i2source",
                             destination_path="j3i2_dest"))
+    return job
+
+
+def new_job4():
+    job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
+    job = Job(id=job_id)
+    job.user = "j4user"
+    job.parameters.append(Parameter(name="j4p1name", value="j4p1value"))
+    job.parameters.append(Parameter(name="j4p2name", value="j4p2value"))
+    job.templates.append(Template(source_uri="j4t1source",
+                                  destination_path="j4t1_dest"))
+    job.templates.append(Template(source_uri="j4t2source",
+                                  destination_path="j4t2_dest"))
+    job.scripts.append(Script(command="j4s1command", source_uri="j4s1source",
+                              destination_path="j3s1_dest"))
+    job.scripts.append(Script(command="j4s2command", source_uri="j4s2source",
+                              destination_path="j4s2_dest"))
+    job.scripts.append(Script(command="j4s3command", source_uri="j4s3source",
+                              destination_path="j4s1_dest"))
+    job.scripts.append(Script(command="j4s4command", source_uri="j4s4source",
+                              destination_path="j4s4_dest"))
+    job.inputs.append(Input(source_uri="j4i1source",
+                            destination_path="j4i1_dest"))
+    job.inputs.append(Input(source_uri="j4i2source",
+                            destination_path="j4i2_dest"))
     return job
 
 
@@ -537,3 +575,277 @@ class TestJobsApi(object):
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
         assert len(jobs.list_ids()) == 0
+
+
+class TestRunApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'patch_all_templates', side_effect=mock_patch_all)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'transfer_all_files', side_effect=mock_transfer_all)
+    def test_run_with_valid_id(self, mock_tr, mock_patch, mock_run, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        job_response = client.post("/run/{}".format(job_id),
+                                   data=data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'run_job.sh'
+        assert job_response.status_code == 200
+
+    def test_run_with_invalid_id(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        bad_id = "2s3"
+
+        job_response = client.post("/run/{}".format(bad_id),
+                                   data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/run/{0}] but did you mean '
+                                   '/run/<string:job_id> ?').format(bad_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404
+
+    def test_setup_with_no_json(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        job_response = client.post("/run/{}".format(job_id))
+
+        err_message = {'message': ('Message body could not be parsed as JSON')}
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 400
+
+    def test_setup_with_invalid_json(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        broken_json = {'test': 5}
+
+        job_response = client.post("/run/{}".format(job_id),
+                                   data=json.dumps(broken_json),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Message body is not valid Job JSON')}
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 400
+
+
+class TestSetupApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'patch_all_templates', side_effect=mock_patch_all)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'transfer_all_files', side_effect=mock_transfer_all)
+    def test_setup_with_valid_id(self, mock_tr, mock_patch, mock_run, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        job_response = client.post("/setup/{}".format(job_id),
+                                   data=data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'setup_job.sh'
+        assert job_response.status_code == 200
+
+    def test_setup_with_invalid_id(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        bad_id = "2s3"
+
+        job_response = client.post("/setup/{}".format(bad_id),
+                                   data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/setup/{0}] but did you mean '
+                                   '/setup/<string:job_id> ?').format(bad_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404
+
+    def test_setup_with_no_json(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        job_response = client.post("/setup/{}".format(job_id))
+
+        err_message = {'message': ('Message body could not be parsed as JSON')}
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 400
+
+    def test_setup_with_invalid_json(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        broken_json = {'test': 5}
+
+        job_response = client.post("/setup/{}".format(job_id),
+                                   data=json.dumps(broken_json),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Message body is not valid Job JSON')}
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 400
+
+
+class TestCancelApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_cancel_with_valid_id(self, mock_run, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        job_response = client.post("/cancel/{}".format(job_id),
+                                   data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'cancel_job.sh'
+        assert job_response.status_code == 200
+
+    def test_cancel_with_invalid_id(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        bad_id = "2s3"
+
+        job_response = client.post("/cancel/{}".format(bad_id),
+                                   data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/cancel/{0}] but did '
+                                   'you mean /cancel/'
+                                   '<string:job_id> ?').format(bad_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404
+
+
+class TestProgressApi(object):
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote)
+    def test_progress_with_valid_id(self, mock_run, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        job_response = client.post("/progress/{}".format(job_id),
+                                   data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        assert response_to_json(job_response)['stdout'] == 'progress_job.sh'
+        assert job_response.status_code == 200
+
+    def test_progress_with_invalid_id(self, session):
+        jobs = JobRepositorySqlAlchemy(session)
+
+        job = new_job4()
+        client = test_client(jobs)
+
+        job_id = job.id
+
+        client.post("/job", data=json.dumps(job_to_json(job)),
+                    content_type='application/json')
+
+        bad_id = "2s3"
+
+        job_response = client.post("/progress/{}".format(bad_id),
+                                   data=json.dumps(job_to_json(job)),
+                                   content_type='application/json')
+
+        err_message = {'message': ('Job {0} not found. You have requested '
+                                   'this URI [/progress/{0}] but did '
+                                   'you mean /progress/'
+                                   '<string:job_id> ?').format(bad_id)}
+
+        assert response_to_json(job_response) == err_message
+        assert job_response.status_code == 404

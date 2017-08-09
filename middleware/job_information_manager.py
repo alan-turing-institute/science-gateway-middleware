@@ -35,12 +35,13 @@ class job_information_manager():
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
         self.job = job
-        self.job_id = job['id']
-        self.template_list = job['templates']
+        self.job_id = job.id
+        self.template_list = job.templates
         self.patched_templates = []
-        self.parameter_patch = job['parameters']
-        self.script_list = job['scripts']
-        self.inputs_list = job['inputs']
+        self.parameter_patch = job.parameters
+        self.script_list = job.scripts
+        self.inputs_list = job.inputs
+        self.user = job.user
 
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
