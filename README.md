@@ -28,8 +28,6 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 ```
 
-`USERNAME` and `PASSWORD` are set to provide a mock up of http password authentication which is used to restrict access to the `POST` method.
-
 The `SHH_*` variables will need to point to `science-gateway-cluster` but at present I have been testing this via one of UCL's servers. The ssh code assumes that you already have ssh keys configured on the machine where the app is running, and has limited error handling if this is not the case.
 
 The middleware can be hosted locally on `localhost` for testing via the `middleware/app.py` entry point. To achieve this, run the following command:
