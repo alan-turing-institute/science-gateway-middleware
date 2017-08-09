@@ -213,6 +213,8 @@ class TestModel(object):
         assert job2.inputs[0] == job1.inputs[1]
         assert job1 == job2
 
+
+class TestSchema(object):
     def test_job_make_object(self):
         job1_json = new_job1_json()
         expected_job1 = new_job1()
