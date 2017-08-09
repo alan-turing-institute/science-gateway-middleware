@@ -13,12 +13,12 @@ env:
 
 script:
   - flake8 middleware/ --ignore=F401,F403,F405
-  - pytest
-  - coverage run tests.py
+  - python -m pytest --cov=./
 
 install:
  - pip install -r requirements.txt
  - pip install codecov
+ - pip install pytest-cov
 
 after_success:
   - codecov
