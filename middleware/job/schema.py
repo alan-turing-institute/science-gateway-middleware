@@ -1,6 +1,4 @@
 from middleware.database import ma
-from middleware.database import db
-
 from middleware.job.models import (
     Job,
     Parameter,
@@ -25,7 +23,7 @@ class TemplateSchema(ma.ModelSchema):
 class ScriptSchema(ma.ModelSchema):
     class Meta:
         model = Script
-        fields = ('command', 'source_uri', 'destination_path')
+        fields = ('action', 'source_uri', 'destination_path')
 
 
 class InputSchema(ma.ModelSchema):

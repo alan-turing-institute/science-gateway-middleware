@@ -1,90 +1,8 @@
-from middleware.job.models import Job, Parameter, Template, Script, Input
+from middleware.job.models import Job
 from middleware.job.schema import job_to_json, json_to_job, JobSchema
 from uuid import UUID, uuid4, uuid1
 
-
-def new_job1():
-    # NOTE: Ensure to update new_job1_json() to match any changes made here
-    job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-    job = Job(id=job_id)
-    job.user = "j1user"
-    job.parameters.append(Parameter(name="j1p1name", value="j1p1value"))
-    job.parameters.append(Parameter(name="j1p2name", value="j1p2value"))
-    job.templates.append(Template(source_uri="j1t1source",
-                                  destination_path="j1t1_dest"))
-    job.templates.append(Template(source_uri="j1t2source",
-                                  destination_path="j1t2_dest"))
-    job.scripts.append(Script(command="j1s1command", source_uri="j1s1source",
-                              destination_path="j1s1_dest"))
-    job.scripts.append(Script(command="j1s2command", source_uri="j1s2source",
-                              destination_path="j1s2_dest"))
-    job.inputs.append(Input(source_uri="j1i1source",
-                            destination_path="j1i1_dest"))
-    job.inputs.append(Input(source_uri="j1i2source",
-                            destination_path="j1i2_dest"))
-    return job
-
-
-def new_job1_json():
-    # NOTE: Ensure to update new_job1() to match any changes made here
-    return {"id": "d769843b-6f37-4939-96c7-c382c3e74b46",
-            "user": "j1user",
-            "parameters": [{"name": "j1p1name", "value": "j1p1value"},
-                           {"name": "j1p2name", "value": "j1p2value"}],
-            "templates": [{"source_uri": "j1t1source",
-                           "destination_path": "j1t1_dest"},
-                          {"source_uri": "j1t2source",
-                           "destination_path": "j1t2_dest"}],
-            "scripts": [{"command": "j1s1command", "source_uri": "j1s1source",
-                         "destination_path": "j1s1_dest"},
-                        {"command": "j1s2command", "source_uri": "j1s2source",
-                         "destination_path": "j1s2_dest"}],
-            "inputs": [{"source_uri": "j1i1source",
-                        "destination_path": "j1i1_dest"},
-                       {"source_uri": "j1i2source",
-                        "destination_path": "j1i2_dest"}]}
-
-
-def new_job2():
-    # NOTE: Ensure to update new_job2_json() to match any changes made here
-    job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
-    job = Job(id=job_id)
-    job.user = "j2user"
-    job.parameters.append(Parameter(name="j2p1name", value="j2p1value"))
-    job.parameters.append(Parameter(name="j2p2name", value="j2p2value"))
-    job.templates.append(Template(source_uri="j2t1source",
-                                  destination_path="j2t1_dest"))
-    job.templates.append(Template(source_uri="j2t2source",
-                                  destination_path="j2t2_dest"))
-    job.scripts.append(Script(command="j2s1command", source_uri="j2s1source",
-                              destination_path="j2s1_dest"))
-    job.scripts.append(Script(command="j2s2command", source_uri="j2s2source",
-                              destination_path="j2s2_dest"))
-    job.inputs.append(Input(source_uri="j2i1source",
-                            destination_path="j2i1_dest"))
-    job.inputs.append(Input(source_uri="j2i2source",
-                            destination_path="j2i2_dest"))
-    return job
-
-
-def new_job2_json():
-    # NOTE: Ensure to update new_job2() to match any changes made here
-    return {"id": "9044394f-de29-4be3-857f-33a4fdca0be3",
-            "user": "j2user",
-            "parameters": [{"name": "j2p1name", "value": "j2p1value"},
-                           {"name": "j2p2name", "value": "j2p2value"}],
-            "templates": [{"source_uri": "j2t1source",
-                           "destination_path": "j2t1_dest"},
-                          {"source_uri": "j2t2source",
-                           "destination_path": "j2t2_dest"}],
-            "scripts": [{"command": "j2s1command", "source_uri": "j2s1source",
-                         "destination_path": "j2s1_dest"},
-                        {"command": "j2s2command", "source_uri": "j2s2source",
-                         "destination_path": "j2s2_dest"}],
-            "inputs": [{"source_uri": "j2i1source",
-                        "destination_path": "j2i1_dest"},
-                       {"source_uri": "j2i2source",
-                        "destination_path": "j2i2_dest"}]}
+from new_jobs import new_job1, new_job1_json, new_job2, new_job2_json
 
 
 class TestModel(object):
@@ -161,10 +79,10 @@ class TestModel(object):
         assert job2.templates[0] == job1.templates[1]
         assert job1 == job2
 
-    def test_full_jobs_differing_only_by_script_command_not_equal(self):
+    def test_full_jobs_differing_only_by_script_action_not_equal(self):
         job1 = new_job1()
         job2 = new_job1()
-        job2.scripts[0].command = "changed"
+        job2.scripts[0].action = "changed"
         assert job1 != job2
 
     def test_full_jobs_differing_only_by_script_source_not_equal(self):
@@ -213,6 +131,8 @@ class TestModel(object):
         assert job2.inputs[0] == job1.inputs[1]
         assert job1 == job2
 
+
+class TestSchema(object):
     def test_job_make_object(self):
         job1_json = new_job1_json()
         expected_job1 = new_job1()

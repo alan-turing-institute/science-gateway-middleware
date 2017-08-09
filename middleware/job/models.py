@@ -111,7 +111,7 @@ class Template(db.Model):
 
 class Script(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    command = db.Column(db.String)
+    action = db.Column(db.String)
     source_uri = db.Column(db.String)
     destination_path = db.Column(db.String)
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
@@ -119,7 +119,7 @@ class Script(db.Model):
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return (self.command == other.command and
+            return (self.action == other.action and
                     self.source_uri == other.source_uri and
                     self.destination_path == other.destination_path
                     )
@@ -141,7 +141,7 @@ class Script(db.Model):
         return NotImplemented
 
     def __hash__(self):
-        return hash((self.command, self.source_uri, self.destination_path))
+        return hash((self.action, self.source_uri, self.destination_path))
 
 
 class Input(db.Model):
