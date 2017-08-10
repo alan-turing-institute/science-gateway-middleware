@@ -104,3 +104,28 @@ def new_job3():
     job.inputs.append(Input(source_uri="j3i2source",
                             destination_path="j3i2_dest"))
     return job
+
+
+def new_job4():
+    job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
+    job = Job(id=job_id)
+    job.user = "j4user"
+    job.parameters.append(Parameter(name="j4p1name", value="j4p1value"))
+    job.parameters.append(Parameter(name="j4p2name", value="j4p2value"))
+    job.templates.append(Template(source_uri="j4t1source",
+                                  destination_path="j4t1_dest"))
+    job.templates.append(Template(source_uri="j4t2source",
+                                  destination_path="j4t2_dest"))
+    job.scripts.append(Script(action="RUN", source_uri="j4s1source",
+                              destination_path="j3s1_dest"))
+    job.scripts.append(Script(action="PROGRESS", source_uri="j4s2source",
+                              destination_path="j4s2_dest"))
+    job.scripts.append(Script(action="CANCEL", source_uri="j4s3source",
+                              destination_path="j4s1_dest"))
+    job.scripts.append(Script(action="SETUP", source_uri="j4s4source",
+                              destination_path="j4s4_dest"))
+    job.inputs.append(Input(source_uri="j4i1source",
+                            destination_path="j4i1_dest"))
+    job.inputs.append(Input(source_uri="j4i2source",
+                            destination_path="j4i2_dest"))
+    return job

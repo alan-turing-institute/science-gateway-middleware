@@ -10,8 +10,7 @@ from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.database import db as _db
 from middleware.job.models import Job, Parameter, Template, Script, Input
 from middleware.job.schema import job_to_json
-
-from new_jobs import new_job1, new_job2, new_job3
+from new_jobs import new_job1, new_job2, new_job3, new_job4
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
@@ -514,7 +513,7 @@ class TestRunApi(object):
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
-        assert response_to_json(job_response)['stdout'] == 'run_job.sh'
+        assert response_to_json(job_response)['stdout'] == 'j4s1source'
         assert job_response.status_code == 200
 
     def test_run_with_invalid_id(self, session):
@@ -575,7 +574,7 @@ class TestRunApi(object):
                                    data=json.dumps(broken_json),
                                    content_type='application/json')
 
-        err_message = {'message': ('Message body is not valid Job JSON')}
+        err_message = {'message': 'No ID found in Job JSON'}
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 400
 
@@ -603,7 +602,7 @@ class TestSetupApi(object):
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
-        assert response_to_json(job_response)['stdout'] == 'setup_job.sh'
+        assert response_to_json(job_response)['stdout'] == 'j4s4source'
         assert job_response.status_code == 200
 
     def test_setup_with_invalid_id(self, session):
@@ -664,7 +663,7 @@ class TestSetupApi(object):
                                    data=json.dumps(broken_json),
                                    content_type='application/json')
 
-        err_message = {'message': ('Message body is not valid Job JSON')}
+        err_message = {'message': 'No ID found in Job JSON'}
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 400
 
@@ -688,7 +687,7 @@ class TestCancelApi(object):
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
-        assert response_to_json(job_response)['stdout'] == 'cancel_job.sh'
+        assert response_to_json(job_response)['stdout'] == 'j4s3source'
         assert job_response.status_code == 200
 
     def test_cancel_with_invalid_id(self, session):
@@ -732,11 +731,9 @@ class TestProgressApi(object):
         client.post("/job", data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
-        job_response = client.post("/progress/{}".format(job_id),
-                                   data=json.dumps(job_to_json(job)),
-                                   content_type='application/json')
+        job_response = client.post("/progress/{}".format(job_id))
 
-        assert response_to_json(job_response)['stdout'] == 'progress_job.sh'
+        assert response_to_json(job_response)['stdout'] == 'j4s2source'
         assert job_response.status_code == 200
 
     def test_progress_with_invalid_id(self, session):

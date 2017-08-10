@@ -35,12 +35,14 @@ class job_information_manager():
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation
         self.job = job
-        self.job_id = job['id']
-        self.template_list = job['templates']
+
+        self.job_id = job.id
+        self.template_list = job.templates
         self.patched_templates = []
-        self.parameter_patch = job['parameters']
-        self.script_list = job['scripts']
-        self.inputs_list = job['inputs']
+        self.parameter_patch = job.parameters
+        self.script_list = job.scripts
+        self.inputs_list = job.inputs
+        self.user = job.user
 
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
@@ -112,15 +114,15 @@ class job_information_manager():
 
         # Cycle through the list of scripts to to get the action script
         for i, s in enumerate(self.script_list):
-            if s['action'] == action:
+            if s.action == action:
                 to_run = self.script_list[i]
                 break
 
         # If the script isn't found, return a 400 error
         if to_run:
-            script_name = os.path.basename(to_run['source_uri'])
+            script_name = os.path.basename(to_run.source_uri)
             script_path = os.path.join(self.simulation_root,
-                                       to_run["destination_path"])
+                                       to_run.destination_path)
 
             a, b, c = self._run_remote_script(script_name, script_path)
             result = {"stdout": a, "stderr": b, "exit_code": c}
