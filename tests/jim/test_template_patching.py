@@ -5,7 +5,6 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
 from tests.job.new_jobs import new_job5
 from instance.config import *
-from middleware.job.schema import job_to_json
 
 
 def abstract_getting_secrets():

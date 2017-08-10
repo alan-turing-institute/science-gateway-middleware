@@ -12,7 +12,7 @@ env:
   - APP_CONFIG_NAME=test
 
 script:
-  - flake8 middleware/ --ignore=F401,F403,F405
+  - flake8 middleware/ --ignore=F403,F405
   - python -m pytest --cov=./
 
 install:

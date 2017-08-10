@@ -2,7 +2,6 @@ import os
 from mako.template import Template
 from middleware.ssh import ssh
 from instance.config import *
-from middleware.job.schema import job_to_json
 
 
 class job_information_manager():
