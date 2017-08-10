@@ -1,0 +1,2 @@
+from tests.helpers import ensure_instance_config_exists
+ensure_instance_config_exists()

@@ -8,13 +8,20 @@ matrix:
     - python: 3.6
     - python: 3.4.1
 
-script:  # Handles creating a blank config file so imports dont fail
-  - mkdir -p instance
-  - touch instance/config.py
-  - pytest
+env:
+  - APP_CONFIG_NAME=test
+
+script:
   - flake8 middleware/ --ignore=F403,F405
+  - python -m pytest --cov=./
+
 install:
  - pip install -r requirements.txt
+ - pip install codecov
+ - pip install pytest-cov
+
+after_success:
+  - codecov
 
 before_script:
  - "export PYTHONPATH=."

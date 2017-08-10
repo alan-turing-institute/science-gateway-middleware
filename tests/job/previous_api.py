@@ -7,28 +7,13 @@ from middleware.job.api import JobApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
 from middleware.factory import create_app
 
+CONFIG_NAME = "test"
+
 
 @pytest.fixture
 def test_client(job_repository=JobRepositoryMemory()):
-    app = create_app(job_repository)
+    app = create_app(CONFIG_NAME, job_repository)
     return app.test_client()
-
-
-@pytest.fixture(autouse=True)
-def app_config(monkeypatch):
-    monkeypatch.setenv('APP_CONFIG_FILE', '../config/travis.py')
-
-
-def mock_run_remote(script_name, remote_path, debug=True):
-    return script_name, 'err', '0'
-
-
-def mock_patch_all():
-    return True
-
-
-def mock_transfer_all():
-    return True
 
 
 def response_to_json(response):
@@ -222,8 +207,8 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/job/{}".format(job_id),
                                    data=json.dumps(job),
@@ -240,8 +225,8 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job = {"id": job_id[::-1], "parameters": {"height": 3}}
 
@@ -262,8 +247,8 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/job/{}".format(job_id),
                                    data=None,
@@ -282,8 +267,8 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         broken_json = {'test': 5}
 
@@ -358,8 +343,9 @@ class TestJobApi(unittest.TestCase):
                    7, "green": "low", "depth": None}}
         client = test_client(jobs)
         job_response = client.patch(
-                        "/job/{}".format(job_id_url), data=json.dumps(job_new),
-                        content_type='application/merge-patch+json')
+            "/job/{}".format(job_id_url),
+            data=json.dumps(job_new),
+            content_type='application/merge-patch+json')
         error_message = {"message": "Job ID in URL ({}) does not match job "
                          "ID in message JSON ({}).".format(job_id_url,
                                                            job_id_json)}
@@ -381,9 +367,9 @@ class TestJobApi(unittest.TestCase):
                             "width": 4, "green": "low"}}
         client = test_client(jobs)
         job_response = client.patch(
-                        "/job/{}".format(job_id),
-                        data=json.dumps(job_patch),
-                        content_type='application/merge-patch+json')
+            "/job/{}".format(job_id),
+            data=json.dumps(job_patch),
+            content_type='application/merge-patch+json')
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_new_expected
         assert jobs.get_by_id(job_id) == job_new_expected
@@ -430,8 +416,8 @@ class TestRunApi(object):
 
         job_id = job['id']
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/run/{}".format(job_id),
                                    data=json.dumps(job),
@@ -448,8 +434,8 @@ class TestRunApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         bad_id = "2s3"
 
@@ -472,8 +458,8 @@ class TestRunApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/run/{}".format(job_id))
 
@@ -489,8 +475,8 @@ class TestRunApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         broken_json = {'test': 5}
 
@@ -544,8 +530,8 @@ class TestSetupApi(object):
 
         job_id = job['id']
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/setup/{}".format(job_id),
                                    data=json.dumps(job),
@@ -562,8 +548,8 @@ class TestSetupApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         bad_id = "2s3"
 
@@ -586,8 +572,8 @@ class TestSetupApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/setup/{}".format(job_id))
 
@@ -603,8 +589,8 @@ class TestSetupApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         broken_json = {'test': 5}
 
@@ -654,8 +640,8 @@ class TestCancelApi(object):
 
         job_id = job['id']
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/cancel/{}".format(job_id),
                                    data=json.dumps(job),
@@ -672,8 +658,8 @@ class TestCancelApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         bad_id = "2s3"
 
@@ -726,8 +712,8 @@ class TestProgressApi(object):
 
         job_id = job['id']
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         job_response = client.post("/progress/{}".format(job_id),
                                    data=json.dumps(job),
@@ -744,8 +730,8 @@ class TestProgressApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        _ = client.post("/job", data=json.dumps(job),
-                        content_type='application/json')
+        client.post("/job", data=json.dumps(job),
+                    content_type='application/json')
 
         bad_id = "2s3"
 
