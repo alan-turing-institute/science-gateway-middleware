@@ -2,6 +2,7 @@ import os
 from mako.template import Template
 from middleware.ssh import ssh
 from instance.config import *
+from middleware.job.schema import job_to_json
 
 
 class job_information_manager():
@@ -59,16 +60,16 @@ class job_information_manager():
         self.template_list
         '''
         for template in self.template_list:
-            template_file = template["source_uri"]
+            template_file = template.source_uri
             template_filename = os.path.basename(template_file)
 
-            tmp_path = os.path.join('tmp', template["destination_path"])
+            tmp_path = os.path.join('tmp', template.destination_path)
             tmp_file = os.path.join(tmp_path, template_filename)
             os.makedirs(tmp_path, exist_ok=True)
 
             self._apply_patch(template_file, self.parameter_patch, tmp_file)
             patched_paths = {'source_uri': tmp_file,
-                             'destination_path': template["destination_path"]}
+                             'destination_path': template.destination_path}
 
             self.patched_templates.append(patched_paths)
 
@@ -84,9 +85,9 @@ class job_information_manager():
 
         for file_list in all_files:
             for file_object in file_list:
-                file_full_path = file_object["source_uri"]
+                file_full_path = file_object.source_uri
                 dest_path = os.path.join(self.simulation_root,
-                                         file_object["destination_path"])
+                                         file_object.destination_path)
                 connection.secure_copy(file_full_path, dest_path)
         connection.close_connection()
 

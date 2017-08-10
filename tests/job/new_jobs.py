@@ -129,3 +129,31 @@ def new_job4():
     job.inputs.append(Input(source_uri="j4i2source",
                             destination_path="j4i2_dest"))
     return job
+
+
+def new_job5():
+    job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
+    job = Job(id=job_id)
+    job.user = "j5user"
+    job.parameters.append(Parameter(name="viscosity_phase_1", value=42.0))
+
+    job.templates.append(Template(source_uri="./resources/templates/Blue.nml",
+                                  destination_path="project/case/"))
+
+    job.scripts.append(Script(action="RUN",
+                              source_uri="./resources/scripts/start_job.sh",
+                              destination_path="project/case/"))
+    job.scripts.append(Script(action="PROGRESS",
+                              source_uri="./resources/scripts/progress_job.sh",
+                              destination_path="project/case/"))
+    job.scripts.append(Script(action="CANCEL",
+                              source_uri="./resources/scripts/cancel_job.sh",
+                              destination_path="project/case/"))
+    job.scripts.append(Script(action="SETUP",
+                              source_uri="./resources/scripts/setup_job.sh",
+                              destination_path="project/case/"))
+    job.inputs.append(Input(source_uri="j5i1source",
+                            destination_path="project/case/"))
+    job.inputs.append(Input(source_uri="j5i2source",
+                            destination_path="project/case/"))
+    return job
