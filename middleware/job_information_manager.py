@@ -44,14 +44,22 @@ class job_information_manager():
         self.inputs_list = job.inputs
         self.user = job.user
 
+    def _parameters_to_mako_dict(self, parameters):
+        mako_dict = {}
+        for p in parameters:
+            mako_dict[p["name"]] = p["value"]
+        return mako_dict
+
     def _apply_patch(self, template_path, parameters, destination_path):
         '''
         Method to apply a patch based on a supplied template file.
         Access via the patch_all_templates method.
         '''
         template = Template(filename=template_path)
+        mako_dict = self._parameters_to_mako_dict(parameters)
+
         with open(destination_path, "w") as f:
-            f.write(template.render(parameters=parameters))
+            f.write(template.render(parameters=mako_dict))
 
     def patch_all_templates(self):
         '''

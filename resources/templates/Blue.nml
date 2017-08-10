@@ -75,7 +75,7 @@
 /
 &VISCOSITY_PROPERTIES
 !--------------------------------------------------------------------------------------------------------------------------------
-  viscosity_phase_1                          = ${parameters["viscosity_properties"]["viscosity_phase_1"]}  ! Default absolute viscosity of phase_1 (kg/m/s).
+  viscosity_phase_1                          = ${parameters["viscosity_phase_1"]}  ! Default absolute viscosity of phase_1 (kg/m/s).
   viscosity_phase_2                          = 1.000d-3      ! Default absolute viscosity of phase_2 (kg/m/s).
   harmonic_viscosity                         = .FALSE.       ! If true, compute harmonic approximation of the viscosity for multiphase flow.
   !

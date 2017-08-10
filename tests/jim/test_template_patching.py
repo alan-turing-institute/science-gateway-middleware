@@ -5,7 +5,7 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
 from tests.job.new_jobs import new_job5
 from instance.config import *
-
+from middleware.job.schema import job_to_json
 
 def abstract_getting_secrets():
     # This block allows us to test against local secrets or the
@@ -71,15 +71,21 @@ class TestJIM(object):
         job = new_job5()
         manager = JIM(job)
 
-        template_path = job.templates[0].source_uri
-        template_filename = os.path.basename(template_path)
-        parameters = job.parameters
-        destination_path = os.path.join(tmpdir.strpath, template_filename)
-        params = {'viscosity_properties': {'viscosity_phase_1': '42.0'}}
-        manager._apply_patch(template_path, params, destination_path)
+        # create dict objects for parameters and templates
+        job_json = job_to_json(job)
+        parameters = job_json.get("parameters")
+        parameter = parameters[0]  # choose first parameter
 
-        # eg the string "42.0"
-        in_val = params['viscosity_properties']['viscosity_phase_1']
+        templates = job_json.get("templates")
+        template = templates[0]  # choose first template
+
+        template_path = template.get("source_uri")
+        in_parameter_value = parameter.get("value")
+
+        template_filename = os.path.basename(template_path)
+        destination_path = os.path.join(tmpdir.strpath, template_filename)
+
+        manager._apply_patch(template_path, parameters, destination_path)
 
         # read patched file
         with open(destination_path, "r") as f:
@@ -89,7 +95,7 @@ class TestJIM(object):
             patched = re.search(r"^\s+viscosity_phase_1\s+=\s+(\S+)\s+!", line)
             if patched:
                 patched_value = patched.group(1)
-                assert patched_value == in_val
+                assert patched_value == in_parameter_value
                 break
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
