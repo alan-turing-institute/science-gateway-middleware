@@ -131,6 +131,17 @@ class TestModel(object):
         assert job2.inputs[0] == job1.inputs[1]
         assert job1 == job2
 
+    def test_job_evaluates_to_true_in_if(self):
+        job1 = new_job1()
+        if job1:
+            assert True
+        else:
+            assert False
+
+    def test_job_evaluates_to_true_in_assert(self):
+        job1 = new_job1()
+        assert job1
+
 
 class TestSchema(object):
     def test_job_make_object(self):
