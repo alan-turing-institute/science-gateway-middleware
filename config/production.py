@@ -11,3 +11,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite://'
 # Disable track modifications as we are not using
 # the Flask-SQLAlchemy event system
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# The path to the cases file
+cases_path = ('https://science-gate-way-middleware.azurewebstes.net/'
+              'resources/cases/blue.json')

@@ -291,19 +291,17 @@ class RunApi(Resource):
 class CasesApi(Resource):
     '''API endpoint called to get a list of cases (GET)'''
     def __init__(self, **kwargs):
-        pass
+        self.cases_path = kwargs['cases_path']
 
     def get(self):
 
-        # This needs to be made a config variable
-        cases_path = './resources/cases/blue.json'
-
         try:
             # Load the case template
-            with open(cases_path) as json_data:
+            with open(self.cases_path) as json_data:
                 cases = json.load(json_data)
         except:
-            abort(404, message="Cases file, {} not found".format(cases_path))
+            abort(404, message=("Cases file, {} not"
+                                " found").format(self.cases_path))
 
         return cases, 200, {'Content-Type': 'application/json'}
 
@@ -311,20 +309,18 @@ class CasesApi(Resource):
 class CaseApi(Resource):
     '''API endpoint called to get specific case job template (GET)'''
     def __init__(self, **kwargs):
-        pass
+        self.cases_path = kwargs['cases_path']
 
     def get(self, case_id):
-
-        # This needs to be made a config variable
-        cases_path = './resources/cases/blue.json'
 
         # Get the case id from the list of cases
         try:
             # Load the cases file
-            with open(cases_path) as json_data:
+            with open(self.cases_path) as json_data:
                 cases = json.load(json_data)
         except:
-            abort(404, message="Cases file, {} not found".format(cases_path))
+            abort(404, message=("Cases file, {} not"
+                                " found").format(self.cases_path))
 
         # Find the case corresponding to the id from the list of cases
         case = next((case for case in cases['cases'] if case['id'] == case_id),
@@ -333,4 +329,5 @@ class CaseApi(Resource):
         if case:
             return case, 200, {'Content-Type': 'application/json'}
         else:
-            abort(404, message="Case file not found in list of cases")
+            abort(404, message=("Case ID, {} not found in "
+                                "list of cases").format(case_id))

@@ -19,6 +19,12 @@ def create_app(config_name, job_repository=None):
     # if present (fails silently if not present)
     app.config.from_pyfile("config.py", silent=True)
 
+    # Load the path to the cases file for either testing or production
+    if config_name == 'test':
+        from config.test import cases_path
+    if config_name == 'production':
+        from config.production import cases_path
+
     # TODO: Remove the conditional here. This is only to let us still inject
     # job_repository explicitly while we refactor to make data store dependency
     # purely set in configuration
@@ -68,8 +74,10 @@ def create_app(config_name, job_repository=None):
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(CasesApi, '/api/cases/')
+    api.add_resource(CasesApi, '/api/cases/',
+                     resource_class_kwargs={'cases_path': cases_path})
 
-    api.add_resource(CaseApi, '/api/cases/<string:case_id>')
+    api.add_resource(CaseApi, '/api/cases/<string:case_id>',
+                     resource_class_kwargs={'cases_path': cases_path})
 
     return app
