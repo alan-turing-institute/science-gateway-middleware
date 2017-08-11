@@ -1,3 +1,4 @@
+import json
 import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
@@ -124,7 +125,7 @@ class JobsApi(Resource):
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
             summary_json = job_summary_json(job)
-            summary_json["uri"] = "/job/{}".format(job_id)
+            summary_json["uri"] = "/api/job/{}".format(job_id)
             return summary_json
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
@@ -285,3 +286,31 @@ class RunApi(Resource):
         else:
             manager = JIM(updated_job)
             return manager.run()
+
+
+class TemplateApi(Resource):
+    '''API endpoint called to get a job template (GET)'''
+    def __init__(self, **kwargs):
+        pass
+
+    def get(self):
+
+        case = request.json
+
+        # Check the json supplied is not empty and is valid
+        if case is None:
+            abort(400, message="Message body could not be parsed as JSON")
+
+        if case.get("case") is None:
+            abort(400, message="Message body is not valid case JSON")
+
+        case_path = case['case']
+
+        try:
+            # Load the case template
+            with open(case_path) as json_data:
+                template = json.load(json_data)
+        except:
+            abort(404, message="Template file, {} not found".format(case_path))
+
+        return template, 200, {'Content-Type': 'application/json'}

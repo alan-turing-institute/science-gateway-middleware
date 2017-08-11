@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
-from middleware.job.api import JobApi, JobsApi, SetupApi, RunApi, ProgressApi,\
-    CancelApi
+from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
+                                CancelApi, TemplateApi)
 from middleware.database import db, ma
 
 
 def create_app(config_name, job_repository=None):
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     # Import environment specific variables from the supplied
     # configuration
@@ -43,27 +45,29 @@ def create_app(config_name, job_repository=None):
 
     api = Api(app)
 
-    api.add_resource(JobApi, '/job/<string:job_id>',
+    api.add_resource(JobApi, '/api/job/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
-    api.add_resource(JobsApi, '/job',
-                     resource_class_kwargs={'job_repository':
-                                            app._job_repository})
-
-    api.add_resource(SetupApi, '/setup/<string:job_id>',
+    api.add_resource(JobsApi, '/api/job',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(RunApi, '/run/<string:job_id>',
+    api.add_resource(SetupApi, '/api/setup/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(ProgressApi, '/progress/<string:job_id>',
+    api.add_resource(RunApi, '/api/run/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(CancelApi, '/cancel/<string:job_id>',
+    api.add_resource(ProgressApi, '/api/progress/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
+
+    api.add_resource(CancelApi, '/api/cancel/<string:job_id>',
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(TemplateApi, '/api/template/')
 
     return app

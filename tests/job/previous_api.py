@@ -41,7 +41,7 @@ class TestJobApi(unittest.TestCase):
                "parameters": {"height": 3, "width": 4, "depth": 5}}
         jobs.create(job)
         client = test_client(jobs)
-        job_response = client.get("/job/{}".format(job_id))
+        job_response = client.get("/api/job/{}".format(job_id))
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job
 
@@ -49,7 +49,7 @@ class TestJobApi(unittest.TestCase):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-        job_response = client.get("/job/{}".format(job_id))
+        job_response = client.get("/api/job/{}".format(job_id))
         error_message = {"message": "Job {} not found".format(job_id)}
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
@@ -57,7 +57,7 @@ class TestJobApi(unittest.TestCase):
     def test_get_with_no_job_id_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
-        job_response = client.get("/job/")
+        job_response = client.get("/api/job/")
         assert job_response.status_code == 404
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
@@ -66,7 +66,7 @@ class TestJobApi(unittest.TestCase):
     def test_put_with_no_job_id_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
-        job_response = client.put("/job/")
+        job_response = client.put("/api/job/")
         assert job_response.status_code == 404
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
@@ -80,7 +80,7 @@ class TestJobApi(unittest.TestCase):
         jobs.create(job)
         job = None
         client = test_client(jobs)
-        job_response = client.put("/job/{}".format(job_id),
+        job_response = client.put("/api/job/{}".format(job_id),
                                   data=json.dumps(job),
                                   content_type='application/json')
         error_message = {"message": "Message body could not be parsed as JSON"}
@@ -97,7 +97,7 @@ class TestJobApi(unittest.TestCase):
         client = test_client(jobs)
         # We don't add content_type='application/json' because, if we do the
         # framework catches invalid JSON before it gets to our response handler
-        job_response = client.put("/job/{}".format(job_id),
+        job_response = client.put("/api/job/{}".format(job_id),
                                   data=invalid_json)
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
@@ -114,7 +114,7 @@ class TestJobApi(unittest.TestCase):
         job_new = {"id": job_id_json, "parameters": {"blue":
                    "high", "green": "low"}}
         client = test_client(jobs)
-        job_response = client.put("/job/{}".format(job_id_url),
+        job_response = client.put("/api/job/{}".format(job_id_url),
                                   data=json.dumps(job_new),
                                   content_type='application/json')
         error_message = {"message": "Job ID in URL ({}) does not match job "
@@ -129,7 +129,7 @@ class TestJobApi(unittest.TestCase):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-        job_response = client.put("/job/{}".format(job_id))
+        job_response = client.put("/api/job/{}".format(job_id))
         error_message = {"message": "Job {} not found".format(job_id)}
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
@@ -144,7 +144,7 @@ class TestJobApi(unittest.TestCase):
         job_new = {"id": job_id, "parameters": {"blue":
                    "high", "green": "low"}}
         client = test_client(jobs)
-        job_response = client.put("/job/{}".format(job_id),
+        job_response = client.put("/api/job/{}".format(job_id),
                                   data=json.dumps(job_new),
                                   content_type='application/json')
         assert job_response.status_code == 200
@@ -160,7 +160,7 @@ class TestJobApi(unittest.TestCase):
         jobs.create(job)
         client = test_client(jobs)
         invalid_job = {"no-id-field": "valid-json"}
-        job_response = client.put("/job/{}".format(job_id),
+        job_response = client.put("/api/job/{}".format(job_id),
                                   data=json.dumps(invalid_job),
                                   content_type='application/json')
         error_message = {"message": "Message body is not valid Job JSON"}
@@ -171,7 +171,7 @@ class TestJobApi(unittest.TestCase):
     def test_delete_with_no_job_id_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
-        job_response = client.delete("/job/")
+        job_response = client.delete("/api/job/")
         assert job_response.status_code == 404
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
@@ -180,7 +180,7 @@ class TestJobApi(unittest.TestCase):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-        job_response = client.delete("/job/{}".format(job_id))
+        job_response = client.delete("/api/job/{}".format(job_id))
         error_message = {"message": "Job {} not found".format(job_id)}
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
@@ -193,7 +193,7 @@ class TestJobApi(unittest.TestCase):
                "depth": 5}}
         jobs.create(job)
         client = test_client(jobs)
-        job_response = client.delete("/job/{}".format(job_id))
+        job_response = client.delete("/api/job/{}".format(job_id))
         assert job_response.status_code == 204
         assert response_to_json(job_response) is None
         assert jobs.get_by_id(job_id) is None
@@ -207,10 +207,10 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/job/{}".format(job_id),
+        job_response = client.post("/api/job/{}".format(job_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
@@ -225,12 +225,12 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         job = {"id": job_id[::-1], "parameters": {"height": 3}}
 
-        job_response = client.post("/job/{}".format(job_id),
+        job_response = client.post("/api/job/{}".format(job_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
@@ -247,10 +247,10 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/job/{}".format(job_id),
+        job_response = client.post("/api/job/{}".format(job_id),
                                    data=None,
                                    content_type=None)
 
@@ -267,12 +267,12 @@ class TestJobApi(unittest.TestCase):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         broken_json = {'test': 5}
 
-        job_response = client.post("/job/{}".format(job_id),
+        job_response = client.post("/api/job/{}".format(job_id),
                                    data=json.dumps(broken_json),
                                    content_type='application/json')
 
@@ -285,7 +285,7 @@ class TestJobApi(unittest.TestCase):
     def test_patch_with_no_job_id_returns_error_with_404_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
-        job_response = client.patch("/job/")
+        job_response = client.patch("/api/job/")
         assert job_response.status_code == 404
         # No content check as we are expecting the standard 404 error message
         # TODO: Get the 404 response defined for the app and compare it here
@@ -299,7 +299,7 @@ class TestJobApi(unittest.TestCase):
         jobs.create(job)
         job = None
         client = test_client(jobs)
-        job_response = client.patch("/job/{}".format(job_id),
+        job_response = client.patch("/api/job/{}".format(job_id),
                                     data=json.dumps(job),
                                     content_type='application/json-patch+json')
         error_message = {"message": "Message body could not be parsed as JSON"}
@@ -316,7 +316,7 @@ class TestJobApi(unittest.TestCase):
         client = test_client(jobs)
         # We don't add content_type='application/json' because, if we do the
         # framework catches invalid JSON before it gets to our response handler
-        job_response = client.patch("/job/{}".format(job_id),
+        job_response = client.patch("/api/job/{}".format(job_id),
                                     data=invalid_json)
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
@@ -326,7 +326,7 @@ class TestJobApi(unittest.TestCase):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
-        job_response = client.patch("/job/{}".format(job_id))
+        job_response = client.patch("/api/job/{}".format(job_id))
         error_message = {"message": "Job {} not found".format(job_id)}
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
@@ -343,9 +343,9 @@ class TestJobApi(unittest.TestCase):
                    7, "green": "low", "depth": None}}
         client = test_client(jobs)
         job_response = client.patch(
-            "/job/{}".format(job_id_url),
-            data=json.dumps(job_new),
-            content_type='application/merge-patch+json')
+                        "/api/job/{}".format(job_id_url),
+                        data=json.dumps(job_new),
+                        content_type='application/merge-patch+json')
         error_message = {"message": "Job ID in URL ({}) does not match job "
                          "ID in message JSON ({}).".format(job_id_url,
                                                            job_id_json)}
@@ -367,9 +367,9 @@ class TestJobApi(unittest.TestCase):
                             "width": 4, "green": "low"}}
         client = test_client(jobs)
         job_response = client.patch(
-            "/job/{}".format(job_id),
-            data=json.dumps(job_patch),
-            content_type='application/merge-patch+json')
+                        "/api/job/{}".format(job_id),
+                        data=json.dumps(job_patch),
+                        content_type='application/merge-patch+json')
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_new_expected
         assert jobs.get_by_id(job_id) == job_new_expected
@@ -416,10 +416,10 @@ class TestRunApi(object):
 
         job_id = job['id']
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/run/{}".format(job_id),
+        job_response = client.post("/api/run/{}".format(job_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
@@ -434,18 +434,19 @@ class TestRunApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         bad_id = "2s3"
 
-        job_response = client.post("/run/{}".format(bad_id),
+        job_response = client.post("/api/run/{}".format(bad_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
-                                   'this URI [/run/{0}] but did you mean '
-                                   '/run/<string:job_id> ?').format(bad_id)}
+                                   'this URI [/api/run/{0}] but did'
+                                   ' you mean /api/run/<string:job_id> '
+                                   '?').format(bad_id)}
 
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
@@ -458,10 +459,10 @@ class TestRunApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/run/{}".format(job_id))
+        job_response = client.post("/api/run/{}".format(job_id))
 
         err_message = {'message': ('Message body could not be parsed as JSON')}
         assert response_to_json(job_response) == err_message
@@ -475,12 +476,12 @@ class TestRunApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         broken_json = {'test': 5}
 
-        job_response = client.post("/run/{}".format(job_id),
+        job_response = client.post("/api/run/{}".format(job_id),
                                    data=json.dumps(broken_json),
                                    content_type='application/json')
 
@@ -530,10 +531,10 @@ class TestSetupApi(object):
 
         job_id = job['id']
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/setup/{}".format(job_id),
+        job_response = client.post("/api/setup/{}".format(job_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
@@ -548,18 +549,20 @@ class TestSetupApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         bad_id = "2s3"
 
-        job_response = client.post("/setup/{}".format(bad_id),
+        job_response = client.post("/api/setup/{}".format(bad_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
-                                   'this URI [/setup/{0}] but did you mean '
-                                   '/setup/<string:job_id> ?').format(bad_id)}
+                                   'this URI [/api/setup/{0}] but did '
+                                   'you mean /api/setup/<string:job_id> or '
+                                   '/api/run/<string:job_id> '
+                                   '?').format(bad_id)}
 
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
@@ -572,10 +575,10 @@ class TestSetupApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/setup/{}".format(job_id))
+        job_response = client.post("/api/setup/{}".format(job_id))
 
         err_message = {'message': ('Message body could not be parsed as JSON')}
         assert response_to_json(job_response) == err_message
@@ -589,12 +592,12 @@ class TestSetupApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         broken_json = {'test': 5}
 
-        job_response = client.post("/setup/{}".format(job_id),
+        job_response = client.post("/api/setup/{}".format(job_id),
                                    data=json.dumps(broken_json),
                                    content_type='application/json')
 
@@ -640,10 +643,10 @@ class TestCancelApi(object):
 
         job_id = job['id']
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/cancel/{}".format(job_id),
+        job_response = client.post("/api/cancel/{}".format(job_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
@@ -658,18 +661,19 @@ class TestCancelApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         bad_id = "2s3"
 
-        job_response = client.post("/cancel/{}".format(bad_id),
+        job_response = client.post("/api/cancel/{}".format(bad_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
-                                   'this URI [/cancel/{0}] but did you mean '
-                                   '/cancel/<string:job_id> ?').format(bad_id)}
+                                   'this URI [/api/cancel/{0}] but did '
+                                   'you mean /api/cancel/<string:job_id> '
+                                   '?').format(bad_id)}
 
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
@@ -712,10 +716,10 @@ class TestProgressApi(object):
 
         job_id = job['id']
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
-        job_response = client.post("/progress/{}".format(job_id),
+        job_response = client.post("/api/progress/{}".format(job_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
@@ -730,18 +734,18 @@ class TestProgressApi(object):
         job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
         job = {"id": job_id, "parameters": {"height": 3}}
 
-        client.post("/job", data=json.dumps(job),
+        client.post("/api/job", data=json.dumps(job),
                     content_type='application/json')
 
         bad_id = "2s3"
 
-        job_response = client.post("/progress/{}".format(bad_id),
+        job_response = client.post("/api/progress/{}".format(bad_id),
                                    data=json.dumps(job),
                                    content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
-                                   'this URI [/progress/{0}] but did '
-                                   'you mean /progress/'
+                                   'this URI [/api/progress/{0}] but did '
+                                   'you mean /api/progress/'
                                    '<string:job_id> ?').format(bad_id)}
 
         assert response_to_json(job_response) == err_message
@@ -769,12 +773,12 @@ class TestJobsApi(object):
         client = test_client(jobs)
 
         def job_uri(job_id):
-            return "/job/{}".format(job_id)
+            return "/api/job/{}".format(job_id)
 
         expected_response = [{"id": job_id_1, "uri": job_uri(job_id_1)},
                              {"id": job_id_2, "uri": job_uri(job_id_2)},
                              {"id": job_id_3, "uri": job_uri(job_id_3)}]
-        job_response = client.get("/job")
+        job_response = client.get("/api/job")
         assert job_response.status_code == 200
         # Both lists of dictionaries need to have same sort order to
         # successfully compare
@@ -789,7 +793,7 @@ class TestJobsApi(object):
         job = {"id": job_id,
                "parameters": {"height": 3, "width": 4, "depth": 5}}
         client = test_client(jobs)
-        job_response = client.post("/job", data=json.dumps(job),
+        job_response = client.post("/api/job", data=json.dumps(job),
                                    content_type='application/json')
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job
@@ -805,7 +809,7 @@ class TestJobsApi(object):
         job_new = {"id": job_id, "parameters": {"blue": "high",
                    "green": "low"}}
         client = test_client(jobs)
-        job_response = client.post("/job", data=json.dumps(job_new),
+        job_response = client.post("/api/job", data=json.dumps(job_new),
                                    content_type='application/json')
         error_message = {"message": "Job with ID {} already "
                          "exists".format(job_id)}
@@ -816,7 +820,7 @@ class TestJobsApi(object):
     def test_post_with_none_returns_error_with_400_status(self):
         jobs = JobRepositoryMemory()
         client = test_client(jobs)
-        job_response = client.post("/job", data=json.dumps(None),
+        job_response = client.post("/api/job", data=json.dumps(None),
                                    content_type='application/json')
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
@@ -829,7 +833,7 @@ class TestJobsApi(object):
         client = test_client(jobs)
         # We don't add content_type='application/json' because, if we do the
         # framework catches invalid JSON before it gets to our response handler
-        job_response = client.post("/job", data=invalid_json)
+        job_response = client.post("/api/job", data=invalid_json)
         error_message = {"message": "Message body could not be parsed as JSON"}
         assert job_response.status_code == 400
         assert response_to_json(job_response) == error_message
@@ -838,7 +842,7 @@ class TestJobsApi(object):
         jobs = JobRepositoryMemory()
         invalid_job = {"no-id-field": "valid-json"}
         client = test_client(jobs)
-        job_response = client.post("/job", data=json.dumps(invalid_job),
+        job_response = client.post("/api/job", data=json.dumps(invalid_job),
                                    content_type='application/json')
         error_message = {"message": "Message body is not valid Job JSON"}
         assert job_response.status_code == 400
