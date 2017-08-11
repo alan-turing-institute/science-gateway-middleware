@@ -627,7 +627,7 @@ class TestSetupApi(object):
                                    'this URI [/api/setup/{0}] but did you '
                                    'mean /api/setup/<string:job_id>'
                                    ' ?').format(bad_id)}
-        print(response_to_json(job_response))
+        # print(response_to_json(job_response))
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
 
@@ -697,8 +697,6 @@ class TestCancelApi(object):
 
         job = new_job4()
         client = test_client(jobs)
-
-        job_id = job.id
 
         client.post("/api/job", data=json.dumps(job_to_json(job)),
                     content_type='application/json')

@@ -5,7 +5,13 @@ def new_job1():
     # NOTE: Ensure to update new_job1_json() to match any changes made here
     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
     job = Job(id=job_id)
+
+    job.description = "j1description"
+    job.name = "j1name"
+    job.status = "j1status"
+    job.status_description = "j1status_description"
     job.user = "j1user"
+
     job.parameters.append(Parameter(name="j1p1name", value="j1p1value"))
     job.parameters.append(Parameter(name="j1p2name", value="j1p2value"))
     job.templates.append(Template(source_uri="j1t1source",
@@ -26,6 +32,10 @@ def new_job1():
 def new_job1_json():
     # NOTE: Ensure to update new_job1() to match any changes made here
     return {"id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "description": "j1description",
+            "name": "j1name",
+            "status": "j1status",
+            "status_description": "j1status_description",
             "user": "j1user",
             "parameters": [{"name": "j1p1name", "value": "j1p1value"},
                            {"name": "j1p2name", "value": "j1p2value"}],
@@ -47,7 +57,13 @@ def new_job2():
     # NOTE: Ensure to update new_job2_json() to match any changes made here
     job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
     job = Job(id=job_id)
+
+    job.description = "j2description"
+    job.name = "j2name"
+    job.status = "j2status"
+    job.status_description = "j2status_description"
     job.user = "j2user"
+
     job.parameters.append(Parameter(name="j2p1name", value="j2p1value"))
     job.parameters.append(Parameter(name="j2p2name", value="j2p2value"))
     job.templates.append(Template(source_uri="j2t1source",
@@ -68,6 +84,10 @@ def new_job2():
 def new_job2_json():
     # NOTE: Ensure to update new_job2() to match any changes made here
     return {"id": "9044394f-de29-4be3-857f-33a4fdca0be3",
+            "description": "j2description",
+            "name": "j2name",
+            "status": "j2status",
+            "status_description": "j2status_description",
             "user": "j2user",
             "parameters": [{"name": "j2p1name", "value": "j2p1value"},
                            {"name": "j2p2name", "value": "j2p2value"}],
@@ -109,7 +129,13 @@ def new_job3():
 def new_job4():
     job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
     job = Job(id=job_id)
+
+    job.description = "j4description"
+    job.name = "j4name"
+    job.status = "j4status"
+    job.status_description = "j4status_description"
     job.user = "j4user"
+
     job.parameters.append(Parameter(name="j4p1name", value="j4p1value"))
     job.parameters.append(Parameter(name="j4p2name", value="j4p2value"))
     job.templates.append(Template(source_uri="j4t1source",
@@ -134,7 +160,13 @@ def new_job4():
 def new_job5():
     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
     job = Job(id=job_id)
+
+    job.description = "j5description"
+    job.name = "j5name"
+    job.status = "j5status"
+    job.status_description = "j5status_description"
     job.user = "j5user"
+
     job.parameters.append(Parameter(name="viscosity_phase_1", value=42.0))
 
     job.templates.append(Template(source_uri="./resources/templates/Blue.nml",

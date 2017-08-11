@@ -4,7 +4,13 @@ from uuid import uuid4
 
 class Job(db.Model):
     id = db.Column(db.String, primary_key=True)
+
+    description = db.Column(db.String)
+    name = db.Column(db.String)
+    status = db.Column(db.String)
+    status_description = db.Column(db.String)
     user = db.Column(db.String)
+
     parameters = db.relationship("Parameter", back_populates="job",
                                  lazy="joined")
     templates = db.relationship("Template", back_populates="job",
@@ -14,13 +20,30 @@ class Job(db.Model):
     inputs = db.relationship("Input", back_populates="job",
                              lazy="joined")
 
-    def __init__(self, id=None, user=None, parameters=[], templates=[],
-                 scripts=[], inputs=[]):
+    def __init__(
+            self,
+            id=None,
+            description=None,
+            name=None,
+            status=None,
+            status_description=None,
+            user=None,
+            parameters=[],
+            templates=[],
+            scripts=[],
+            inputs=[]):
         if id is not None:
             self.id = id
         else:
             self.id = str(uuid4())
+
+        # add string fields
+        self.description = description
+        self.name = name
+        self.status = status
+        self.status_description = status_description
         self.user = user
+
         self.parameters = parameters
         self.templates = templates
         self.scripts = scripts
@@ -29,6 +52,10 @@ class Job(db.Model):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return (self.id == other.id and
+                    self.description == other.description and
+                    self.name == other.name and
+                    self.status == other.status and
+                    self.status_description == other.status_description and
                     self.user == other.user and
                     sorted(self.parameters) == sorted(other.parameters) and
                     sorted(self.templates) == sorted(other.templates) and
