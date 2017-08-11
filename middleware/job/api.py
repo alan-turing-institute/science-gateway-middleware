@@ -288,29 +288,49 @@ class RunApi(Resource):
             return manager.run()
 
 
-class TemplateApi(Resource):
-    '''API endpoint called to get a job template (GET)'''
+class CasesApi(Resource):
+    '''API endpoint called to get a list of cases (GET)'''
     def __init__(self, **kwargs):
         pass
 
     def get(self):
 
-        case = request.json
-
-        # Check the json supplied is not empty and is valid
-        if case is None:
-            abort(400, message="Message body could not be parsed as JSON")
-
-        if case.get("case") is None:
-            abort(400, message="Message body is not valid case JSON")
-
-        case_path = case['case']
+        # This needs to be made a config variable
+        cases_path = './resources/cases/blue.json'
 
         try:
             # Load the case template
-            with open(case_path) as json_data:
-                template = json.load(json_data)
+            with open(cases_path) as json_data:
+                cases = json.load(json_data)
         except:
-            abort(404, message="Template file, {} not found".format(case_path))
+            abort(404, message="Cases file, {} not found".format(cases_path))
 
-        return template, 200, {'Content-Type': 'application/json'}
+        return cases, 200, {'Content-Type': 'application/json'}
+
+
+class CaseApi(Resource):
+    '''API endpoint called to get specific case job template (GET)'''
+    def __init__(self, **kwargs):
+        pass
+
+    def get(self, case_id):
+
+        # This needs to be made a config variable
+        cases_path = './resources/cases/blue.json'
+
+        # Get the case id from the list of cases
+        try:
+            # Load the cases file
+            with open(cases_path) as json_data:
+                cases = json.load(json_data)
+        except:
+            abort(404, message="Cases file, {} not found".format(cases_path))
+
+        # Find the case corresponding to the id from the list of cases
+        case = next((case for case in cases['cases'] if case['id'] == case_id),
+                    None)
+
+        if case:
+            return case, 200, {'Content-Type': 'application/json'}
+        else:
+            abort(404, message="Case file not found in list of cases")

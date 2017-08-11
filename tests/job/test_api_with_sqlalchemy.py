@@ -617,7 +617,7 @@ class TestSetupApi(object):
         client.post("/api/job", data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
-        bad_id = "2si3"
+        bad_id = "2sq3fdjkdfk"
 
         job_response = client.post("/api/setup/{}".format(bad_id),
                                    data=json.dumps(job_to_json(job)),
@@ -627,7 +627,7 @@ class TestSetupApi(object):
                                    'this URI [/api/setup/{0}] but did you '
                                    'mean /api/setup/<string:job_id>'
                                    ' ?').format(bad_id)}
-        print(response_to_json(job_response))
+
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
 
@@ -703,7 +703,7 @@ class TestCancelApi(object):
         client.post("/api/job", data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
-        bad_id = "2s3"
+        bad_id = "2s43"
 
         job_response = client.post("/api/cancel/{}".format(bad_id),
                                    data=json.dumps(job_to_json(job)),
@@ -749,7 +749,7 @@ class TestProgressApi(object):
         client.post("/api/job", data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
-        bad_id = "2s3"
+        bad_id = "2os3"
 
         job_response = client.post("/api/progress/{}".format(bad_id),
                                    data=json.dumps(job_to_json(job)),
@@ -764,45 +764,48 @@ class TestProgressApi(object):
         assert job_response.status_code == 404
 
 
-class TestTemplateApi(object):
+class TestCasesApi(object):
 
-    def test_get_template_valid_request(self):
+    def test_get_cases_valid_request(self):
 
         client = test_client()
-        valid_json = '{"case": "./resources/cases/case1.json"}'
+        response = client.get("/api/cases/")
 
-        response = client.get("api/template/", data=valid_json,
-                              content_type='application/json')
-
-        # NOT TESTING AGAINST TEMPLATE CONTENTS AS WE DONT KNOW THE
+        # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
         # FINAL FORMAT YET. TODO: FIX THIS!
         assert response.status_code == 200
 
-    def test_get_template_invalid_json(self):
+    def test_get_case_missing_cases_file(self):
         client = test_client()
-        invalid_json = '{"incorrect_key": "./resources/cases/case1.json"}'
+        response = client.get("/api/cases/")
 
-        response = client.get("api/template/", data=invalid_json,
-                              content_type='application/json')
+        # TODO: UPDATE THIS TEST ONCE cases_path IS EXPOSED AS A PARAMETER
+        # assert response.status_code == 404
 
-        err_message = {'message': 'Message body is not valid case JSON'}
 
-        assert response.status_code == 400
-        assert response_to_json(response) == err_message
+class TestCaseApi(object):
 
-    def test_get_template_no_json(self):
+    def test_get_case_valid_request(self):
+
         client = test_client()
+        case_id = '85b8995c-63a9-474f-8fdc-52c7582ec2ac'
+        response = client.get("/api/cases/{}".format(case_id))
 
-        response = client.get("api/template/")
-        err_message = {'message': 'Message body could not be parsed as JSON'}
+        # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
+        # FINAL FORMAT YET. TODO: FIX THIS!
+        assert response.status_code == 200
 
-        assert response.status_code == 400
-        assert response_to_json(response) == err_message
+    def test_get_case_valid_request_invalid_case_id(self):
 
-    def test_get_template_missing_template_file(self):
         client = test_client()
-        missing_file_json = '{"case": "./resources/cases/case_missing.json"}'
-        response = client.get("api/template/", data=missing_file_json,
-                              content_type='application/json')
+        case_id = 'hello'
+        response = client.get("/api/cases/{}".format(case_id))
 
         assert response.status_code == 404
+
+    def test_get_case_missing_case_file(self):
+        client = test_client()
+        response = client.get("/api/cases/")
+
+        # TODO: UPDATE THIS TEST ONCE cases_path IS EXPOSED AS A PARAMETER
+        # assert response.status_code == 404
