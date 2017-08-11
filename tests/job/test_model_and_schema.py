@@ -165,3 +165,16 @@ class TestSchema(object):
         job2_json = job_to_json(job2)
         expected_job2_json = new_job2_json()
         assert job2_json == expected_job2_json
+
+    def test_json_to_job_evaluates_to_true_in_if(self):
+        job1_json = new_job1_json()
+        job1 = json_to_job(job1_json)
+        if job1:
+            assert True
+        else:
+            assert False
+
+    def test_json_to_job_evaluates_to_true_in_assert(self):
+        job1_json = new_job1_json()
+        job1 = json_to_job(job1_json)
+        assert job1
