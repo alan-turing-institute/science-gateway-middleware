@@ -285,3 +285,13 @@ class RunApi(Resource):
         else:
             manager = JIM(updated_job)
             return manager.run()
+
+
+class TemplateApi(Resource):
+    '''API endpoint called to get a job tenmplate (GET)'''
+    def __init__(self, **kwargs):
+        pass
+
+    def get(self):
+
+        return 'Hello'

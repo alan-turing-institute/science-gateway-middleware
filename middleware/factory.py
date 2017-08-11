@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_cors import CORS
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
-                                CancelApi)
+                                CancelApi, TemplateApi)
 from middleware.database import db, ma
 
 
@@ -67,5 +67,7 @@ def create_app(config_name, job_repository=None):
     api.add_resource(CancelApi, '/api/cancel/<string:job_id>',
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
+
+    api.add_resource(TemplateApi, '/api/template/')
 
     return app
