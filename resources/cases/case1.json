@@ -1,0 +1,40 @@
+{
+  "parameters": [{
+      "default": "0.004",
+      "value": "0.004",
+      "name": "viscosity_phase_1"
+    },
+    {
+      "default": "0.004",
+      "value": "0.07",
+      "name": "viscosity_phase_2"
+    }
+  ],
+  "inputs": [{
+    "destination_path": "project/case/",
+    "source_uri": "./resources/inputs/mesh_file.stl"
+  }],
+  "scripts": [{
+    "destination_path": "project/case/",
+    "source_uri": "./resources/scripts/run_job.sh",
+    "action": "run"
+  }],
+  "user": "lrmason",
+  "templates": [{
+    "destination_path": "project/case/",
+    "source_uri": "./resources/templates/Blue.nml"
+  }],
+  "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+  "name": "Talcum powder to flour",
+  "description": "Job description",
+  "creation_datetime": "",
+  "run_start_datetime": "",
+  "run_end_datetime": "",
+  "status": "",
+  "status_description": "",
+  "case": {
+    "id": "yy69843b-4939-6f37-96c7-c382c3e74b46",
+    "name": "PG Product changeover",
+    "description": "Case description"
+  }
+}

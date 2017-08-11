@@ -762,3 +762,47 @@ class TestProgressApi(object):
 
         assert response_to_json(job_response) == err_message
         assert job_response.status_code == 404
+
+
+class TestTemplateApi(object):
+
+    def test_get_template_valid_request(self):
+
+        client = test_client()
+        valid_json = '{"case": "./resources/cases/case1.json"}'
+
+        response = client.get("api/template/", data=valid_json,
+                              content_type='application/json')
+
+        # NOT TESTING AGAINST TEMPLATE CONTENTS AS WE DONT KNOW THE
+        # FINAL FORMAT YET. TODO: FIX THIS!
+        assert response.status_code == 200
+
+    def test_get_template_invalid_json(self):
+        client = test_client()
+        invalid_json = '{"incorrect_key": "./resources/cases/case1.json"}'
+
+        response = client.get("api/template/", data=invalid_json,
+                              content_type='application/json')
+
+        err_message = {'message': 'Message body is not valid case JSON'}
+
+        assert response.status_code == 400
+        assert response_to_json(response) == err_message
+
+    def test_get_template_no_json(self):
+        client = test_client()
+
+        response = client.get("api/template/")
+        err_message = {'message': 'Message body could not be parsed as JSON'}
+
+        assert response.status_code == 400
+        assert response_to_json(response) == err_message
+
+    def test_get_template_missing_template_file(self):
+        client = test_client()
+        missing_file_json = '{"case": "./resources/cases/case_missing.json"}'
+        response = client.get("api/template/", data=missing_file_json,
+                              content_type='application/json')
+
+        assert response.status_code == 404
