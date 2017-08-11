@@ -124,7 +124,7 @@ class JobsApi(Resource):
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
             summary_json = job_summary_json(job)
-            summary_json["uri"] = "/job/{}".format(job_id)
+            summary_json["uri"] = "/api/job/{}".format(job_id)
             return summary_json
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
