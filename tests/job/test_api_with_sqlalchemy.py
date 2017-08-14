@@ -704,7 +704,7 @@ class TestCancelApi(object):
         client.post("/api/job", data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
-        bad_id = "2s43"
+        bad_id = "2s439"
 
         job_response = client.post("/api/cancel/{}".format(bad_id),
                                    data=json.dumps(job_to_json(job)),
@@ -770,20 +770,20 @@ class TestCasesApi(object):
     def test_get_cases_valid_request(self):
 
         client = test_client()
-        response = client.get("/api/cases/")
+        response = client.get("/api/cases")
 
         # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
         # FINAL FORMAT YET. TODO: FIX THIS!
         assert response.status_code == 200
 
-    def test_get_case_missing_cases_file(self):
+    def test_get_cases_missing_cases_file(self):
         from config.base import cases_path
 
         # Rename file so we get a 404 error
         os.rename(cases_path, '{}.tmp'.format(cases_path))
 
         client = test_client()
-        response = client.get("/api/cases/")
+        response = client.get("/api/cases")
 
         # Undo Rename
         os.rename('{}.tmp'.format(cases_path), cases_path)

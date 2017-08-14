@@ -22,6 +22,9 @@ def create_app(config_name, job_repository=None):
     # Load the path to the cases file from the base config
     from config.base import cases_path
 
+    # Load the URI stems from the base config
+    from config.base import URI_Stems
+
     # TODO: Remove the conditional here. This is only to let us still inject
     # job_repository explicitly while we refactor to make data store dependency
     # purely set in configuration
@@ -48,33 +51,34 @@ def create_app(config_name, job_repository=None):
 
     api = Api(app)
 
-    api.add_resource(JobApi, '/api/job/<string:job_id>',
-                     resource_class_kwargs={'job_repository':
-                                            app._job_repository})
-    api.add_resource(JobsApi, '/api/job',
+    api.add_resource(JobApi, '{}/<string:job_id>'.format(URI_Stems['job']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(SetupApi, '/api/setup/<string:job_id>',
+    api.add_resource(JobsApi, URI_Stems['job'],
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(RunApi, '/api/run/<string:job_id>',
+    api.add_resource(SetupApi, '{}/<string:job_id>'.format(URI_Stems['setup']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(ProgressApi, '/api/progress/<string:job_id>',
+    api.add_resource(RunApi, '{}/<string:job_id>'.format(URI_Stems['run']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(CancelApi, '/api/cancel/<string:job_id>',
+    api.add_resource(ProgressApi, '{}/<string:job_id>'.format(URI_Stems['progress']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(CasesApi, '/api/cases/',
+    api.add_resource(CancelApi, '{}/<string:job_id>'.format(URI_Stems['cancel']),
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(CasesApi, URI_Stems['cases'],
                      resource_class_kwargs={'cases_path': cases_path})
 
-    api.add_resource(CaseApi, '/api/cases/<string:case_id>',
+    api.add_resource(CaseApi, '{}/<string:case_id>'.format(URI_Stems['cases']),
                      resource_class_kwargs={'cases_path': cases_path})
 
     return app

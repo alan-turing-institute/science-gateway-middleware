@@ -3,6 +3,7 @@ import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
 from middleware.job.schema import job_to_json, json_to_job
+from config.base import URI_Stems
 
 
 def job_summary_json(job):
@@ -117,7 +118,7 @@ class JobsApi(Resource):
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
             summary_json = job_summary_json(job)
-            summary_json["uri"] = "/api/job/{}".format(job_id)
+            summary_json["uri"] = "{}{}".format(URI_Stems['job'], job_id)
             return summary_json
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
