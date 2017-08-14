@@ -105,16 +105,15 @@ class Parameter(db.Model):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return (
-                    self.help == other.help and
-                    self.label == other.label and
-                    self.max_value == other.max_value and
-                    self.min_value == other.min_value and
-                    self.name == other.name and
-                    self.type == other.type and
-                    self.type_value == other.type_value and
-                    self.units == other.units and
-                    self.value == other.value
-                    )
+                self.help == other.help and
+                self.label == other.label and
+                self.max_value == other.max_value and
+                self.min_value == other.min_value and
+                self.name == other.name and
+                self.type == other.type and
+                self.type_value == other.type_value and
+                self.units == other.units and
+                self.value == other.value)
         return NotImplemented
 
     def __ne__(self, other):
@@ -142,8 +141,7 @@ class Parameter(db.Model):
             self.type,
             self.type_value,
             self.units,
-            self.value,
-            ))
+            self.value))
 
 
 class Template(db.Model):
