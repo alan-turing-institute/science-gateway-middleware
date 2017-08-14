@@ -1,4 +1,60 @@
 from middleware.job.models import Job, Parameter, Template, Script, Input
+import arrow
+
+# "c" denotes creation_datetime
+# "s" denotes start_datetime
+# "e" denotes end_datetime
+
+j1c_iso_string = "2017-08-12T13:38:18.153+05:00"
+j1s_iso_string = "2017-08-12T14:38:18.153+05:00"
+j1e_iso_string = "2017-08-12T15:38:18.153+05:00"
+
+j2c_iso_string = "2017-08-12T13:38:18.153+00:00"
+j2s_iso_string = "2017-08-12T14:38:18.153+00:00"
+j2e_iso_string = "2017-08-12T15:38:18.153+00:00"
+
+j3c_iso_string = "2017-08-12T13:38:18.153+00:00"
+j3s_iso_string = "2017-08-12T14:38:18.153+00:00"
+j3e_iso_string = "2017-08-12T15:38:18.153+00:00"
+
+j4c_iso_string = "2017-08-12T13:38:18.153+00:00"
+j4s_iso_string = "2017-08-12T14:38:18.153+00:00"
+j4e_iso_string = "2017-08-12T15:38:18.153+00:00"
+
+j5c_iso_string = "2017-08-12T13:38:18.153+00:00"
+j5s_iso_string = "2017-08-12T14:38:18.153+00:00"
+j5e_iso_string = "2017-08-12T15:38:18.153+00:00"
+
+
+def arrow_processing(iso_string):
+    arrow_object = arrow.get(iso_string)
+
+    # Avoiding arrow_object.to('UTC').format()
+    # by default, .format() strips millisecond data
+    # by default, .format() strips "T" symbol
+    utc_string = str(arrow_object.to('UTC'))
+    return arrow_object, utc_string
+
+
+j1c_arrow, j1c_utc_string = arrow_processing(j1c_iso_string)
+j1s_arrow, j1s_utc_string = arrow_processing(j1s_iso_string)
+j1e_arrow, j1e_utc_string = arrow_processing(j1e_iso_string)
+
+j2c_arrow, j2c_utc_string = arrow_processing(j2c_iso_string)
+j2s_arrow, j2s_utc_string = arrow_processing(j2s_iso_string)
+j2e_arrow, j2e_utc_string = arrow_processing(j2e_iso_string)
+
+j3c_arrow, j3c_utc_string = arrow_processing(j3c_iso_string)
+j3s_arrow, j3s_utc_string = arrow_processing(j3s_iso_string)
+j3e_arrow, j3e_utc_string = arrow_processing(j3e_iso_string)
+
+j4c_arrow, j4c_utc_string = arrow_processing(j4c_iso_string)
+j4s_arrow, j4s_utc_string = arrow_processing(j4s_iso_string)
+j4e_arrow, j4e_utc_string = arrow_processing(j4e_iso_string)
+
+j5c_arrow, j5c_utc_string = arrow_processing(j5c_iso_string)
+j5s_arrow, j5s_utc_string = arrow_processing(j5s_iso_string)
+j5e_arrow, j5e_utc_string = arrow_processing(j5e_iso_string)
 
 
 def new_job1():
@@ -11,6 +67,10 @@ def new_job1():
     job.status = "j1status"
     job.status_description = "j1status_description"
     job.user = "j1user"
+
+    job.creation_datetime = j1c_arrow
+    job.start_datetime = j1s_arrow
+    job.end_datetime = j1e_arrow
 
     job.parameters.append(Parameter(name="j1p1name", value="j1p1value"))
     job.parameters.append(Parameter(name="j1p2name", value="j1p2value"))
@@ -37,6 +97,9 @@ def new_job1_json():
             "status": "j1status",
             "status_description": "j1status_description",
             "user": "j1user",
+            "creation_datetime": j1c_utc_string,
+            "start_datetime": j1s_utc_string,
+            "end_datetime": j1e_utc_string,
             "parameters": [{"name": "j1p1name", "value": "j1p1value"},
                            {"name": "j1p2name", "value": "j1p2value"}],
             "templates": [{"source_uri": "j1t1source",
@@ -64,6 +127,10 @@ def new_job2():
     job.status_description = "j2status_description"
     job.user = "j2user"
 
+    job.creation_datetime = j2c_arrow
+    job.start_datetime = j2s_arrow
+    job.end_datetime = j2e_arrow
+
     job.parameters.append(Parameter(name="j2p1name", value="j2p1value"))
     job.parameters.append(Parameter(name="j2p2name", value="j2p2value"))
     job.templates.append(Template(source_uri="j2t1source",
@@ -89,6 +156,9 @@ def new_job2_json():
             "status": "j2status",
             "status_description": "j2status_description",
             "user": "j2user",
+            "creation_datetime": j2c_utc_string,
+            "start_datetime": j2s_utc_string,
+            "end_datetime": j2e_utc_string,
             "parameters": [{"name": "j2p1name", "value": "j2p1value"},
                            {"name": "j2p2name", "value": "j2p2value"}],
             "templates": [{"source_uri": "j2t1source",
@@ -108,7 +178,17 @@ def new_job2_json():
 def new_job3():
     job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
     job = Job(id=job_id)
+
+    job.description = "j3description"
+    job.name = "j3name"
+    job.status = "j3status"
+    job.status_description = "j3status_description"
     job.user = "j3user"
+
+    job.creation_datetime = j3c_arrow
+    job.start_datetime = j3s_arrow
+    job.end_datetime = j3e_arrow
+
     job.parameters.append(Parameter(name="j3p1name", value="j3p1value"))
     job.parameters.append(Parameter(name="j3p2name", value="j3p2value"))
     job.templates.append(Template(source_uri="j3t1source",
@@ -135,6 +215,10 @@ def new_job4():
     job.status = "j4status"
     job.status_description = "j4status_description"
     job.user = "j4user"
+
+    job.creation_datetime = j4c_arrow
+    job.start_datetime = j4s_arrow
+    job.end_datetime = j4e_arrow
 
     job.parameters.append(Parameter(name="j4p1name", value="j4p1value"))
     job.parameters.append(Parameter(name="j4p2name", value="j4p2value"))
@@ -166,6 +250,10 @@ def new_job5():
     job.status = "j5status"
     job.status_description = "j5status_description"
     job.user = "j5user"
+
+    job.creation_datetime = j5c_arrow
+    job.start_datetime = j5s_arrow
+    job.end_datetime = j5e_arrow
 
     job.parameters.append(Parameter(name="viscosity_phase_1", value=42.0))
 

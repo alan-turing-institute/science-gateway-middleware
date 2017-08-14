@@ -6,6 +6,7 @@ from middleware.job.models import (
     Input,
     Script
 )
+import arrow
 
 
 class ParameterSchema(ma.ModelSchema):
@@ -42,6 +43,9 @@ class JobSchema(ma.ModelSchema):
             'status',
             'status_description',
             'user',
+            'creation_datetime',
+            'start_datetime',
+            'end_datetime',
             'parameters',
             'templates',
             'scripts',
@@ -60,6 +64,14 @@ class JobSchema(ma.ModelSchema):
         templates = TemplateSchema(many=True).load(data.get("templates")).data
         scripts = ScriptSchema(many=True).load(data.get("scripts")).data
         inputs = InputSchema(many=True).load(data.get("inputs")).data
+
+        creation_datetime = arrow.get(
+                                data.get("creation_datetime"))
+        start_datetime = arrow.get(
+                                data.get("start_datetime"))
+        end_datetime = arrow.get(
+                                data.get("end_datetime"))
+
         job = Job(
                   id=data.get("id"),
                   description=data.get("description"),
@@ -67,6 +79,9 @@ class JobSchema(ma.ModelSchema):
                   status=data.get("status"),
                   status_description=data.get("status_description"),
                   user=data.get("user"),
+                  creation_datetime=creation_datetime,
+                  start_datetime=start_datetime,
+                  end_datetime=end_datetime,
                   parameters=parameters,
                   templates=templates,
                   scripts=scripts,

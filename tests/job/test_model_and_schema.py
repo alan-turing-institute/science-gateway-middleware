@@ -133,6 +133,7 @@ class TestModel(object):
 
 
 class TestSchema(object):
+
     def test_job_make_object(self):
         job1_json = new_job1_json()
         expected_job1 = new_job1()

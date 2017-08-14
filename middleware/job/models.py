@@ -1,5 +1,6 @@
 from middleware.database import db
 from uuid import uuid4
+from sqlalchemy_utils import ArrowType
 
 
 class Job(db.Model):
@@ -10,6 +11,10 @@ class Job(db.Model):
     status = db.Column(db.String)
     status_description = db.Column(db.String)
     user = db.Column(db.String)
+
+    creation_datetime = db.Column(ArrowType)
+    start_datetime = db.Column(ArrowType)
+    end_datetime = db.Column(ArrowType)
 
     parameters = db.relationship("Parameter", back_populates="job",
                                  lazy="joined")
@@ -28,6 +33,9 @@ class Job(db.Model):
             status=None,
             status_description=None,
             user=None,
+            creation_datetime=None,
+            start_datetime=None,
+            end_datetime=None,
             parameters=[],
             templates=[],
             scripts=[],
@@ -37,12 +45,17 @@ class Job(db.Model):
         else:
             self.id = str(uuid4())
 
-        # add string fields
+        # string fields
         self.description = description
         self.name = name
         self.status = status
         self.status_description = status_description
         self.user = user
+
+        # time fields
+        self.creation_datetime = creation_datetime
+        self.start_datetime = start_datetime
+        self.end_datetime = end_datetime
 
         self.parameters = parameters
         self.templates = templates
@@ -57,6 +70,9 @@ class Job(db.Model):
                     self.status == other.status and
                     self.status_description == other.status_description and
                     self.user == other.user and
+                    self.creation_datetime == other.creation_datetime and
+                    self.start_datetime == other.start_datetime and
+                    self.end_datetime == other.end_datetime and
                     sorted(self.parameters) == sorted(other.parameters) and
                     sorted(self.templates) == sorted(other.templates) and
                     sorted(self.scripts) == sorted(other.scripts) and
