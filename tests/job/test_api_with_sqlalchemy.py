@@ -818,7 +818,8 @@ class TestCaseApi(object):
         os.rename(cases_path, '{}.tmp'.format(cases_path))
 
         client = test_client()
-        response = client.get("/api/cases/")
+        case_id = '85b8995c-63a9-474f-8fdc-52c7582ec2ac'
+        response = client.get("/api/cases/{}".format(case_id))
 
         # Undo Rename
         os.rename('{}.tmp'.format(cases_path), cases_path)
