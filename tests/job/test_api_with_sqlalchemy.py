@@ -1,10 +1,11 @@
+import os
 import json
 import pytest
 from flask import Flask
 import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.factory import create_app
-from middleware.job.api import JobApi
+from middleware.job.api import JobApi, CaseApi, CasesApi
 from middleware.job.inmemory_repository import JobRepositoryMemory
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.database import db as _db
@@ -776,11 +777,18 @@ class TestCasesApi(object):
         assert response.status_code == 200
 
     def test_get_case_missing_cases_file(self):
+        from config.base import cases_path
+
+        # Rename file so we get a 404 error
+        os.rename(cases_path, '{}.tmp'.format(cases_path))
+
         client = test_client()
         response = client.get("/api/cases/")
 
-        # TODO: UPDATE THIS TEST ONCE cases_path IS EXPOSED AS A PARAMETER
-        # assert response.status_code == 404
+        # Undo Rename
+        os.rename('{}.tmp'.format(cases_path), cases_path)
+
+        assert response.status_code == 404
 
 
 class TestCaseApi(object):
@@ -804,8 +812,15 @@ class TestCaseApi(object):
         assert response.status_code == 404
 
     def test_get_case_missing_case_file(self):
+        from config.base import cases_path
+
+        # Rename file so we get a 404 error
+        os.rename(cases_path, '{}.tmp'.format(cases_path))
+
         client = test_client()
         response = client.get("/api/cases/")
 
-        # TODO: UPDATE THIS TEST ONCE cases_path IS EXPOSED AS A PARAMETER
-        # assert response.status_code == 404
+        # Undo Rename
+        os.rename('{}.tmp'.format(cases_path), cases_path)
+
+        assert response.status_code == 404
