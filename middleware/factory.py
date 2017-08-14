@@ -19,12 +19,9 @@ def create_app(config_name, job_repository=None):
     # if present (fails silently if not present)
     app.config.from_pyfile("config.py", silent=True)
 
-    # Load the path to the cases file for either testing or production
-    if config_name == 'test':
-        from config.test import cases_path
-    if config_name == 'production':
-        from config.production import cases_path
-
+    # Load the path to the cases file from the base config
+    from config.base import cases_path
+    
     # TODO: Remove the conditional here. This is only to let us still inject
     # job_repository explicitly while we refactor to make data store dependency
     # purely set in configuration
