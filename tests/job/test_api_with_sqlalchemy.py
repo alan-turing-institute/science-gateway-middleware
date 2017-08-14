@@ -133,18 +133,6 @@ class TestJobApi(object):
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
 
-    def test_get_with_no_job_id_returns_error_with_404(self, session):
-        '''
-        This test is hitting the wrong endpoint. If you call api/job/ without
-        a job id, it will call the JobsApi get method instead.
-        '''
-        jobs = JobRepositorySqlAlchemy(session)
-        client = test_client(jobs)
-        job_response = client.get(URI_Stems['job'])
-        assert job_response.status_code == 404
-        # No content check as we are expecting the standard 404 error message
-        # TODO: Get the 404 response defined for the app and compare it here
-
     # === PUT tests (UPDATE) ===
     def test_put_with_no_job_id_returns_error_with_405(self, session):
         # With no job_id, this attempts to call JobsApi, which does not
