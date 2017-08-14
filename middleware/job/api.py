@@ -5,14 +5,6 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.job.schema import job_to_json, json_to_job
 
 
-def is_valid_job_json(job):
-    valid = True
-    # Must have ID field
-    if job.get("id") is None:
-        valid = False
-    return valid
-
-
 def job_summary_json(job):
     job_id = job.id
     return {"id": job_id}
