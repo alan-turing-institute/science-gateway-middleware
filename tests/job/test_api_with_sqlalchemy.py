@@ -774,16 +774,15 @@ class TestCasesApi(object):
         assert response.status_code == 200
 
     def test_get_cases_missing_cases_file(self):
-        from config.base import cases_path
-
+        from config.base import case_summaries_path
         # Rename file so we get a 404 error
-        os.rename(cases_path, '{}.tmp'.format(cases_path))
+        os.rename(case_summaries_path, '{}.tmp'.format(case_summaries_path))
 
         client = test_client()
         response = client.get(URI_Stems['cases'])
 
         # Undo Rename
-        os.rename('{}.tmp'.format(cases_path), cases_path)
+        os.rename('{}.tmp'.format(case_summaries_path), case_summaries_path)
 
         assert response.status_code == 404
 
@@ -810,7 +809,6 @@ class TestCaseApi(object):
 
     def test_get_case_missing_case_file(self):
         from config.base import cases_path
-
         # Rename file so we get a 404 error
         os.rename(cases_path, '{}.tmp'.format(cases_path))
 
@@ -820,5 +818,4 @@ class TestCaseApi(object):
 
         # Undo Rename
         os.rename('{}.tmp'.format(cases_path), cases_path)
-
         assert response.status_code == 404

@@ -1,7 +1,8 @@
 # This contains the standard config that all other configs inherit from
 
 # The path to the cases file
-cases_path = './resources/cases/blue.json'
+case_summaries_path = './resources/cases/blue_case_summaries.json'
+cases_path = './resources/cases/blue_cases.json'
 
 # A dictionary of URI stems for the various API actions
 URI_Stems = {'job': '/api/jobs/',

@@ -21,6 +21,7 @@ def create_app(config_name, job_repository=None):
 
     # Load the path to the cases file from the base config
     from config.base import cases_path
+    from config.base import case_summaries_path
 
     # Load the URI stems from the base config
     from config.base import URI_Stems
@@ -78,7 +79,7 @@ def create_app(config_name, job_repository=None):
                                             app._job_repository})
 
     api.add_resource(CasesApi, URI_Stems['cases'],
-                     resource_class_kwargs={'cases_path': cases_path})
+                     resource_class_kwargs={'cases_path': case_summaries_path})
 
     api.add_resource(CaseApi, '{}<string:case_id>'.format(URI_Stems['cases']),
                      resource_class_kwargs={'cases_path': cases_path})

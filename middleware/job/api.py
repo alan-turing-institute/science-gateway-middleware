@@ -316,8 +316,7 @@ class CaseApi(Resource):
                                 " found").format(self.cases_path))
 
         # Find the case corresponding to the id from the list of cases
-        case = next((case for case in cases['cases'] if case['id'] == case_id),
-                    None)
+        case = cases.get(case_id)
 
         if case:
             return case, 200, {'Content-Type': 'application/json'}
