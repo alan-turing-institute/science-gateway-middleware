@@ -67,11 +67,13 @@ def create_app(config_name, job_repository=None):
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(ProgressApi, '{}/<string:job_id>'.format(URI_Stems['progress']),
+    api.add_resource(ProgressApi,
+                     '{}/<string:job_id>'.format(URI_Stems['progress']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(CancelApi, '{}/<string:job_id>'.format(URI_Stems['cancel']),
+    api.add_resource(CancelApi,
+                     '{}/<string:job_id>'.format(URI_Stems['cancel']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
