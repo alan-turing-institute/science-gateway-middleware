@@ -80,7 +80,7 @@ def create_app(config_name, job_repository=None):
     api.add_resource(CasesApi, URI_Stems['cases'],
                      resource_class_kwargs={'cases_path': cases_path})
 
-    api.add_resource(CaseApi, '{}/<string:case_id>'.format(URI_Stems['cases']),
+    api.add_resource(CaseApi, '{}<string:case_id>'.format(URI_Stems['cases']),
                      resource_class_kwargs={'cases_path': cases_path})
 
     return app

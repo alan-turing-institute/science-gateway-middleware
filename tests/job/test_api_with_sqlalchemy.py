@@ -12,6 +12,7 @@ from middleware.database import db as _db
 from middleware.job.models import Job, Parameter, Template, Script, Input
 from middleware.job.schema import job_to_json
 from new_jobs import new_job1, new_job2, new_job3, new_job4
+from config.base import URI_Stems
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
@@ -770,7 +771,7 @@ class TestCasesApi(object):
     def test_get_cases_valid_request(self):
 
         client = test_client()
-        response = client.get("/api/cases")
+        response = client.get(URI_Stems['cases'])
 
         # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
         # FINAL FORMAT YET. TODO: FIX THIS!
@@ -783,7 +784,7 @@ class TestCasesApi(object):
         os.rename(cases_path, '{}.tmp'.format(cases_path))
 
         client = test_client()
-        response = client.get("/api/cases")
+        response = client.get(URI_Stems['cases'])
 
         # Undo Rename
         os.rename('{}.tmp'.format(cases_path), cases_path)
@@ -797,7 +798,7 @@ class TestCaseApi(object):
 
         client = test_client()
         case_id = '85b8995c-63a9-474f-8fdc-52c7582ec2ac'
-        response = client.get("/api/cases/{}".format(case_id))
+        response = client.get("{}{}".format(URI_Stems['cases'], case_id))
 
         # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
         # FINAL FORMAT YET. TODO: FIX THIS!
@@ -807,7 +808,7 @@ class TestCaseApi(object):
 
         client = test_client()
         case_id = 'hello'
-        response = client.get("/api/cases/{}".format(case_id))
+        response = client.get("{}{}".format(URI_Stems['cases'], case_id))
 
         assert response.status_code == 404
 
@@ -819,7 +820,7 @@ class TestCaseApi(object):
 
         client = test_client()
         case_id = '85b8995c-63a9-474f-8fdc-52c7582ec2ac'
-        response = client.get("/api/cases/{}".format(case_id))
+        response = client.get("{}{}".format(URI_Stems['cases'], case_id))
 
         # Undo Rename
         os.rename('{}.tmp'.format(cases_path), cases_path)

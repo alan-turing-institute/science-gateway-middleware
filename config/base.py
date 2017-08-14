@@ -9,4 +9,4 @@ URI_Stems = {'job': '/api/job',
              'run': '/api/run',
              'cancel': '/api/cancel',
              'progress': '/api/progress',
-             'cases': '/api/cases'}
+             'cases': '/api/cases/'}
