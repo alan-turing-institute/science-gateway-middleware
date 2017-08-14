@@ -36,21 +36,20 @@ class InputSchema(ma.ModelSchema):
 class JobSchema(ma.ModelSchema):
     class Meta:
         model = Job
-        fields = (
-            'id',
-            'description',
-            'name',
-            'status',
-            'status_description',
-            'user',
-            'creation_datetime',
-            'start_datetime',
-            'end_datetime',
-            'parameters',
-            'templates',
-            'scripts',
-            'inputs'
-            )
+        fields = ('id',
+                  'description',
+                  'name',
+                  'status',
+                  'status_description',
+                  'user',
+                  'creation_datetime',
+                  'start_datetime',
+                  'end_datetime',
+                  'parameters',
+                  'templates',
+                  'scripts',
+                  'inputs'
+                  )
 
     parameters = ma.List(ma.Nested(ParameterSchema))
     templates = ma.List(ma.Nested(TemplateSchema))
@@ -66,26 +65,26 @@ class JobSchema(ma.ModelSchema):
         inputs = InputSchema(many=True).load(data.get("inputs")).data
 
         creation_datetime = arrow.get(
-                                data.get("creation_datetime"))
+            data.get("creation_datetime"))
         start_datetime = arrow.get(
-                                data.get("start_datetime"))
+            data.get("start_datetime"))
         end_datetime = arrow.get(
-                                data.get("end_datetime"))
+            data.get("end_datetime"))
 
         job = Job(
-                  id=data.get("id"),
-                  description=data.get("description"),
-                  name=data.get("name"),
-                  status=data.get("status"),
-                  status_description=data.get("status_description"),
-                  user=data.get("user"),
-                  creation_datetime=creation_datetime,
-                  start_datetime=start_datetime,
-                  end_datetime=end_datetime,
-                  parameters=parameters,
-                  templates=templates,
-                  scripts=scripts,
-                  inputs=inputs)
+            id=data.get("id"),
+            description=data.get("description"),
+            name=data.get("name"),
+            status=data.get("status"),
+            status_description=data.get("status_description"),
+            user=data.get("user"),
+            creation_datetime=creation_datetime,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+            parameters=parameters,
+            templates=templates,
+            scripts=scripts,
+            inputs=inputs)
         return job
 
 
