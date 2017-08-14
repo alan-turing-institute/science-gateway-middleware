@@ -12,7 +12,16 @@ import arrow
 class ParameterSchema(ma.ModelSchema):
     class Meta:
         model = Parameter
-        fields = ('name', 'value')
+        fields = ('help',
+                  'label',
+                  'max_value',
+                  'min_value',
+                  'name',
+                  'type',
+                  'type_value',
+                  'units',
+                  'value',
+                  )
 
 
 class TemplateSchema(ma.ModelSchema):

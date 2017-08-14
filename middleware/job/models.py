@@ -88,14 +88,31 @@ class Job(db.Model):
 
 class Parameter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
+    help = db.Column(db.String)
+    label = db.Column(db.String)
+    max_value = db.Column(db.String)
+    min_value = db.Column(db.String)
     name = db.Column(db.String)
+    type = db.Column(db.String)
+    type_value = db.Column(db.String)
+    units = db.Column(db.String)
     value = db.Column(db.String)
+
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
     job = db.relationship("Job", back_populates="parameters")
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return (self.name == other.name and
+            return (
+                    self.help == other.help and
+                    self.label == other.label and
+                    self.max_value == other.max_value and
+                    self.min_value == other.min_value and
+                    self.name == other.name and
+                    self.type == other.type and
+                    self.type_value == other.type_value and
+                    self.units == other.units and
                     self.value == other.value
                     )
         return NotImplemented
@@ -116,7 +133,17 @@ class Parameter(db.Model):
         return NotImplemented
 
     def __hash__(self):
-        return hash((self.name, self.value))
+        return hash((
+            self.help,
+            self.label,
+            self.max_value,
+            self.min_value,
+            self.name,
+            self.type,
+            self.type_value,
+            self.units,
+            self.value,
+            ))
 
 
 class Template(db.Model):
