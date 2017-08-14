@@ -51,7 +51,7 @@ def create_app(config_name, job_repository=None):
 
     api = Api(app)
 
-    api.add_resource(JobApi, '{}/<string:job_id>'.format(URI_Stems['job']),
+    api.add_resource(JobApi, '{}<string:job_id>'.format(URI_Stems['job']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
@@ -59,21 +59,21 @@ def create_app(config_name, job_repository=None):
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(SetupApi, '{}/<string:job_id>'.format(URI_Stems['setup']),
+    api.add_resource(SetupApi, '{}<string:job_id>'.format(URI_Stems['setup']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
-    api.add_resource(RunApi, '{}/<string:job_id>'.format(URI_Stems['run']),
+    api.add_resource(RunApi, '{}<string:job_id>'.format(URI_Stems['run']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
     api.add_resource(ProgressApi,
-                     '{}/<string:job_id>'.format(URI_Stems['progress']),
+                     '{}<string:job_id>'.format(URI_Stems['progress']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
     api.add_resource(CancelApi,
-                     '{}/<string:job_id>'.format(URI_Stems['cancel']),
+                     '{}<string:job_id>'.format(URI_Stems['cancel']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 
