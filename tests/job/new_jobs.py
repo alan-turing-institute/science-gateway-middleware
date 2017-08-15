@@ -67,7 +67,6 @@ def new_job1():
     job.description = "j1description"
     job.name = "j1name"
     job.status = "j1status"
-    job.status_description = "j1status_description"
     job.user = "j1user"
 
     # emulate the action of sqlalchemy_utils.ArrowType
@@ -126,7 +125,6 @@ def new_job1_input_json():
             "description": "j1description",
             "name": "j1name",
             "status": "j1status",
-            "status_description": "j1status_description",
             "user": "j1user",
             "creation_datetime": j1c_iso_string,
             "start_datetime": j1s_iso_string,
@@ -183,7 +181,6 @@ def new_job1_output_json():
             "description": "j1description",
             "name": "j1name",
             "status": "j1status",
-            "status_description": "j1status_description",
             "user": "j1user",
             "creation_datetime": j1c_utc_string,
             "start_datetime": j1s_utc_string,
@@ -241,7 +238,6 @@ def new_job2():
     job.description = "j2description"
     job.name = "j2name"
     job.status = "j2status"
-    job.status_description = "j2status_description"
     job.user = "j2user"
 
     # emulate the action of sqlalchemy_utils.ArrowType
@@ -299,7 +295,6 @@ def new_job2_input_json():
             "description": "j2description",
             "name": "j2name",
             "status": "j2status",
-            "status_description": "j2status_description",
             "user": "j2user",
             "creation_datetime": j2c_iso_string,
             "start_datetime": j2s_iso_string,
@@ -355,7 +350,6 @@ def new_job2_output_json():
             "description": "j2description",
             "name": "j2name",
             "status": "j2status",
-            "status_description": "j2status_description",
             "user": "j2user",
             "creation_datetime": j2c_utc_string,
             "start_datetime": j2s_utc_string,
@@ -413,7 +407,6 @@ def new_job3():
     job.description = "j3description"
     job.name = "j3name"
     job.status = "j3status"
-    job.status_description = "j3status_description"
     job.user = "j3user"
 
     # emulate the action of sqlalchemy_utils.ArrowType
@@ -472,7 +465,6 @@ def new_job4():
     job.description = "j4description"
     job.name = "j4name"
     job.status = "j4status"
-    job.status_description = "j4status_description"
     job.user = "j4user"
 
     # emulate the action of sqlalchemy_utils.ArrowType
@@ -535,7 +527,6 @@ def new_job5():
     job.description = "j5description"
     job.name = "j5name"
     job.status = "j5status"
-    job.status_description = "j5status_description"
     job.user = "j5user"
 
     # emulate the action of sqlalchemy_utils.ArrowType

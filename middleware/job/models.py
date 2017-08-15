@@ -9,7 +9,6 @@ class Job(db.Model):
     description = db.Column(db.String)
     name = db.Column(db.String)
     status = db.Column(db.String)
-    status_description = db.Column(db.String)
     user = db.Column(db.String)
 
     creation_datetime = db.Column(ArrowType)
@@ -31,7 +30,6 @@ class Job(db.Model):
             description=None,
             name=None,
             status=None,
-            status_description=None,
             user=None,
             creation_datetime=None,
             start_datetime=None,
@@ -49,7 +47,6 @@ class Job(db.Model):
         self.description = description
         self.name = name
         self.status = status
-        self.status_description = status_description
         self.user = user
 
         # time fields
@@ -69,7 +66,6 @@ class Job(db.Model):
                     self.description == other.description and
                     self.name == other.name and
                     self.status == other.status and
-                    self.status_description == other.status_description and
                     self.user == other.user and
                     self.creation_datetime == other.creation_datetime and
                     self.start_datetime == other.start_datetime and
