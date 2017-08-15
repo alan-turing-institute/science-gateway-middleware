@@ -23,6 +23,8 @@ class Job(db.Model):
                               lazy="joined")
     inputs = db.relationship("Input", back_populates="job",
                              lazy="joined")
+    case_id = db.Column(db.String, db.ForeignKey("case.id"))
+    case = db.relationship("Case")
 
     def __init__(
             self,
@@ -37,7 +39,8 @@ class Job(db.Model):
             families=[],
             templates=[],
             scripts=[],
-            inputs=[]):
+            inputs=[],
+            case=None):
         if id is not None:
             self.id = id
         else:
@@ -60,6 +63,8 @@ class Job(db.Model):
         self.scripts = scripts
         self.inputs = inputs
 
+        self.case = case
+
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return (self.id == other.id and
@@ -74,6 +79,7 @@ class Job(db.Model):
                     sorted(self.templates) == sorted(other.templates) and
                     sorted(self.scripts) == sorted(other.scripts) and
                     sorted(self.inputs) == sorted(other.inputs)
+                    # TODO case equivalency
                     )
         return NotImplemented
 
@@ -133,6 +139,7 @@ class Parameter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     enabled = db.Column(db.Boolean)
+
     help = db.Column(db.String)
     label = db.Column(db.String)
     max_value = db.Column(db.String)
@@ -289,3 +296,14 @@ class Input(db.Model):
 
     def __hash__(self):
         return hash((self.source_uri, self.destination_path))
+
+
+class Case(db.Model):
+    id = db.Column(db.String, primary_key=True)
+
+    uri = db.Column(db.String)
+    label = db.Column(db.String)
+    thumbnail = db.Column(db.String)
+    description = db.Column(db.String)
+
+    # TODO case equivalency

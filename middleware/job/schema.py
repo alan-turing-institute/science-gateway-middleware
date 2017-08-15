@@ -5,7 +5,8 @@ from middleware.job.models import (
     Parameter,
     Template,
     Input,
-    Script
+    Script,
+    Case
 )
 import arrow
 
@@ -51,6 +52,12 @@ class InputSchema(ma.ModelSchema):
         fields = ('source_uri', 'destination_path')
 
 
+class CaseSchema(ma.ModelSchema):
+    class Meta:
+        model = Case
+        fields = ('id', 'uri', 'label', 'thumbnail', 'description')
+
+
 class JobSchema(ma.ModelSchema):
     class Meta:
         model = Job
@@ -65,13 +72,15 @@ class JobSchema(ma.ModelSchema):
                   'families',
                   'templates',
                   'scripts',
-                  'inputs'
+                  'inputs',
+                  'case'
                   )
 
     families = ma.List(ma.Nested(FamilySchema))
     templates = ma.List(ma.Nested(TemplateSchema))
     scripts = ma.List(ma.Nested(ScriptSchema))
     inputs = ma.List(ma.Nested(InputSchema))
+    case = ma.Nested(CaseSchema)
 
     def make_job(self, data):
         assert 'id' in data, "Must specify Job ID"
@@ -80,6 +89,21 @@ class JobSchema(ma.ModelSchema):
         templates = TemplateSchema(many=True).load(data.get("templates")).data
         scripts = ScriptSchema(many=True).load(data.get("scripts")).data
         inputs = InputSchema(many=True).load(data.get("inputs")).data
+
+        # TODO load from Cases database once implemented
+        case_data = data.get("case")
+        case_id = case_data.get("id")
+        case_uri = case_data.get("uri")
+        case_label = case_data.get("label")
+        case_thumbnail = case_data.get("thumbnail")
+        case_description = case_data.get("description")
+        case = Case(
+            id=case_id,
+            uri=case_uri,
+            label=case_label,
+            thumbnail=case_thumbnail,
+            description=case_description,
+        )
 
         creation_datetime = arrow.get(
             data.get("creation_datetime"))
@@ -101,7 +125,8 @@ class JobSchema(ma.ModelSchema):
             families=families,
             templates=templates,
             scripts=scripts,
-            inputs=inputs)
+            inputs=inputs,
+            case=case)
         return job
 
 

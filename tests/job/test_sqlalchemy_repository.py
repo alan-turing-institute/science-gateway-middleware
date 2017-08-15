@@ -2,7 +2,7 @@ import pytest
 from flask import Flask
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.database import db as _db
-from middleware.job.models import Job, Parameter, Template, Script, Input
+from middleware.job.models import Job, Parameter, Template, Script, Input, Case
 from new_jobs import new_job1, new_job2
 
 from middleware.job.schema import job_to_json, json_to_job, JobSchema

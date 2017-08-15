@@ -1,5 +1,5 @@
 from middleware.job.models import (Job, Family, Parameter,
-                                   Template, Script, Input)
+                                   Template, Script, Input, Case)
 import arrow
 
 # "c" denotes creation_datetime
@@ -115,6 +115,11 @@ def new_job1():
                             destination_path="j1i1_dest"))
     job.inputs.append(Input(source_uri="j1i2source",
                             destination_path="j1i2_dest"))
+    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                    uri="c1uri",
+                    label="c1label",
+                    thumbnail="c1thumbnail",
+                    description="c1description")
     return job
 
 
@@ -171,7 +176,14 @@ def new_job1_input_json():
             "inputs": [{"source_uri": "j1i1source",
                         "destination_path": "j1i1_dest"},
                        {"source_uri": "j1i2source",
-                        "destination_path": "j1i2_dest"}]}
+                        "destination_path": "j1i2_dest"}],
+            "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                     "uri": "c1uri",
+                     "label": "c1label",
+                     "thumbnail": "c1thumbnail",
+                     "description": "c1description"
+                     }
+            }
 
 
 # output json uses UTC time
@@ -227,7 +239,14 @@ def new_job1_output_json():
             "inputs": [{"source_uri": "j1i1source",
                         "destination_path": "j1i1_dest"},
                        {"source_uri": "j1i2source",
-                        "destination_path": "j1i2_dest"}]}
+                        "destination_path": "j1i2_dest"}],
+            "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                     "uri": "c1uri",
+                     "label": "c1label",
+                     "thumbnail": "c1thumbnail",
+                     "description": "c1description"
+                     }
+            }
 
 
 def new_job2():
@@ -286,6 +305,11 @@ def new_job2():
                             destination_path="j2i1_dest"))
     job.inputs.append(Input(source_uri="j2i2source",
                             destination_path="j2i2_dest"))
+    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                    uri="c1uri",
+                    label="c1label",
+                    thumbnail="c1thumbnail",
+                    description="c1description")
     return job
 
 
@@ -341,7 +365,14 @@ def new_job2_input_json():
             "inputs": [{"source_uri": "j2i1source",
                         "destination_path": "j2i1_dest"},
                        {"source_uri": "j2i2source",
-                        "destination_path": "j2i2_dest"}]}
+                        "destination_path": "j2i2_dest"}],
+            "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                     "uri": "j1c1uri",
+                     "label": "j1c1label",
+                     "thumbnail": "j1c1thumbnail",
+                     "description": "j1c1description"
+                     }
+            }
 
 
 def new_job2_output_json():
@@ -396,8 +427,14 @@ def new_job2_output_json():
             "inputs": [{"source_uri": "j2i1source",
                         "destination_path": "j2i1_dest"},
                        {"source_uri": "j2i2source",
-                        "destination_path": "j2i2_dest"}]}
-
+                        "destination_path": "j2i2_dest"}],
+            "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                     "uri": "c1uri",
+                     "label": "c1label",
+                     "thumbnail": "c1thumbnail",
+                     "description": "c1description"
+                     }
+            }
 
 
 def new_job3():
@@ -455,6 +492,11 @@ def new_job3():
                             destination_path="j3i1_dest"))
     job.inputs.append(Input(source_uri="j3i2source",
                             destination_path="j3i2_dest"))
+    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                    uri="c1uri",
+                    label="c1label",
+                    thumbnail="c1thumbnail",
+                    description="c1description")
     return job
 
 
@@ -517,6 +559,11 @@ def new_job4():
                             destination_path="j4i1_dest"))
     job.inputs.append(Input(source_uri="j4i2source",
                             destination_path="j4i2_dest"))
+    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                    uri="c1uri",
+                    label="c1label",
+                    thumbnail="c1thumbnail",
+                    description="c1description")
     return job
 
 
@@ -582,4 +629,9 @@ def new_job5():
                             destination_path="project/case/"))
     job.inputs.append(Input(source_uri="j5i2source",
                             destination_path="project/case/"))
+    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+                    uri="c1uri",
+                    label="c1label",
+                    thumbnail="c1thumbnail",
+                    description="c1description")
     return job
