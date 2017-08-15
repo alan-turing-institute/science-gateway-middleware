@@ -3,14 +3,7 @@ import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
 from middleware.job.schema import job_to_json, json_to_job
-
-
-def is_valid_job_json(job):
-    valid = True
-    # Must have ID field
-    if job.get("id") is None:
-        valid = False
-    return valid
+from config.base import URI_Stems
 
 
 def job_summary_json(job):
@@ -125,7 +118,7 @@ class JobsApi(Resource):
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
             summary_json = job_summary_json(job)
-            summary_json["uri"] = "/api/job/{}".format(job_id)
+            summary_json["uri"] = "{}{}".format(URI_Stems['job'], job_id)
             return summary_json
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
@@ -288,29 +281,45 @@ class RunApi(Resource):
             return manager.run()
 
 
-class TemplateApi(Resource):
-    '''API endpoint called to get a job template (GET)'''
+class CasesApi(Resource):
+    '''API endpoint called to get a list of cases (GET)'''
     def __init__(self, **kwargs):
-        pass
+        self.cases_path = kwargs['cases_path']
 
     def get(self):
 
-        case = request.json
-
-        # Check the json supplied is not empty and is valid
-        if case is None:
-            abort(400, message="Message body could not be parsed as JSON")
-
-        if case.get("case") is None:
-            abort(400, message="Message body is not valid case JSON")
-
-        case_path = case['case']
-
         try:
             # Load the case template
-            with open(case_path) as json_data:
-                template = json.load(json_data)
+            with open(self.cases_path) as json_data:
+                cases = json.load(json_data)
         except:
-            abort(404, message="Template file, {} not found".format(case_path))
+            abort(404, message=("Cases file, {} not"
+                                " found").format(self.cases_path))
 
-        return template, 200, {'Content-Type': 'application/json'}
+        return cases, 200, {'Content-Type': 'application/json'}
+
+
+class CaseApi(Resource):
+    '''API endpoint called to get specific case job template (GET)'''
+    def __init__(self, **kwargs):
+        self.cases_path = kwargs['cases_path']
+
+    def get(self, case_id):
+
+        # Get the case id from the list of cases
+        try:
+            # Load the cases file
+            with open(self.cases_path) as json_data:
+                cases = json.load(json_data)
+        except:
+            abort(404, message=("Cases file, {} not"
+                                " found").format(self.cases_path))
+
+        # Find the case corresponding to the id from the list of cases
+        case = cases.get(case_id)
+
+        if case:
+            return case, 200, {'Content-Type': 'application/json'}
+        else:
+            abort(404, message=("Case ID, {} not found in "
+                                "list of cases").format(case_id))

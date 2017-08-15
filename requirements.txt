@@ -7,6 +7,7 @@ cffi==1.10.0
 click==6.7
 cryptography==2.0.2
 Flask==0.12.2
+Flask-Cors==3.0.3
 flask-marshmallow==0.8.0
 Flask-RESTful==0.3.6
 Flask-SQLAlchemy==2.2
