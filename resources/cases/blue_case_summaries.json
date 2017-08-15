@@ -1,16 +1,16 @@
 { "cases":[
     {
       "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
-      "uri" : "https://science-gate-way-middleware.azurewebstes.net/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
+      "uri" : "https://science-gateway-middleware.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
       "label" : "Stirred Tank",
-      "thumbnail": "https://science-gate-way-middleware.azurewebstes.net/assets/img/stirred_tank.png",
+      "thumbnail": "https://science-gateway-middleware.azurewebsites.net/assets/img/stirred_tank.png",
       "description": "Here we describe the actual Stirred Tank case."
     },
     {
       "id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-      "uri" : "https://science-gate-way-middleware.azurewebstes.net/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+      "uri" : "https://science-gateway-middleware.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
       "label" : "Product Changeover",
-      "thumbnail": "https://science-gate-way-middleware.azurewebstes.net/assets/img/product_changeover.png",
+      "thumbnail": "https://science-gateway-middleware.azurewebsites.net/assets/img/product_changeover.png",
       "description": "Here we describe the actual Product Changeover case."
     }
   ]
