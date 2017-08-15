@@ -2,7 +2,9 @@ from middleware.job.models import Job
 from middleware.job.schema import job_to_json, json_to_job, JobSchema
 from uuid import UUID, uuid4, uuid1
 
-from new_jobs import new_job1, new_job1_json, new_job2, new_job2_json
+from new_jobs import (new_job1, new_job2,
+                      new_job1_input_json, new_job1_output_json,
+                      new_job2_input_json, new_job2_output_json)
 
 
 class TestModel(object):
@@ -36,24 +38,24 @@ class TestModel(object):
     def test_full_jobs_differing_only_by_param_name_not_equal(self):
         job1 = new_job1()
         job2 = new_job1()
-        job2.parameters[0].name = "changed"
+        job2.families[0].parameters[0].name = "changed"
         assert job1 != job2
 
     def test_full_jobs_differing_only_by_param_value_not_equal(self):
         job1 = new_job1()
         job2 = new_job1()
-        job2.parameters[0].value = "changed"
+        job2.families[0].parameters[0].value = "changed"
         assert job1 != job2
 
     def test_full_jobs_differing_only_by_swapped_param_order_equal(self):
         # Ordering of parameters should not matter for equivalence
         job1 = new_job1()
         job2 = new_job1()
-        temp = job2.parameters[0]
-        job2.parameters[0] = job2.parameters[1]
-        job2.parameters[1] = temp
-        assert job2.parameters[1] == job1.parameters[0]
-        assert job2.parameters[0] == job1.parameters[1]
+        temp = job2.families[0].parameters[0]
+        job2.families[0].parameters[0] = job2.families[0].parameters[1]
+        job2.families[0].parameters[1] = temp
+        assert job2.families[0].parameters[1] == job1.families[0].parameters[0]
+        assert job2.families[0].parameters[0] == job1.families[0].parameters[1]
         assert job1 == job2
 
     def test_full_jobs_differing_only_by_template_source_not_equal(self):
@@ -135,23 +137,24 @@ class TestModel(object):
 class TestSchema(object):
 
     def test_job_make_object(self):
-        job1_json = new_job1_json()
+        job1_input_json = new_job1_input_json()
         expected_job1 = new_job1()
-        job1 = JobSchema().make_job(job1_json)
+        job1 = JobSchema().make_job(job1_input_json)
         assert job1 == expected_job1
 
     def test_json_to_job(self):
-        job1_json = new_job1_json()
+        job1_input_json = new_job1_input_json()
         expected_job1 = new_job1()
-        job1 = json_to_job(job1_json)
+        job1 = json_to_job(job1_input_json)
         assert job1 == expected_job1
 
     def test_job_to_json(self):
         job1 = new_job1()
         job1_json = job_to_json(job1)
-        expected_job1_json = new_job1_json()
+        expected_job1_json = new_job1_output_json()
         assert job1_json == expected_job1_json
+
         job2 = new_job2()
         job2_json = job_to_json(job2)
-        expected_job2_json = new_job2_json()
+        expected_job2_json = new_job2_output_json()
         assert job2_json == expected_job2_json

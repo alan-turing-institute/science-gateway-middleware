@@ -60,7 +60,7 @@ class TestJIM(object):
         assert jim.port == port
         assert jim.job_id == job.id
         assert jim.template_list == job.templates
-        assert jim.parameter_patch == job.parameters
+        assert jim.families == job.families
         assert jim.script_list == job.scripts
         assert jim.inputs_list == job.inputs
         assert jim.simulation_root == simulation_root
@@ -73,8 +73,10 @@ class TestJIM(object):
 
         # create dict objects for parameters and templates
         job_json = job_to_json(job)
-        parameters = job_json.get("parameters")
+        families = job_json.get("families")
+        parameters = families[0].get("parameters")
         parameter = parameters[0]  # choose first parameter
+
 
         templates = job_json.get("templates")
         template = templates[0]  # choose first template

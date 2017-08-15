@@ -1,4 +1,5 @@
-from middleware.job.models import Job, Parameter, Template, Script, Input
+from middleware.job.models import (Job, Family, Parameter,
+                                   Template, Script, Input)
 import arrow
 
 # "c" denotes creation_datetime
@@ -30,6 +31,7 @@ def arrow_processing(iso_string):
     arrow_object = arrow.get(iso_string)
 
     # Avoiding arrow_object.to('UTC').format()
+    # use str() builtin instead
     # by default, .format() strips millisecond data
     # by default, .format() strips "T" symbol
     utc_string = str(arrow_object.to('UTC'))
@@ -68,33 +70,37 @@ def new_job1():
     job.status_description = "j1status_description"
     job.user = "j1user"
 
-    job.creation_datetime = j1c_arrow
-    job.start_datetime = j1s_arrow
-    job.end_datetime = j1e_arrow
+    # emulate the action of sqlalchemy_utils.ArrowType
+    # which converts the supplied arrow object UTC
+    # when intantiating a job
+    job.creation_datetime = j1c_arrow.to("UTC")
+    job.start_datetime = j1s_arrow.to("UTC")
+    job.end_datetime = j1e_arrow.to("UTC")
 
-    job.parameters.append(Parameter(
-        help="j1p1help",
-        label="j1p1label",
-        max_value="j1p1max_value",
-        min_value="j1p1min_value",
-        name="j1p1name",
-        type="j1p1type",
-        type_value="j1p1type_value",
-        units="j1p1units",
-        value="j1p1value"
-        )
-    )
-
-    job.parameters.append(Parameter(
-        help="j1p2help",
-        label="j1p2label",
-        max_value="j1p2max_value",
-        min_value="j1p2min_value",
-        name="j1p2name",
-        type="j1p2type",
-        type_value="j1p2type_value",
-        units="j1p2units",
-        value="j1p2value"
+    job.families.append(
+        Family(
+            label="j1f1label",
+            name="j1f1name",
+            collapse=True,
+            parameters=[
+                Parameter(help="j1f1p1help",
+                          label="j1f1p1label",
+                          max_value="j1f1p1max_value",
+                          min_value="j1f1p1min_value",
+                          name="j1f1p1name",
+                          type="j1f1p1type",
+                          type_value="j1f1p1type_value",
+                          units="j1f1p1units",
+                          value="j1f1p1value"),
+                Parameter(help="j1f1p2help",
+                          label="j1f1p2label",
+                          max_value="j1f1p2max_value",
+                          min_value="j1f1p2min_value",
+                          name="j1f1p2name",
+                          type="j1f1p2type",
+                          type_value="j1f1p2type_value",
+                          units="j1f1p2units",
+                          value="j1f1p2value")]
         )
     )
 
@@ -113,7 +119,65 @@ def new_job1():
     return job
 
 
-def new_job1_json():
+# input json uses local time
+def new_job1_input_json():
+    # NOTE: Ensure to update new_job1() to match any changes made here
+    return {"id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "description": "j1description",
+            "name": "j1name",
+            "status": "j1status",
+            "status_description": "j1status_description",
+            "user": "j1user",
+            "creation_datetime": j1c_iso_string,
+            "start_datetime": j1s_iso_string,
+            "end_datetime": j1e_iso_string,
+            "families": [
+                {
+                    "label": "j1f1label",
+                    "name": "j1f1name",
+                    "collapse": True,
+                    "parameters": [
+                        {
+                            "help": "j1f1p1help",
+                            "label": "j1f1p1label",
+                            "max_value": "j1f1p1max_value",
+                            "min_value": "j1f1p1min_value",
+                            "name": "j1f1p1name",
+                            "type": "j1f1p1type",
+                            "type_value": "j1f1p1type_value",
+                            "units": "j1f1p1units",
+                            "value": "j1f1p1value"
+                        },
+                        {
+                            "help": "j1f1p2help",
+                            "label": "j1f1p2label",
+                            "max_value": "j1f1p2max_value",
+                            "min_value": "j1f1p2min_value",
+                            "name": "j1f1p2name",
+                            "type": "j1f1p2type",
+                            "type_value": "j1f1p2type_value",
+                            "units": "j1f1p2units",
+                            "value": "j1f1p2value"
+                        }
+                    ]
+                }
+            ],
+            "templates": [{"source_uri": "j1t1source",
+                           "destination_path": "j1t1_dest"},
+                          {"source_uri": "j1t2source",
+                           "destination_path": "j1t2_dest"}],
+            "scripts": [{"action": "j1s1action", "source_uri": "j1s1source",
+                         "destination_path": "j1s1_dest"},
+                        {"action": "j1s2action", "source_uri": "j1s2source",
+                         "destination_path": "j1s2_dest"}],
+            "inputs": [{"source_uri": "j1i1source",
+                        "destination_path": "j1i1_dest"},
+                       {"source_uri": "j1i2source",
+                        "destination_path": "j1i2_dest"}]}
+
+
+# output json uses UTC time
+def new_job1_output_json():
     # NOTE: Ensure to update new_job1() to match any changes made here
     return {"id": "d769843b-6f37-4939-96c7-c382c3e74b46",
             "description": "j1description",
@@ -124,28 +188,37 @@ def new_job1_json():
             "creation_datetime": j1c_utc_string,
             "start_datetime": j1s_utc_string,
             "end_datetime": j1e_utc_string,
-            "parameters": [{
-                    "help": "j1p1help",
-                    "label": "j1p1label",
-                    "max_value": "j1p1max_value",
-                    "min_value": "j1p1min_value",
-                    "name": "j1p1name",
-                    "type": "j1p1type",
-                    "type_value": "j1p1type_value",
-                    "units": "j1p1units",
-                    "value": "j1p1value"
-                },
+            "families": [
                 {
-                    "help": "j1p2help",
-                    "label": "j1p2label",
-                    "max_value": "j1p2max_value",
-                    "min_value": "j1p2min_value",
-                    "name": "j1p2name",
-                    "type": "j1p2type",
-                    "type_value": "j1p2type_value",
-                    "units": "j1p2units",
-                    "value": "j1p2value"
-                }],
+                    "label": "j1f1label",
+                    "name": "j1f1name",
+                    "collapse": True,
+                    "parameters": [
+                        {
+                            "help": "j1f1p1help",
+                            "label": "j1f1p1label",
+                            "max_value": "j1f1p1max_value",
+                            "min_value": "j1f1p1min_value",
+                            "name": "j1f1p1name",
+                            "type": "j1f1p1type",
+                            "type_value": "j1f1p1type_value",
+                            "units": "j1f1p1units",
+                            "value": "j1f1p1value"
+                        },
+                        {
+                            "help": "j1f1p2help",
+                            "label": "j1f1p2label",
+                            "max_value": "j1f1p2max_value",
+                            "min_value": "j1f1p2min_value",
+                            "name": "j1f1p2name",
+                            "type": "j1f1p2type",
+                            "type_value": "j1f1p2type_value",
+                            "units": "j1f1p2units",
+                            "value": "j1f1p2value"
+                        }
+                    ]
+                }
+            ],
             "templates": [{"source_uri": "j1t1source",
                            "destination_path": "j1t1_dest"},
                           {"source_uri": "j1t2source",
@@ -171,33 +244,38 @@ def new_job2():
     job.status_description = "j2status_description"
     job.user = "j2user"
 
-    job.creation_datetime = j2c_arrow
-    job.start_datetime = j2s_arrow
-    job.end_datetime = j2e_arrow
+    # emulate the action of sqlalchemy_utils.ArrowType
+    # which converts the supplied arrow object UTC
+    # when intantiating a job
+    job.creation_datetime = j2c_arrow.to("UTC")
+    job.start_datetime = j2s_arrow.to("UTC")
+    job.end_datetime = j2e_arrow.to("UTC")
 
-    job.parameters.append(Parameter(
-       help="j2p1help",
-       label="j2p1label",
-       max_value="j2p1max_value",
-       min_value="j2p1min_value",
-       name="j2p1name",
-       type="j2p1type",
-       type_value="j2p1type_value",
-       units="j2p1units",
-       value="j2p1value"
-       )
-    )
-    job.parameters.append(Parameter(
-       help="j2p2help",
-       label="j2p2label",
-       max_value="j2p2max_value",
-       min_value="j2p2min_value",
-       name="j2p2name",
-       type="j2p2type",
-       type_value="j2p2type_value",
-       units="j2p2units",
-       value="j2p2value"
-       )
+    job.families.append(
+        Family(
+            label="j2f1label",
+            name="j2f1name",
+            collapse=True,
+            parameters=[
+                Parameter(help="j2f1p1help",
+                          label="j2f1p1label",
+                          max_value="j2f1p1max_value",
+                          min_value="j2f1p1min_value",
+                          name="j2f1p1name",
+                          type="j2f1p1type",
+                          type_value="j2f1p1type_value",
+                          units="j2f1p1units",
+                          value="j2f1p1value"),
+                Parameter(help="j2f1p2help",
+                          label="j2f1p2label",
+                          max_value="j2f1p2max_value",
+                          min_value="j2f1p2min_value",
+                          name="j2f1p2name",
+                          type="j2f1p2type",
+                          type_value="j2f1p2type_value",
+                          units="j2f1p2units",
+                          value="j2f1p2value")]
+        )
     )
 
     job.templates.append(Template(source_uri="j2t1source",
@@ -215,7 +293,7 @@ def new_job2():
     return job
 
 
-def new_job2_json():
+def new_job2_input_json():
     # NOTE: Ensure to update new_job2() to match any changes made here
     return {"id": "9044394f-de29-4be3-857f-33a4fdca0be3",
             "description": "j2description",
@@ -223,31 +301,40 @@ def new_job2_json():
             "status": "j2status",
             "status_description": "j2status_description",
             "user": "j2user",
-            "creation_datetime": j2c_utc_string,
-            "start_datetime": j2s_utc_string,
-            "end_datetime": j2e_utc_string,
-            "parameters": [{
-                    "help": "j2p1help",
-                    "label": "j2p1label",
-                    "max_value": "j2p1max_value",
-                    "min_value": "j2p1min_value",
-                    "name": "j2p1name",
-                    "type": "j2p1type",
-                    "type_value": "j2p1type_value",
-                    "units": "j2p1units",
-                    "value": "j2p1value"
-                },
+            "creation_datetime": j2c_iso_string,
+            "start_datetime": j2s_iso_string,
+            "end_datetime": j2e_iso_string,
+            "families": [
                 {
-                    "help": "j2p2help",
-                    "label": "j2p2label",
-                    "max_value": "j2p2max_value",
-                    "min_value": "j2p2min_value",
-                    "name": "j2p2name",
-                    "type": "j2p2type",
-                    "type_value": "j2p2type_value",
-                    "units": "j2p2units",
-                    "value": "j2p2value"
-                }],
+                    "label": "j2f1label",
+                    "name": "j2f1name",
+                    "collapse": True,
+                    "parameters": [
+                        {
+                            "help": "j2f1p1help",
+                            "label": "j2f1p1label",
+                            "max_value": "j2f1p1max_value",
+                            "min_value": "j2f1p1min_value",
+                            "name": "j2f1p1name",
+                            "type": "j2f1p1type",
+                            "type_value": "j2f1p1type_value",
+                            "units": "j2f1p1units",
+                            "value": "j2f1p1value"
+                        },
+                        {
+                            "help": "j2f1p2help",
+                            "label": "j2f1p2label",
+                            "max_value": "j2f1p2max_value",
+                            "min_value": "j2f1p2min_value",
+                            "name": "j2f1p2name",
+                            "type": "j2f1p2type",
+                            "type_value": "j2f1p2type_value",
+                            "units": "j2f1p2units",
+                            "value": "j2f1p2value"
+                        }
+                    ]
+                }
+            ],
             "templates": [{"source_uri": "j2t1source",
                            "destination_path": "j2t1_dest"},
                           {"source_uri": "j2t2source",
@@ -262,6 +349,63 @@ def new_job2_json():
                         "destination_path": "j2i2_dest"}]}
 
 
+def new_job2_output_json():
+    # NOTE: Ensure to update new_job2() to match any changes made here
+    return {"id": "9044394f-de29-4be3-857f-33a4fdca0be3",
+            "description": "j2description",
+            "name": "j2name",
+            "status": "j2status",
+            "status_description": "j2status_description",
+            "user": "j2user",
+            "creation_datetime": j2c_utc_string,
+            "start_datetime": j2s_utc_string,
+            "end_datetime": j2e_utc_string,
+            "families": [
+                {
+                    "label": "j2f1label",
+                    "name": "j2f1name",
+                    "collapse": True,
+                    "parameters": [
+                        {
+                            "help": "j2f1p1help",
+                            "label": "j2f1p1label",
+                            "max_value": "j2f1p1max_value",
+                            "min_value": "j2f1p1min_value",
+                            "name": "j2f1p1name",
+                            "type": "j2f1p1type",
+                            "type_value": "j2f1p1type_value",
+                            "units": "j2f1p1units",
+                            "value": "j2f1p1value"
+                        },
+                        {
+                            "help": "j2f1p2help",
+                            "label": "j2f1p2label",
+                            "max_value": "j2f1p2max_value",
+                            "min_value": "j2f1p2min_value",
+                            "name": "j2f1p2name",
+                            "type": "j2f1p2type",
+                            "type_value": "j2f1p2type_value",
+                            "units": "j2f1p2units",
+                            "value": "j2f1p2value"
+                        }
+                    ]
+                }
+            ],
+            "templates": [{"source_uri": "j2t1source",
+                           "destination_path": "j2t1_dest"},
+                          {"source_uri": "j2t2source",
+                           "destination_path": "j2t2_dest"}],
+            "scripts": [{"action": "j2s1action", "source_uri": "j2s1source",
+                         "destination_path": "j2s1_dest"},
+                        {"action": "j2s2action", "source_uri": "j2s2source",
+                         "destination_path": "j2s2_dest"}],
+            "inputs": [{"source_uri": "j2i1source",
+                        "destination_path": "j2i1_dest"},
+                       {"source_uri": "j2i2source",
+                        "destination_path": "j2i2_dest"}]}
+
+
+
 def new_job3():
     job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
     job = Job(id=job_id)
@@ -272,33 +416,38 @@ def new_job3():
     job.status_description = "j3status_description"
     job.user = "j3user"
 
-    job.creation_datetime = j3c_arrow
-    job.start_datetime = j3s_arrow
-    job.end_datetime = j3e_arrow
+    # emulate the action of sqlalchemy_utils.ArrowType
+    # which converts the supplied arrow object UTC
+    # when intantiating a job
+    job.creation_datetime = j3c_arrow.to("UTC")
+    job.start_datetime = j3s_arrow.to("UTC")
+    job.end_datetime = j3e_arrow.to("UTC")
 
-    job.parameters.append(Parameter(
-       help="j3p1help",
-       label="j3p1label",
-       max_value="j3p1max_value",
-       min_value="j3p1min_value",
-       name="j3p1name",
-       type="j3p1type",
-       type_value="j3p1type_value",
-       units="j3p1units",
-       value="j3p1value"
-       )
-    )
-    job.parameters.append(Parameter(
-       help="j3p2help",
-       label="j3p2label",
-       max_value="j3p2max_value",
-       min_value="j3p2min_value",
-       name="j3p2name",
-       type="j3p2type",
-       type_value="j3p2type_value",
-       units="j3p2units",
-       value="j3p2value"
-       )
+    job.families.append(
+        Family(
+            label="j3f1label",
+            name="j3f1name",
+            collapse=True,
+            parameters=[
+                Parameter(help="j3f1p1help",
+                          label="j3f1p1label",
+                          max_value="j3f1p1max_value",
+                          min_value="j3f1p1min_value",
+                          name="j3f1p1name",
+                          type="j3f1p1type",
+                          type_value="j3f1p1type_value",
+                          units="j3f1p1units",
+                          value="j3f1p1value"),
+                Parameter(help="j3f1p2help",
+                          label="j3f1p2label",
+                          max_value="j3f1p2max_value",
+                          min_value="j3f1p2min_value",
+                          name="j3f1p2name",
+                          type="j3f1p2type",
+                          type_value="j3f1p2type_value",
+                          units="j3f1p2units",
+                          value="j3f1p2value")]
+        )
     )
 
     job.templates.append(Template(source_uri="j3t1source",
@@ -326,33 +475,38 @@ def new_job4():
     job.status_description = "j4status_description"
     job.user = "j4user"
 
-    job.creation_datetime = j4c_arrow
-    job.start_datetime = j4s_arrow
-    job.end_datetime = j4e_arrow
+    # emulate the action of sqlalchemy_utils.ArrowType
+    # which converts the supplied arrow object UTC
+    # when intantiating a job
+    job.creation_datetime = j4c_arrow.to("UTC")
+    job.start_datetime = j4s_arrow.to("UTC")
+    job.end_datetime = j4e_arrow.to("UTC")
 
-    job.parameters.append(Parameter(
-       help="j4p1help",
-       label="j4p1label",
-       max_value="j4p1max_value",
-       min_value="j4p1min_value",
-       name="j4p1name",
-       type="j4p1type",
-       type_value="j4p1type_value",
-       units="j4p1units",
-       value="j4p1value"
-       )
-    )
-    job.parameters.append(Parameter(
-       help="j4p2help",
-       label="j4p2label",
-       max_value="j4p2max_value",
-       min_value="j4p2min_value",
-       name="j4p2name",
-       type="j4p2type",
-       type_value="j4p2type_value",
-       units="j4p2units",
-       value="j4p2value"
-       )
+    job.families.append(
+        Family(
+            label="j4f1label",
+            name="j4f1name",
+            collapse=True,
+            parameters=[
+                Parameter(help="j4f1p1help",
+                          label="j4f1p1label",
+                          max_value="j4f1p1max_value",
+                          min_value="j4f1p1min_value",
+                          name="j4f1p1name",
+                          type="j4f1p1type",
+                          type_value="j4f1p1type_value",
+                          units="j4f1p1units",
+                          value="j4f1p1value"),
+                Parameter(help="j4f1p2help",
+                          label="j4f1p2label",
+                          max_value="j4f1p2max_value",
+                          min_value="j4f1p2min_value",
+                          name="j4f1p2name",
+                          type="j4f1p2type",
+                          type_value="j4f1p2type_value",
+                          units="j4f1p2units",
+                          value="j4f1p2value")]
+        )
     )
 
     job.templates.append(Template(source_uri="j4t1source",
@@ -360,7 +514,7 @@ def new_job4():
     job.templates.append(Template(source_uri="j4t2source",
                                   destination_path="j4t2_dest"))
     job.scripts.append(Script(action="RUN", source_uri="j4s1source",
-                              destination_path="j3s1_dest"))
+                              destination_path="j4s1_dest"))
     job.scripts.append(Script(action="PROGRESS", source_uri="j4s2source",
                               destination_path="j4s2_dest"))
     job.scripts.append(Script(action="CANCEL", source_uri="j4s3source",
@@ -384,21 +538,38 @@ def new_job5():
     job.status_description = "j5status_description"
     job.user = "j5user"
 
-    job.creation_datetime = j5c_arrow
-    job.start_datetime = j5s_arrow
-    job.end_datetime = j5e_arrow
+    # emulate the action of sqlalchemy_utils.ArrowType
+    # which converts the supplied arrow object UTC
+    # when intantiating a job
+    job.creation_datetime = j5c_arrow.to("UTC")
+    job.start_datetime = j5s_arrow.to("UTC")
+    job.end_datetime = j5e_arrow.to("UTC")
 
-    job.parameters.append(Parameter(
-       help="j5p1help",
-       label="j5p1label",
-       max_value="j5p1max_value",
-       min_value="j5p1min_value",
-       name="viscosity_phase_1",
-       type="j5p1type",
-       type_value="j5p1type_value",
-       units="j5p1units",
-       value="42.0"
-       )
+    job.families.append(
+        Family(
+            label="j5f1label",
+            name="j5f1name",
+            collapse=True,
+            parameters=[
+                Parameter(help="j5f1p1help",
+                          label="j5f1p1label",
+                          max_value="j5f1p1max_value",
+                          min_value="j5f1p1min_value",
+                          name="viscosity_phase_1",
+                          type="j5f1p1type",
+                          type_value="j5f1p1type_value",
+                          units="j5f1p1units",
+                          value="0.007"),
+                Parameter(help="j5f1p2help",
+                          label="j5f1p2label",
+                          max_value="j5f1p2max_value",
+                          min_value="j5f1p2min_value",
+                          name="j5f1p2name",
+                          type="j5f1p2type",
+                          type_value="j5f1p2type_value",
+                          units="j5f1p2units",
+                          value="j5f1p2value")]
+        )
     )
 
     job.templates.append(Template(source_uri="./resources/templates/Blue.nml",

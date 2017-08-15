@@ -1,6 +1,7 @@
 from middleware.database import ma
 from middleware.job.models import (
     Job,
+    Family,
     Parameter,
     Template,
     Input,
@@ -22,6 +23,14 @@ class ParameterSchema(ma.ModelSchema):
                   'units',
                   'value',
                   )
+
+
+class FamilySchema(ma.ModelSchema):
+    class Meta:
+        model = Family
+        fields = ('collapse', 'label', 'name', 'parameters')
+
+    parameters = ma.List(ma.Nested(ParameterSchema))
 
 
 class TemplateSchema(ma.ModelSchema):
@@ -54,27 +63,28 @@ class JobSchema(ma.ModelSchema):
                   'creation_datetime',
                   'start_datetime',
                   'end_datetime',
-                  'parameters',
+                  'families',
                   'templates',
                   'scripts',
                   'inputs'
                   )
 
-    parameters = ma.List(ma.Nested(ParameterSchema))
+    families = ma.List(ma.Nested(FamilySchema))
     templates = ma.List(ma.Nested(TemplateSchema))
     scripts = ma.List(ma.Nested(ScriptSchema))
     inputs = ma.List(ma.Nested(InputSchema))
 
     def make_job(self, data):
         assert 'id' in data, "Must specify Job ID"
-        parameters = ParameterSchema(many=True)\
-            .load(data.get("parameters")).data
+        families = FamilySchema(many=True)\
+            .load(data.get("families")).data
         templates = TemplateSchema(many=True).load(data.get("templates")).data
         scripts = ScriptSchema(many=True).load(data.get("scripts")).data
         inputs = InputSchema(many=True).load(data.get("inputs")).data
 
         creation_datetime = arrow.get(
             data.get("creation_datetime"))
+
         start_datetime = arrow.get(
             data.get("start_datetime"))
         end_datetime = arrow.get(
@@ -90,7 +100,7 @@ class JobSchema(ma.ModelSchema):
             creation_datetime=creation_datetime,
             start_datetime=start_datetime,
             end_datetime=end_datetime,
-            parameters=parameters,
+            families=families,
             templates=templates,
             scripts=scripts,
             inputs=inputs)
@@ -103,8 +113,8 @@ def job_to_json(job):
     """
     json_dict = JobSchema().dump(job).data
     # Sort lists
-    json_dict["parameters"] = sorted(json_dict["parameters"],
-                                     key=lambda p: p.get("name"))
+    # json_dict["families"] = sorted(json_dict["families"],
+    #                                key=lambda p: p.get("name"))
     return json_dict
 
 

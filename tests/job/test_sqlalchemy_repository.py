@@ -5,6 +5,8 @@ from middleware.database import db as _db
 from middleware.job.models import Job, Parameter, Template, Script, Input
 from new_jobs import new_job1, new_job2
 
+from middleware.job.schema import job_to_json, json_to_job, JobSchema
+
 TEST_DB_URI = 'sqlite://'
 
 
@@ -73,10 +75,14 @@ class TestJobOrmPersistance(object):
         job_db = jobs_db.first()
         # Test all fields at once to ensure we are not comparing references
         assert job_db.id == job_orig.id
-        assert job_db.parameters[0].name == job_orig.parameters[0].name
-        assert job_db.parameters[0].value == job_orig.parameters[0].value
-        assert job_db.parameters[1].name == job_orig.parameters[1].name
-        assert job_db.parameters[1].value == job_orig.parameters[1].value
+        assert job_db.families[0].parameters[0].name == \
+            job_orig.families[0].parameters[0].name
+        assert job_db.families[0].parameters[0].value == \
+            job_orig.families[0].parameters[0].value
+        assert job_db.families[0].parameters[1].name == \
+            job_orig.families[0].parameters[1].name
+        assert job_db.families[0].parameters[1].value == \
+            job_orig.families[0].parameters[1].value
         # NOTE: These are actually the same object
         assert id(job_db) == id(job_orig)
 
@@ -188,7 +194,7 @@ class TestJobRepositorySQLAlchemy(object):
         repo.create(job_orig)
         # Create identical job and update a single field
         job_updated = new_job1()
-        job_updated.parameters[0].value = "new"
+        job_updated.families[0].parameters[0].value = "new"
         # Try and create the updated object in the rep
         job_returned = repo.create(job_updated)
         job_stored = session.query(Job).filter_by(id=job_orig.id).first()
@@ -201,33 +207,13 @@ class TestJobRepositorySQLAlchemy(object):
         job_orig = new_job1()
         repo.create(job_orig)
         # Create identical job and update a single field
-        job_updated = new_job1()
-        job_updated.parameters[0].value = "new"
+        job_directly_modify = new_job1()
+        job_directly_modify.families[0].parameters[0].value = "new"
         # Try and update the original object with the copy
-        job_returned = repo.update(job_updated)
+        job_returned = repo.update(job_directly_modify)
         job_stored = session.query(Job).filter_by(id=job_orig.id).first()
-
-        print("\n\njob_returned")
-        print(job_returned.creation_datetime)
-        print(type(job_returned.creation_datetime))
-
-        print("\n\njob_updated")
-        print(job_updated.creation_datetime)
-        print(type(job_updated.creation_datetime))
-        print(job_updated.creation_datetime.hour)
-        print(job_updated.creation_datetime.tzinfo)
-
-        print("\n\njob_stored")
-        print(job_stored.creation_datetime)
-        print(job_stored.creation_datetime.hour)
-        print(job_stored.creation_datetime.tzinfo)
-
-
-
-        print(type(job_stored.creation_datetime))
-
-        assert job_returned == job_updated
-        assert job_stored == job_updated
+        assert job_returned == job_directly_modify
+        assert job_stored == job_directly_modify
 
     def test_update_nonexistent_job_returns_none(self, session):
         repo = JobRepositorySqlAlchemy(session)
@@ -236,7 +222,7 @@ class TestJobRepositorySQLAlchemy(object):
         repo.create(job_orig)
         # Create identical job and update a single field and also change ID
         job_updated = new_job1()
-        job_updated.parameters[0].value = "new"
+        job_updated.families[0].parameters[0].value = "new"
         job_updated.id = "ad460823-370c-48dd-a09f-a7564bb458f1"
         # Try and update the original object with the copy
         job_returned = repo.update(job_updated)

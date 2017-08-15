@@ -363,33 +363,86 @@ class TestJobApi(object):
         jobs = JobRepositorySqlAlchemy(session)
         # Create job
         job_original = new_job1()
-        jobs.create(job_original)
-        added_param = {"name": "j1p3name", "value": "added_value"}
-        changed_param = {"name": "j1p1name", "value": "changed_value"}
-        deleted_param = {"name": "j1p2name", "value": None}
-        job_patch_json = {"id": job_original.id,
-                          "parameters": [added_param, changed_param]}
+        _created = jobs.create(job_original)
+
+        j1f1p1_changed_param = {
+                "help": "j1f1p1help",
+                "label": "j1f1p1label",
+                "min_value": "j1f1p1min_value",
+                "max_value": "j1f1p1max_value",
+                "name": "j1f1p1name",
+                "type": "j1f1p1type",
+                "type_value": "j1f1p1type_value",
+                "units": "j1f1p1units",
+                "value": "changed_value"
+            }
+
+        j1f1p3_added_param = {
+                "help": "j1f1p3help",
+                "label": "j1f1p3label",
+                "min_value": "j1f1p3min_value",
+                "max_value": "j1f1p3max_value",
+                "name": "j1f1p3name",
+                "type": "j1f1p3type",
+                "type_value": "j1f1p3type_value",
+                "units": "j1f1p3units",
+                "value": "added_value"
+            }
+
+        # here we must supply an entire families array
+        # as json merge-patch cannot be used to update
+        # non-objects
+        # NOTE: the action of this patch is to remove
+        # the parameter j1f1p2
+        job_patch_json = {
+                "id": job_original.id,
+                "families": [
+                    {
+                        "name": "j1f1name",
+                        "label": "j1f1label",
+                        "collapse": True,
+                        "parameters": [
+                            j1f1p1_changed_param,
+                            j1f1p3_added_param
+                        ]
+                    }
+                ]
+            }
         client = test_client(jobs)
         job_response = client.patch(
             "/api/job/{}".format(job_original.id),
             data=json.dumps(job_patch_json),
             content_type='application/merge-patch+json')
+
         # Construct expected Job object by manually applying changes
         job_expected = new_job1()
         job_expected.id = job_original.id
-        # Append new parameter
-        job_expected.parameters.append(
-            Parameter(name=added_param.get("name"),
-                      value=added_param.get("value")))
-        # Replace changed parameter
-        job_expected.parameters = [
-            Parameter(name=changed_param.get("name"),
-                      value=changed_param.get("value")) if
-            p.name == changed_param.get("name") else p for p in
-            job_expected.parameters]
-        # Remove deleted parameter
-        job_expected.parameters = [p for p in job_expected.parameters if
-                                   p.name != deleted_param.get("name")]
+        job_expected.families[0].parameters[0].help = "j1f1p1help"
+        job_expected.families[0].parameters[0].label = "j1f1p1label"
+        job_expected.families[0].parameters[0].min_value = \
+            "j1f1p1min_value"
+        job_expected.families[0].parameters[0].max_value = \
+            "j1f1p1max_value"
+        job_expected.families[0].parameters[0].name = "j1f1p1name"
+        job_expected.families[0].parameters[0].type = "j1f1p1type"
+        job_expected.families[0].parameters[0].type_value = \
+            "j1f1p1type_value"
+        job_expected.families[0].parameters[0].units = "j1f1p1units"
+        job_expected.families[0].parameters[0].value = "changed_value"
+
+        job_expected.families[0].parameters[1].help = "j1f1p3help"
+        job_expected.families[0].parameters[1].label = "j1f1p3label"
+        job_expected.families[0].parameters[1].min_value = \
+            "j1f1p3min_value"
+        job_expected.families[0].parameters[1].max_value = \
+            "j1f1p3max_value"
+        job_expected.families[0].parameters[1].name = "j1f1p3name"
+        job_expected.families[0].parameters[1].type = "j1f1p3type"
+        job_expected.families[0].parameters[1].type_value = \
+            "j1f1p3type_value"
+        job_expected.families[0].parameters[1].units = "j1f1p3units"
+        job_expected.families[0].parameters[1].value = "added_value"
+
         assert job_response.status_code == 200
         assert response_to_json(job_response) == job_to_json(job_expected)
         assert jobs.get_by_id(job_original.id) == job_expected

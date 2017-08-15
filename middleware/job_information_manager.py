@@ -39,10 +39,17 @@ class job_information_manager():
         self.job_id = job.id
         self.template_list = job.templates
         self.patched_templates = []
-        self.parameter_patch = job.parameters
+        self.families = job.families
         self.script_list = job.scripts
         self.inputs_list = job.inputs
         self.user = job.user
+        self.extracted_parameters = \
+            self._extract_parameters(self.families)
+
+    def _extract_parameters(self, families):
+        parameters = []
+        for family in families:
+            parameters.extend(family.parameters)
 
     def _parameters_to_mako_dict(self, parameters):
         mako_dict = {}
@@ -74,7 +81,9 @@ class job_information_manager():
             tmp_file = os.path.join(tmp_path, template_filename)
             os.makedirs(tmp_path, exist_ok=True)
 
-            self._apply_patch(template_file, self.parameter_patch, tmp_file)
+            self._apply_patch(template_file,
+                              self.extracted_parameters,
+                              tmp_file)
             patched_paths = {'source_uri': tmp_file,
                              'destination_path': template.destination_path}
 
