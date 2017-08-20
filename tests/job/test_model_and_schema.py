@@ -15,7 +15,7 @@ class TestModel(object):
 
     def test_new_job_with_id_sets_id_to_that_provided(self):
         job_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
-        job = Job(job_id)
+        job = Job(id=job_id)
         assert job.id == job_id
 
     def test_fully_identical_jobs_evaluate_as_equal(self):

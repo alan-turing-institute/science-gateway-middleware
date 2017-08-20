@@ -90,6 +90,7 @@ class TestJobOrmPersistance(object):
         # Store new Jobs
         job1_orig = new_job1()
         job2_orig = new_job2()
+
         session.add(job1_orig)
         session.add(job2_orig)
         session.commit()
@@ -106,11 +107,6 @@ class TestJobOrmPersistance(object):
         # each other
         assert job1_db == job1_orig
         assert job2_db == job2_orig
-
-
-# TODO
-# class TestJobSchema(object):
-#     pass
 
 
 class TestJobRepositorySQLAlchemy(object):
@@ -167,9 +163,9 @@ class TestJobRepositorySQLAlchemy(object):
         job_orig = new_job1()
         session.add(job_orig)
         session.commit()
-        # fetch_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
-        # job_returned = repo.get_by_id(fetch_id)
-        # assert job_returned is None
+        fetch_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
+        job_returned = repo.get_by_id(fetch_id)
+        assert job_returned is None
 
     def test_create_nonexistent_job_creates_job(self, session):
         repo = JobRepositorySqlAlchemy(session)
@@ -205,13 +201,17 @@ class TestJobRepositorySQLAlchemy(object):
         repo = JobRepositorySqlAlchemy(session)
         # Store new Job in repo
         job_orig = new_job1()
-        repo.create(job_orig)
+        session.add(job_orig)
+        session.commit()
         # Create identical job and update a single field
+        # (_id is used as the database primary_key)
         job_directly_modify = new_job1()
         job_directly_modify.families[0].parameters[0].value = "new"
+
         # Try and update the original object with the copy
         job_returned = repo.update(job_directly_modify)
         job_stored = session.query(Job).filter_by(id=job_orig.id).first()
+
         assert job_returned == job_directly_modify
         assert job_stored == job_directly_modify
 

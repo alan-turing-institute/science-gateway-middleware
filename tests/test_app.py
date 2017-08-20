@@ -3,6 +3,7 @@ import pytest
 import xml.etree.cElementTree as ET
 from middleware.factory import create_app
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
+from middleware.job.sqlalchemy_repository import CaseRepositorySqlAlchemy
 from flask import Flask
 from middleware.database import db as _db
 
@@ -92,14 +93,18 @@ class TestApp(object):
         Simple test of app.py, checks that the app is built correctly
         using the expected factory.
         '''
-        app = create_app(CONFIG_NAME, JobRepositorySqlAlchemy(session))
+        app = create_app(CONFIG_NAME,
+                         case_repository=CaseRepositorySqlAlchemy(session),
+                         job_repository=JobRepositorySqlAlchemy(session))
         assert app.name == 'middleware.factory'
 
     def test_web_config_exists(self):
         '''
         Check that a web config file exists for azure
         '''
-        app = create_app(CONFIG_NAME, JobRepositorySqlAlchemy(session))
+        app = create_app(CONFIG_NAME,
+                         case_repository=CaseRepositorySqlAlchemy(session),
+                         job_repository=JobRepositorySqlAlchemy(session))
         web_config_location = build_web_config_path(app)
 
         assert os.path.exists(web_config_location) is True
@@ -109,7 +114,9 @@ class TestApp(object):
         Check the contents of web.config to ensure that the
         app will deploy correctly on azure as well as locally.
         '''
-        app = create_app(CONFIG_NAME, JobRepositorySqlAlchemy(session))
+        app = create_app(CONFIG_NAME,
+                         case_repository=CaseRepositorySqlAlchemy(session),
+                         job_repository=JobRepositorySqlAlchemy(session))
         WSGI_ALT = parse_web_config(app)
         basename = app.name.split('.')[0]
 

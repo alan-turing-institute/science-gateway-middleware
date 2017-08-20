@@ -2,7 +2,7 @@ import json
 import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
-from middleware.job.schema import job_to_json, json_to_job
+from middleware.job.schema import job_to_json, json_to_job, case_to_json
 from config.base import URI_Stems
 
 
@@ -35,6 +35,7 @@ class JobApi(Resource):
             self.abort_if_not_found(job_id)
         # Get Job JSON if present
         job_json = request.json
+
         if job_json is None:
             abort(400, message="Message body could not be parsed as JSON")
         # Try parsing Job JSON to Job object
@@ -139,6 +140,42 @@ class JobsApi(Resource):
         else:
             job = self.jobs.create(job)
             return job_to_json(job), 200, {'Content-Type': 'application/json'}
+
+
+class CasesApi(Resource):
+    '''API endpoint called to get a list of cases (GET)'''
+    def __init__(self, **kwargs):
+        self.cases_path = kwargs['cases_path']
+
+    def get(self):
+
+        try:
+            # Load the case template
+            with open(self.cases_path) as json_data:
+                cases = json.load(json_data)
+        except:
+            abort(404, message=("Cases file, {} not"
+                                " found").format(self.cases_path))
+
+        return cases, 200, {'Content-Type': 'application/json'}
+
+
+class CaseApi(Resource):
+    '''API endpoint called to get specific case job template (GET)'''
+
+    def __init__(self, **kwargs):
+        # Inject case service
+        self.cases = kwargs['case_repository']
+
+    def abort_if_not_found(self, case_id):
+        if not self.cases.exists(case_id):
+            abort(404, message="Case {} not found".format(case_id))
+
+    def get(self, case_id):
+        self.abort_if_not_found(case_id)
+        case = self.cases.get_by_id(case_id)
+        case_json = case_to_json(case)
+        return case_json, 200, {'Content-Type': 'application/json'}
 
 
 class SetupApi(Resource):
@@ -279,47 +316,3 @@ class RunApi(Resource):
         else:
             manager = JIM(updated_job)
             return manager.run()
-
-
-class CasesApi(Resource):
-    '''API endpoint called to get a list of cases (GET)'''
-    def __init__(self, **kwargs):
-        self.cases_path = kwargs['cases_path']
-
-    def get(self):
-
-        try:
-            # Load the case template
-            with open(self.cases_path) as json_data:
-                cases = json.load(json_data)
-        except:
-            abort(404, message=("Cases file, {} not"
-                                " found").format(self.cases_path))
-
-        return cases, 200, {'Content-Type': 'application/json'}
-
-
-class CaseApi(Resource):
-    '''API endpoint called to get specific case job template (GET)'''
-    def __init__(self, **kwargs):
-        self.cases_path = kwargs['cases_path']
-
-    def get(self, case_id):
-
-        # Get the case id from the list of cases
-        try:
-            # Load the cases file
-            with open(self.cases_path) as json_data:
-                cases = json.load(json_data)
-        except:
-            abort(404, message=("Cases file, {} not"
-                                " found").format(self.cases_path))
-
-        # Find the case corresponding to the id from the list of cases
-        case = cases.get(case_id)
-
-        if case:
-            return case, 200, {'Content-Type': 'application/json'}
-        else:
-            abort(404, message=("Case ID, {} not found in "
-                                "list of cases").format(case_id))

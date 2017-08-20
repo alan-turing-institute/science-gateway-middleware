@@ -1,6 +1,17 @@
-from middleware.job.models import (Job, Family, Parameter,
-                                   Template, Script, Input, Case)
+from middleware.job.models import (
+    Case,
+    Job, JobTemplate,
+    Family, FamilyTemplate,
+    Parameter, ParameterTemplate,
+    Template, TemplateTemplate,
+    Input, InputTemplate,
+    Script, ScriptTemplate,
+    CaseSummary
+)
 import arrow
+
+from middleware.job.schema import (
+    job_to_json, json_to_job, job_template_to_json)
 
 # "c" denotes creation_datetime
 # "s" denotes start_datetime
@@ -103,23 +114,39 @@ def new_job1():
         )
     )
 
-    job.templates.append(Template(source_uri="j1t1source",
-                                  destination_path="j1t1_dest"))
-    job.templates.append(Template(source_uri="j1t2source",
-                                  destination_path="j1t2_dest"))
-    job.scripts.append(Script(action="j1s1action", source_uri="j1s1source",
-                              destination_path="j1s1_dest"))
-    job.scripts.append(Script(action="j1s2action", source_uri="j1s2source",
-                              destination_path="j1s2_dest"))
-    job.inputs.append(Input(source_uri="j1i1source",
-                            destination_path="j1i1_dest"))
-    job.inputs.append(Input(source_uri="j1i2source",
-                            destination_path="j1i2_dest"))
-    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-                    uri="c1uri",
-                    label="c1label",
-                    thumbnail="c1thumbnail",
-                    description="c1description")
+    job.templates.append(Template(
+        source_uri="j1t1source",
+        destination_path="j1t1_dest"
+    ))
+    job.templates.append(Template(
+        source_uri="j1t2source",
+        destination_path="j1t2_dest"
+    ))
+    job.scripts.append(Script(
+        action="j1s1action",
+        source_uri="j1s1source",
+        destination_path="j1s1_dest"
+    ))
+    job.scripts.append(Script(
+        action="j1s2action",
+        source_uri="j1s2source",
+        destination_path="j1s2_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j1i1source",
+        destination_path="j1i1_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j1i2source",
+        destination_path="j1i2_dest"
+    ))
+    job.case = CaseSummary(
+        id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+        uri="c1uri",
+        label="c1label",
+        thumbnail="c1thumbnail",
+        description="c1description"
+    )
     return job
 
 
@@ -293,23 +320,39 @@ def new_job2():
         )
     )
 
-    job.templates.append(Template(source_uri="j2t1source",
-                                  destination_path="j2t1_dest"))
-    job.templates.append(Template(source_uri="j2t2source",
-                                  destination_path="j2t2_dest"))
-    job.scripts.append(Script(action="j2s1action", source_uri="j2s1source",
-                              destination_path="j2s1_dest"))
-    job.scripts.append(Script(action="j2s2action", source_uri="j2s2source",
-                              destination_path="j2s2_dest"))
-    job.inputs.append(Input(source_uri="j2i1source",
-                            destination_path="j2i1_dest"))
-    job.inputs.append(Input(source_uri="j2i2source",
-                            destination_path="j2i2_dest"))
-    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-                    uri="c1uri",
-                    label="c1label",
-                    thumbnail="c1thumbnail",
-                    description="c1description")
+    job.templates.append(Template(
+        source_uri="j2t1source",
+        destination_path="j2t1_dest"
+    ))
+    job.templates.append(Template(
+        source_uri="j2t2source",
+        destination_path="j2t2_dest"
+    ))
+    job.scripts.append(Script(
+        action="j2s1action",
+        source_uri="j2s1source",
+        destination_path="j2s1_dest"
+    ))
+    job.scripts.append(Script(
+        action="j2s2action",
+        source_uri="j2s2source",
+        destination_path="j2s2_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j2i1source",
+        destination_path="j2i1_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j2i2source",
+        destination_path="j2i2_dest"
+    ))
+    job.case = CaseSummary(
+        id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+        uri="c1uri",
+        label="c1label",
+        thumbnail="c1thumbnail",
+        description="c1description"
+    )
     return job
 
 
@@ -480,23 +523,39 @@ def new_job3():
         )
     )
 
-    job.templates.append(Template(source_uri="j3t1source",
-                                  destination_path="j3t1_dest"))
-    job.templates.append(Template(source_uri="j3t2source",
-                                  destination_path="j3t2_dest"))
-    job.scripts.append(Script(action="j3s1action", source_uri="j3s1source",
-                              destination_path="j3s1_dest"))
-    job.scripts.append(Script(action="j3s2action", source_uri="j3s2source",
-                              destination_path="j3s2_dest"))
-    job.inputs.append(Input(source_uri="j3i1source",
-                            destination_path="j3i1_dest"))
-    job.inputs.append(Input(source_uri="j3i2source",
-                            destination_path="j3i2_dest"))
-    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-                    uri="c1uri",
-                    label="c1label",
-                    thumbnail="c1thumbnail",
-                    description="c1description")
+    job.templates.append(Template(
+        source_uri="j3t1source",
+        destination_path="j3t1_dest"
+    ))
+    job.templates.append(Template(
+        source_uri="j3t2source",
+        destination_path="j3t2_dest"
+    ))
+    job.scripts.append(Script(
+        action="j3s1action",
+        source_uri="j3s1source",
+        destination_path="j3s1_dest"
+    ))
+    job.scripts.append(Script(
+        action="j3s2action",
+        source_uri="j3s2source",
+        destination_path="j3s2_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j3i1source",
+        destination_path="j3i1_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j3i2source",
+        destination_path="j3i2_dest"
+    ))
+    job.case = CaseSummary(
+        id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+        uri="c1uri",
+        label="c1label",
+        thumbnail="c1thumbnail",
+        description="c1description"
+    )
     return job
 
 
@@ -543,27 +602,48 @@ def new_job4():
         )
     )
 
-    job.templates.append(Template(source_uri="j4t1source",
-                                  destination_path="j4t1_dest"))
-    job.templates.append(Template(source_uri="j4t2source",
-                                  destination_path="j4t2_dest"))
-    job.scripts.append(Script(action="RUN", source_uri="j4s1source",
-                              destination_path="j4s1_dest"))
-    job.scripts.append(Script(action="PROGRESS", source_uri="j4s2source",
-                              destination_path="j4s2_dest"))
-    job.scripts.append(Script(action="CANCEL", source_uri="j4s3source",
-                              destination_path="j4s1_dest"))
-    job.scripts.append(Script(action="SETUP", source_uri="j4s4source",
-                              destination_path="j4s4_dest"))
-    job.inputs.append(Input(source_uri="j4i1source",
-                            destination_path="j4i1_dest"))
-    job.inputs.append(Input(source_uri="j4i2source",
-                            destination_path="j4i2_dest"))
-    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-                    uri="c1uri",
-                    label="c1label",
-                    thumbnail="c1thumbnail",
-                    description="c1description")
+    job.templates.append(Template(
+        source_uri="j4t1source",
+        destination_path="j4t1_dest"))
+    job.templates.append(Template(
+        source_uri="j4t2source",
+        destination_path="j4t2_dest"
+    ))
+    job.scripts.append(Script(
+        action="RUN",
+        source_uri="j4s1source",
+        destination_path="j4s1_dest"
+    ))
+    job.scripts.append(Script(
+        action="PROGRESS",
+        source_uri="j4s2source",
+        destination_path="j4s2_dest"
+    ))
+    job.scripts.append(Script(
+        action="CANCEL",
+        source_uri="j4s3source",
+        destination_path="j4s1_dest"
+    ))
+    job.scripts.append(Script(
+        action="SETUP",
+        source_uri="j4s4source",
+        destination_path="j4s4_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j4i1source",
+        destination_path="j4i1_dest"
+    ))
+    job.inputs.append(Input(
+        source_uri="j4i2source",
+        destination_path="j4i2_dest"
+    ))
+    job.case = CaseSummary(
+        id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+        uri="c1uri",
+        label="c1label",
+        thumbnail="c1thumbnail",
+        description="c1description"
+    )
     return job
 
 
@@ -610,28 +690,41 @@ def new_job5():
         )
     )
 
-    job.templates.append(Template(source_uri="./resources/templates/Blue.nml",
-                                  destination_path="project/case/"))
-
+    job.templates.append(Template(
+        source_uri="./resources/templates/Blue.nml",
+        destination_path="project/case/"
+    ))
     job.scripts.append(Script(action="RUN",
-                              source_uri="./resources/scripts/start_job.sh",
-                              destination_path="project/case/"))
-    job.scripts.append(Script(action="PROGRESS",
-                              source_uri="./resources/scripts/progress_job.sh",
-                              destination_path="project/case/"))
-    job.scripts.append(Script(action="CANCEL",
-                              source_uri="./resources/scripts/cancel_job.sh",
-                              destination_path="project/case/"))
-    job.scripts.append(Script(action="SETUP",
-                              source_uri="./resources/scripts/setup_job.sh",
-                              destination_path="project/case/"))
-    job.inputs.append(Input(source_uri="j5i1source",
-                            destination_path="project/case/"))
-    job.inputs.append(Input(source_uri="j5i2source",
-                            destination_path="project/case/"))
-    job.case = Case(id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-                    uri="c1uri",
-                    label="c1label",
-                    thumbnail="c1thumbnail",
-                    description="c1description")
+        source_uri="./resources/scripts/start_job.sh",
+        destination_path="project/case/"
+    ))
+    job.scripts.append(Script(
+        action="PROGRESS",
+        source_uri="./resources/scripts/progress_job.sh",
+        destination_path="project/case/"
+    ))
+    job.scripts.append(Script(
+        action="CANCEL",
+        source_uri="./resources/scripts/cancel_job.sh",
+        destination_path="project/case/"
+    ))
+    job.scripts.append(Script(
+        action="SETUP",
+        source_uri="./resources/scripts/setup_job.sh",
+        destination_path="project/case/"
+    ))
+    job.inputs.append(Input(
+        source_uri="j5i1source",
+        destination_path="project/case/"
+    ))
+    job.inputs.append(Input(
+        source_uri="j5i2source",
+        destination_path="project/case/"
+    ))
+    job.case = CaseSummary(
+        id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+        uri="c1uri",
+        label="c1label",
+        thumbnail="c1thumbnail",
+        description="c1description")
     return job
