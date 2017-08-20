@@ -129,6 +129,21 @@ class JobSchema(ma.ModelSchema):
         return job
 
 
+class JobSummarySchema(ma.ModelSchema):
+    class Meta:
+        model = Job
+        fields = ('id',
+                  'description',
+                  'name',
+                  'status',
+                  'creation_datetime',
+                  'start_datetime',
+                  'end_datetime',
+                  'case'
+                  )
+    case = ma.Nested('CaseSummarySchema')
+
+
 class FamilyTemplateSchema(ma.ModelSchema):
     class Meta:
         model = FamilyTemplate
@@ -236,6 +251,11 @@ def job_to_json(job):
     # Sort lists
     # json_dict["families"] = sorted(json_dict["families"],
     #                                key=lambda p: p.get("name"))
+    return json_dict
+
+
+def job_to_summary_json(job):
+    json_dict = JobSummarySchema().dump(job).data
     return json_dict
 
 

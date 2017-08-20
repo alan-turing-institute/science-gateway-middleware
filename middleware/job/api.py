@@ -2,13 +2,8 @@ import json
 import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
-from middleware.job.schema import job_to_json, json_to_job, case_to_json
-from config.base import URI_Stems
-
-
-def job_summary_json(job):
-    job_id = job.id
-    return {"id": job_id}
+from middleware.job.schema import (job_to_json, json_to_job,
+                                   case_to_json, job_to_summary_json)
 
 
 class JobApi(Resource):
@@ -116,11 +111,12 @@ class JobsApi(Resource):
         self.jobs = kwargs['job_repository']
 
     def get(self):
+
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
-            summary_json = job_summary_json(job)
-            summary_json["uri"] = "{}{}".format(URI_Stems['job'], job_id)
+            summary_json = job_to_summary_json(job)
             return summary_json
+
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
         return summary_list, 200, {'Content-Type': 'application/json'}
@@ -145,7 +141,27 @@ class JobsApi(Resource):
 class CasesApi(Resource):
     '''API endpoint called to get a list of cases (GET)'''
     def __init__(self, **kwargs):
-        self.cases_path = kwargs['cases_path']
+        self.cases_path = kwargs['case_repository']
+
+    # def get(self):
+    #     def list_job_summary_json(case_id):
+    #         case = self.cases.get_by_id(case_id)
+    #         summary_json = job_summary_json(job)
+    #         summary_json["uri"] = "{}/{}".format(URI_STEMS['job'], job_id)
+    #         return summary_json
+    #     job_ids = self.jobs.list_ids()
+    #     summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
+    #     return summary_list, 200, {'Content-Type': 'application/json'}
+    #
+    # def get(self):
+    #     def list_job_summary_json(job_id):
+    #         job = self.jobs.get_by_id(job_id)
+    #         summary_json = job_summary_json(job)
+    #         summary_json["uri"] = "{}/{}".format(URI_STEMS['job'], job_id)
+    #         return summary_json
+    #     job_ids = self.jobs.list_ids()
+    #     summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
+    #     return summary_list, 200, {'Content-Type': 'application/json'}
 
     def get(self):
 
