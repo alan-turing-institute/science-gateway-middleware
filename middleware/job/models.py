@@ -1,6 +1,7 @@
 from middleware.database import db
 from uuid import uuid4
 from sqlalchemy_utils import ArrowType
+from config.base import MIDDLEWARE_URL, URI_STEMS
 
 
 class Case(db.Model):
@@ -76,6 +77,7 @@ class JobTemplate(db.Model):
 class Job(db.Model):
     id = db.Column(db.String, primary_key=True)
 
+    uri = db.Column(db.String)
     description = db.Column(db.String)
     name = db.Column(db.String)
     status = db.Column(db.String)
@@ -100,6 +102,7 @@ class Job(db.Model):
     def __init__(
             self,
             id=None,
+            uri=None,
             description=None,
             name=None,
             status=None,
@@ -121,6 +124,7 @@ class Job(db.Model):
             self.id = str(uuid4())
 
         # string fields
+        self.uri = uri
         self.description = description
         self.name = name
         self.status = status
@@ -142,6 +146,7 @@ class Job(db.Model):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return (self.id == other.id and
+                    self.uri == other.uri and
                     self.description == other.description and
                     self.name == other.name and
                     self.status == other.status and
@@ -651,12 +656,14 @@ def input_template_to_input(input_template):
     return input_
 
 
-def case_to_job(case):
-
-    job = Job()
+def case_to_job(case, job_id=None):
+    job = Job(job_id)
     job.description = case.job.description
     job.name = case.job.name
     job.user = case.job.user
+    job.uri = "{}{}/{}".format(MIDDLEWARE_URL,
+                               URI_STEMS['jobs'],
+                               job.id)
 
     job.case = CaseSummary(
         id=case.id,

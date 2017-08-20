@@ -76,5 +76,4 @@ class CaseRepositorySqlAlchemy():
         return self._session.query(Case).filter_by(id=case_id).first()
 
     def list_ids(self):
-        pass
-        # return [id[0] for id in self._session.query(Job.id)]
+        return [id[0] for id in self._session.query(Case.id)]

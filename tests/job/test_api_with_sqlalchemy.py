@@ -11,11 +11,15 @@ from middleware.job.sqlalchemy_repository import (
 from middleware.database import db as _db
 from middleware.job.models import Job, Parameter, Template, Script, Input
 from middleware.job.schema import job_to_json
-from new_jobs import new_job1, new_job2, new_job3, new_job4
-from config.base import URI_STEMS
+from middleware.factory import json_to_case_list
+import new_jobs as nj  # for easy access to iso_string values
+from new_jobs import (new_job1, new_job2, new_job3, new_job4,
+                      new_case1, new_job1_output_json)
+from config.base import MIDDLEWARE_URL, URI_STEMS
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
+CASES_JSON_FILENAME = './resources/cases/blue_cases.json'
 
 
 @pytest.fixture
@@ -490,18 +494,65 @@ class TestJobsApi(object):
         jobs.create(job2)
         jobs.create(job3)
 
-        def job_uri(job_id):
-            return "{}/{}".format(URI_STEMS['jobs'], job_id)
+        expected_response = {"jobs": [
+            {
+                "id": job1.id,
+                "uri": job1.uri,
+                "status": job1.status,
+                "name": job1.name,
+                "description": job1.description,
+                "creation_datetime": nj.j1c_iso_string,
+                "start_datetime": nj.j1s_iso_string,
+                "end_datetime": nj.j1e_iso_string,
+                "case": {
+                    "id": job1.case.id,
+                    "label": job1.case.label,
+                    "description": job1.case.description,
+                    "uri": job1.case.uri,
+                    "thumbnail": job1.case.thumbnail
+                }
+            }, {
+                "id": job2.id,
+                "uri": job2.uri,
+                "status": job2.status,
+                "name": job2.name,
+                "description": job2.description,
+                "creation_datetime": nj.j2c_iso_string,
+                "start_datetime": nj.j2s_iso_string,
+                "end_datetime": nj.j2e_iso_string,
+                "case": {
+                    "id": job2.case.id,
+                    "label": job2.case.label,
+                    "description": job2.case.description,
+                    "uri": job2.case.uri,
+                    "thumbnail": job2.case.thumbnail
+                }
+            }, {
+                "id": job3.id,
+                "uri": job3.uri,
+                "status": job3.status,
+                "name": job3.name,
+                "description": job3.description,
+                "creation_datetime": nj.j3c_iso_string,
+                "start_datetime": nj.j3s_iso_string,
+                "end_datetime": nj.j3e_iso_string,
+                "case": {
+                    "id": job3.case.id,
+                    "label": job3.case.label,
+                    "description": job3.case.description,
+                    "uri": job3.case.uri,
+                    "thumbnail": job3.case.thumbnail
+                }
+            }
+         ]}
 
-        expected_response = [{"id": job1.id, "uri": job_uri(job1.id)},
-                             {"id": job2.id, "uri": job_uri(job2.id)},
-                             {"id": job3.id, "uri": job_uri(job3.id)}]
         job_response = client.get(URI_STEMS['jobs'])
         assert job_response.status_code == 200
         # Both lists of dictionaries need to have same sort order to
         # successfully compare
-        assert response_to_json(job_response).sort(key=lambda x: x["id"]) ==\
-            expected_response.sort(key=lambda x: x["id"])
+        assert response_to_json(job_response)["jobs"]\
+            .sort(key=lambda x: x["id"]) ==\
+            expected_response["jobs"].sort(key=lambda x: x["id"])
 
     # === POST tests (CREATE) ===
     def test_post_for_nonexistent_job_returns_job_with_200(self, session):
@@ -844,60 +895,78 @@ class TestProgressApi(object):
         assert job_response.status_code == 404
 
 
-# class TestCasesApi(object):
-#
-#     def test_get_cases_valid_request(self):
-#
-#         client = test_client()
-#         response = client.get(URI_STEMS['cases'])
-#
-#         # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
-#         # FINAL FORMAT YET. TODO: FIX THIS!
-#         assert response.status_code == 200
-#
-#     def test_get_cases_missing_cases_file(self):
-#         from config.base import case_summaries_path
-#         # Rename file so we get a 404 error
-#         os.rename(case_summaries_path, '{}.tmp'.format(case_summaries_path))
-#
-#         client = test_client()
-#         response = client.get(URI_STEMS['cases'])
-#
-#         # Undo Rename
-#         os.rename('{}.tmp'.format(case_summaries_path), case_summaries_path)
-#
-#         assert response.status_code == 404
-#
-#
-# class TestCaseApi(object):
-#
-#     def test_get_case_valid_request(self):
-#
-#         client = test_client()
-#         case_id = '85b8995c-63a9-474f-8fdc-52c7582ec2ac'
-#         response = client.get("{}/{}".format(URI_STEMS['cases'], case_id))
-#
-#         # NOT TESTING AGAINST CASE CONTENTS AS WE DONT KNOW THE
-#         # FINAL FORMAT YET. TODO: FIX THIS!
-#         assert response.status_code == 200
-#
-#     def test_get_case_valid_request_invalid_case_id(self):
-#
-#         client = test_client()
-#         case_id = 'hello'
-#         response = client.get("{}/{}".format(URI_STEMS['cases'], case_id))
-#
-#         assert response.status_code == 404
-#
-#     def test_get_case_missing_case_file(self):
-#         from config.base import cases_path
-#         # Rename file so we get a 404 error
-#         os.rename(cases_path, '{}.tmp'.format(cases_path))
-#
-#         client = test_client()
-#         case_id = '85b8995c-63a9-474f-8fdc-52c7582ec2ac'
-#         response = client.get("{}/{}".format(URI_STEMS['cases'], case_id))
-#
-#         # Undo Rename
-#         os.rename('{}.tmp'.format(cases_path), cases_path)
-#         assert response.status_code == 404
+class TestCasesApi(object):
+
+    def test_get_cases_valid_request(self, session):
+        cases = CaseRepositorySqlAlchemy(session)
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(case_repository=cases, job_repository=jobs)
+
+        # add an example case
+        case1 = new_case1()
+        session.add(case1)
+        session.commit()
+
+        response = client.get(URI_STEMS['cases'])
+
+        expected_json = {
+            "cases": [{
+                "label": "c1label",
+                'id': case1.id,
+                'description': 'c1description',
+                'thumbnail': 'c1thumbnail',
+                'uri': 'c1uri'}
+                ]}
+
+        assert response.status_code == 200
+        assert response_to_json(response) == expected_json
+
+
+class TestCaseApi(object):
+
+    def test_get_case_valid_request(self, session):
+        cases = CaseRepositorySqlAlchemy(session)
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(case_repository=cases, job_repository=jobs)
+
+        # add an example case
+        case = new_case1()
+        case_id = case.id
+        session.add(case)
+        session.commit()
+
+        response = client.get("{}/{}".format(URI_STEMS['cases'], case_id))
+        response_json = response_to_json(response)
+
+        expected_json = new_job1_output_json()
+
+        # for now, igore differences in ID, uri, user, status and datetimes
+        # (these are set by the middleware model and require mocking to test
+        # full equality of response and expected_response)
+        expected_json["id"] = response_json.get("id")
+        expected_json["uri"] = response_json.get("uri")
+        expected_json["user"] = response_json.get("user")
+        expected_json["status"] = response_json.get("status")
+        expected_json["creation_datetime"] = \
+            response_json.get("creation_datetime")
+        expected_json["start_datetime"] = response_json.get("start_datetime")
+        expected_json["end_datetime"] = response_json.get("end_datetime")
+
+        assert response.status_code == 200
+        assert response_json == expected_json
+
+    def test_get_case_valid_request_invalid_case_id(self, session):
+
+        cases = CaseRepositorySqlAlchemy(session)
+        jobs = JobRepositorySqlAlchemy(session)
+        client = test_client(case_repository=cases, job_repository=jobs)
+
+        # add an example case ()
+        case = new_case1()
+        case_id = case.id
+        session.add(case)
+        session.commit()
+
+        case_id = 'invalid-case'
+        response = client.get("{}/{}".format(URI_STEMS['cases'], case_id))
+        assert response.status_code == 404

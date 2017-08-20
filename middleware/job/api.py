@@ -1,9 +1,10 @@
-import json
 import json_merge_patch
 from flask_restful import Resource, abort, request
 from middleware.job_information_manager import job_information_manager as JIM
 from middleware.job.schema import (job_to_json, json_to_job,
-                                   case_to_json, job_to_summary_json)
+                                   job_to_summary_json,
+                                   case_to_summary_json)
+from middleware.job.models import case_to_job
 
 
 class JobApi(Resource):
@@ -119,7 +120,8 @@ class JobsApi(Resource):
 
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
-        return summary_list, 200, {'Content-Type': 'application/json'}
+        return {"jobs": summary_list}, 200,
+        {'Content-Type': 'application/json'}
 
     def post(self):
         job_json = request.json
@@ -141,39 +143,20 @@ class JobsApi(Resource):
 class CasesApi(Resource):
     '''API endpoint called to get a list of cases (GET)'''
     def __init__(self, **kwargs):
-        self.cases_path = kwargs['case_repository']
-
-    # def get(self):
-    #     def list_job_summary_json(case_id):
-    #         case = self.cases.get_by_id(case_id)
-    #         summary_json = job_summary_json(job)
-    #         summary_json["uri"] = "{}/{}".format(URI_STEMS['job'], job_id)
-    #         return summary_json
-    #     job_ids = self.jobs.list_ids()
-    #     summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
-    #     return summary_list, 200, {'Content-Type': 'application/json'}
-    #
-    # def get(self):
-    #     def list_job_summary_json(job_id):
-    #         job = self.jobs.get_by_id(job_id)
-    #         summary_json = job_summary_json(job)
-    #         summary_json["uri"] = "{}/{}".format(URI_STEMS['job'], job_id)
-    #         return summary_json
-    #     job_ids = self.jobs.list_ids()
-    #     summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
-    #     return summary_list, 200, {'Content-Type': 'application/json'}
+        self.cases = kwargs['case_repository']
 
     def get(self):
 
-        try:
-            # Load the case template
-            with open(self.cases_path) as json_data:
-                cases = json.load(json_data)
-        except:
-            abort(404, message=("Cases file, {} not"
-                                " found").format(self.cases_path))
+        def list_case_summary_json(case_id):
+            case = self.cases.get_by_id(case_id)
+            summary_json = case_to_summary_json(case)
+            return summary_json
 
-        return cases, 200, {'Content-Type': 'application/json'}
+        case_ids = self.cases.list_ids()
+        summary_list = [list_case_summary_json(case_id) for
+                        case_id in case_ids]
+        return {"cases": summary_list}, 200,
+        {'Content-Type': 'application/json'}
 
 
 class CaseApi(Resource):
@@ -190,8 +173,9 @@ class CaseApi(Resource):
     def get(self, case_id):
         self.abort_if_not_found(case_id)
         case = self.cases.get_by_id(case_id)
-        case_json = case_to_json(case)
-        return case_json, 200, {'Content-Type': 'application/json'}
+        job = case_to_job(case)
+        job_json = job_to_json(job)
+        return job_json, 200, {'Content-Type': 'application/json'}
 
 
 class SetupApi(Resource):

@@ -74,6 +74,7 @@ class JobSchema(ma.ModelSchema):
     class Meta:
         model = Job
         fields = ('id',
+                  'uri',
                   'description',
                   'name',
                   'status',
@@ -114,6 +115,7 @@ class JobSchema(ma.ModelSchema):
 
         job = Job(
             id=data.get("id"),
+            uri=data.get("uri"),
             description=data.get("description"),
             name=data.get("name"),
             status=data.get("status"),
@@ -133,6 +135,7 @@ class JobSummarySchema(ma.ModelSchema):
     class Meta:
         model = Job
         fields = ('id',
+                  'uri',
                   'description',
                   'name',
                   'status',
@@ -275,4 +278,9 @@ def case_to_json(case):
     # Sort lists
     # json_dict["families"] = sorted(json_dict["families"],
     #                                key=lambda p: p.get("name"))
+    return json_dict
+
+
+def case_to_summary_json(case):
+    json_dict = CaseSummarySchema().dump(case).data
     return json_dict

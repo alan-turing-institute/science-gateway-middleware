@@ -12,6 +12,7 @@ import arrow
 
 from middleware.job.schema import (
     job_to_json, json_to_job, job_template_to_json)
+from config.base import MIDDLEWARE_URL, URI_STEMS
 
 # "c" denotes creation_datetime
 # "s" denotes start_datetime
@@ -70,11 +71,16 @@ j5s_arrow, j5s_utc_string = arrow_processing(j5s_iso_string)
 j5e_arrow, j5e_utc_string = arrow_processing(j5e_iso_string)
 
 
+def job_uri_string(job_id):
+    return "{}{}/{}".format(MIDDLEWARE_URL, URI_STEMS['jobs'], job_id)
+
+
 def new_job1():
     # NOTE: Ensure to update new_job1_json() to match any changes made here
     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
     job = Job(id=job_id)
 
+    job.uri = job_uri_string(job_id)
     job.description = "j1description"
     job.name = "j1name"
     job.status = "j1status"
@@ -153,7 +159,9 @@ def new_job1():
 # input json uses local time
 def new_job1_input_json():
     # NOTE: Ensure to update new_job1() to match any changes made here
+    uri_string = job_uri_string("d769843b-6f37-4939-96c7-c382c3e74b46")
     return {"id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "uri": uri_string,
             "description": "j1description",
             "name": "j1name",
             "status": "j1status",
@@ -216,7 +224,9 @@ def new_job1_input_json():
 # output json uses UTC time
 def new_job1_output_json():
     # NOTE: Ensure to update new_job1() to match any changes made here
+    uri_string = job_uri_string("d769843b-6f37-4939-96c7-c382c3e74b46")
     return {"id": "d769843b-6f37-4939-96c7-c382c3e74b46",
+            "uri": uri_string,
             "description": "j1description",
             "name": "j1name",
             "status": "j1status",
@@ -281,6 +291,7 @@ def new_job2():
     job_id = "9044394f-de29-4be3-857f-33a4fdca0be3"
     job = Job(id=job_id)
 
+    job.uri = job_uri_string(job_id)
     job.description = "j2description"
     job.name = "j2name"
     job.status = "j2status"
@@ -358,7 +369,9 @@ def new_job2():
 
 def new_job2_input_json():
     # NOTE: Ensure to update new_job2() to match any changes made here
+    uri_string = job_uri_string("9044394f-de29-4be3-857f-33a4fdca0be3")
     return {"id": "9044394f-de29-4be3-857f-33a4fdca0be3",
+            "uri": uri_string,
             "description": "j2description",
             "name": "j2name",
             "status": "j2status",
@@ -420,7 +433,9 @@ def new_job2_input_json():
 
 def new_job2_output_json():
     # NOTE: Ensure to update new_job2() to match any changes made here
+    uri_string = job_uri_string("9044394f-de29-4be3-857f-33a4fdca0be3")
     return {"id": "9044394f-de29-4be3-857f-33a4fdca0be3",
+            "uri": uri_string,
             "description": "j2description",
             "name": "j2name",
             "status": "j2status",
@@ -484,6 +499,7 @@ def new_job3():
     job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
     job = Job(id=job_id)
 
+    job.uri = job_uri_string(job_id)
     job.description = "j3description"
     job.name = "j3name"
     job.status = "j3status"
@@ -563,6 +579,7 @@ def new_job4():
     job_id = "eadcd354-a433-48ed-bdc7-e3b2457a1918"
     job = Job(id=job_id)
 
+    job.uri = job_uri_string(job_id)
     job.description = "j4description"
     job.name = "j4name"
     job.status = "j4status"
@@ -651,6 +668,7 @@ def new_job5():
     job_id = "d769843b-6f37-4939-96c7-c382c3e74b46"
     job = Job(id=job_id)
 
+    job.uri = job_uri_string(job_id)
     job.description = "j5description"
     job.name = "j5name"
     job.status = "j5status"
@@ -728,3 +746,86 @@ def new_job5():
         thumbnail="c1thumbnail",
         description="c1description")
     return job
+
+
+def new_job_template1():
+    job = JobTemplate()
+
+    job.description = "j1description"
+    job.name = "j1name"
+
+    job.families.append(
+        FamilyTemplate(
+            label="j1f1label",
+            name="j1f1name",
+            collapse=True,
+            parameters=[
+                ParameterTemplate(
+                    help="j1f1p1help",
+                    label="j1f1p1label",
+                    max_value="j1f1p1max_value",
+                    min_value="j1f1p1min_value",
+                    name="j1f1p1name",
+                    type="j1f1p1type",
+                    type_value="j1f1p1type_value",
+                    units="j1f1p1units",
+                          value="j1f1p1value"),
+                ParameterTemplate(
+                    help="j1f1p2help",
+                    label="j1f1p2label",
+                    max_value="j1f1p2max_value",
+                    min_value="j1f1p2min_value",
+                    name="j1f1p2name",
+                    type="j1f1p2type",
+                    type_value="j1f1p2type_value",
+                    units="j1f1p2units",
+                    value="j1f1p2value")]
+        )
+    )
+
+    job.templates.append(TemplateTemplate(
+        source_uri="j1t1source",
+        destination_path="j1t1_dest"
+    ))
+    job.templates.append(TemplateTemplate(
+        source_uri="j1t2source",
+        destination_path="j1t2_dest"))
+    job.scripts.append(ScriptTemplate(
+        action="j1s1action",
+        source_uri="j1s1source",
+        destination_path="j1s1_dest"
+    ))
+    job.scripts.append(ScriptTemplate(
+        action="j1s2action",
+        source_uri="j1s2source",
+        destination_path="j1s2_dest"
+    ))
+    job.inputs.append(InputTemplate(
+        source_uri="j1i1source",
+        destination_path="j1i1_dest"
+    ))
+    job.inputs.append(InputTemplate(
+        source_uri="j1i2source",
+        destination_path="j1i2_dest"
+    ))
+    return job
+
+
+def new_case1():
+    case_id = "85b8995c-63a9-474f-8fdc-52c7582ec2ac"
+    case = Case(id=case_id)
+    case.uri = "c1uri"
+    case.label = "c1label"
+    case.thumbnail = "c1thumbnail"
+    case.description = "c1description"
+    case.job = new_job_template1()
+    return case
+
+from middleware.job.models import case_to_job
+
+case = new_case1()
+job = case_to_job(case)
+job_to_json(job)
+
+# def new_case1_json():
+#     pass
