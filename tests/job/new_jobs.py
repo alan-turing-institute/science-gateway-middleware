@@ -820,12 +820,3 @@ def new_case1():
     case.description = "c1description"
     case.job = new_job_template1()
     return case
-
-from middleware.job.models import case_to_job
-
-case = new_case1()
-job = case_to_job(case)
-job_to_json(job)
-
-# def new_case1_json():
-#     pass

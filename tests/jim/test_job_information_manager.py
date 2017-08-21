@@ -78,7 +78,6 @@ class TestJIM(object):
         parameters = families[0].get("parameters")
         parameter = parameters[0]  # choose first parameter
 
-
         templates = job_json.get("templates")
         template = templates[0]  # choose first template
 

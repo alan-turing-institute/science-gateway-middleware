@@ -1,0 +1,25 @@
+[{
+    "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
+    "uri": null,
+    "label": null,
+    "thumbnail": null,
+    "description": "Test transfer of run script",
+    "job": {
+      "families": [],
+      "inputs": [],
+      "scripts": [{
+        "destination_path": "./",
+        "source_uri": "./resources/scripts/setup_job.sh",
+        "action": "run"
+      }],
+      "user": null,
+      "templates": [],
+      "name": null,
+      "description": null,
+      "creation_datetime": null,
+      "start_datetime": null,
+      "end_datetime": null,
+      "status": null
+    }
+  }
+]

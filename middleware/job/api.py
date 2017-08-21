@@ -9,6 +9,7 @@ from middleware.job.models import case_to_job
 import arrow
 import os
 
+
 class JobApi(Resource):
     '''API for reading (GET), amending (PUT/PATCH) and deleting (DELETE)
     individual jobs'''

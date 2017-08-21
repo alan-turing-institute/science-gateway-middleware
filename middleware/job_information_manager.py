@@ -30,7 +30,7 @@ class job_information_manager():
             self.username = 'test_user'
             self.hostname = 'test_host'
             self.port = 22
-            self.simulation_root = '/home/'
+            self.simulation_root = '/home/test_user'
 
         # TODO build data structure here with full remote path information, so
         # generating full paths is a once only operation

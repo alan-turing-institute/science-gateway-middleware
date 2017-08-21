@@ -104,6 +104,12 @@ def create_app(config_name,
         with app.app_context():
             for case in case_list:
                 app._case_repository.create(case)
+    elif app.config['LOAD_DEVELOPMENT_CASES']:
+        cases_json_filename = './resources/cases/development_cases.json'
+        case_list = json_to_case_list(cases_json_filename)
+        with app.app_context():
+            for case in case_list:
+                app._case_repository.create(case)
 
     api = Api(app)
 
