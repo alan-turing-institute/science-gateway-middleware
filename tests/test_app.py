@@ -98,7 +98,7 @@ class TestApp(object):
                          job_repository=JobRepositorySqlAlchemy(session))
         assert app.name == 'middleware.factory'
 
-    def test_web_config_exists(self):
+    def test_web_config_exists(self, session):
         '''
         Check that a web config file exists for azure
         '''
@@ -109,7 +109,7 @@ class TestApp(object):
 
         assert os.path.exists(web_config_location) is True
 
-    def test_azure_params(self):
+    def test_azure_params(self, session):
         '''
         Check the contents of web.config to ensure that the
         app will deploy correctly on azure as well as locally.
