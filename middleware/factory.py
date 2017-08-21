@@ -4,7 +4,7 @@ from flask_cors import CORS
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.job.sqlalchemy_repository import CaseRepositorySqlAlchemy
 from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
-                                CancelApi, CaseApi, CasesApi)
+                                CancelApi, CaseApi, CasesApi, ThumbnailApi)
 from middleware.database import db, ma
 from middleware.job.schema import CaseSchema
 import json
@@ -22,7 +22,8 @@ def json_to_case_list(json_filename):
 
 def create_app(config_name,
                case_repository=None,
-               job_repository=None):
+               job_repository=None,
+               static_folder='static'):
     app = Flask(__name__, instance_relative_config=True)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -139,4 +140,9 @@ def create_app(config_name,
                      '{}/<string:job_id>'.format(URI_STEMS['cancel']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
+
+    # for development, serve static files from flask itself
+    api.add_resource(ThumbnailApi,
+                     '{}/<path:path>'.format(URI_STEMS['thumbnails']))
+
     return app

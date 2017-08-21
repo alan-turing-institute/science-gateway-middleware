@@ -1,12 +1,13 @@
 import json_merge_patch
 from flask_restful import Resource, abort, request
+from flask import current_app, send_from_directory
 from middleware.job_information_manager import job_information_manager as JIM
 from middleware.job.schema import (job_to_json, json_to_job,
                                    job_to_summary_json,
                                    case_to_summary_json)
 from middleware.job.models import case_to_job
 import arrow
-
+import os
 
 class JobApi(Resource):
     '''API for reading (GET), amending (PUT/PATCH) and deleting (DELETE)
@@ -320,3 +321,16 @@ class RunApi(Resource):
         else:
             manager = JIM(updated_job)
             return manager.run()
+
+
+class ThumbnailApi(Resource):
+    '''API endpoint called to return static files (GET)'''
+    def __init__(self, **kwargs):
+        pass
+
+    def get(self, path):
+        static_folder = current_app.static_folder
+        img_folder = os.path.join(static_folder, 'img')
+        return send_from_directory(img_folder, path,
+                                   mimetype='image/png',
+                                   as_attachment=False)

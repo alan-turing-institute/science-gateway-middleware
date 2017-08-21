@@ -6,6 +6,7 @@ URI_STEMS = {'jobs': '/api/jobs',
              'run': '/api/run',
              'cancel': '/api/cancel',
              'progress': '/api/progress',
-             'cases': '/api/cases'}
+             'cases': '/api/cases',
+             'thumbnails': '/assets/thumbnails'}
 
 MIDDLEWARE_URL = "https://science-gateway-middleware.azurewebsites.net"
