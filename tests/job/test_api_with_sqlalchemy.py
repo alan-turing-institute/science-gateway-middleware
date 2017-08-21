@@ -2,6 +2,7 @@ import os
 import json
 import pytest
 from flask import Flask
+import arrow
 import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.factory import create_app
@@ -564,8 +565,17 @@ class TestJobsApi(object):
         job_response = client.post(URI_STEMS['jobs'],
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
+
+        # ignore differences in `creation_datetime` and `status` as these are
+        # now modified directly by the api
+        job_response_json = response_to_json(job_response)
+        job.creation_datetime = \
+            arrow.get(job_response_json['creation_datetime'])
+        job.status = 'new'
+        job_json = job_to_json(job)
+
         assert job_response.status_code == 200
-        assert response_to_json(job_response) == job_to_json(job)
+        assert job_response_json == job_json
         assert jobs.get_by_id(job.id) == job
 
     def test_post_for_existing_job_returns_error_with_409(self, session):
