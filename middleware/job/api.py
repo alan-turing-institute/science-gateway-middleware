@@ -5,6 +5,7 @@ from middleware.job.schema import (job_to_json, json_to_job,
                                    job_to_summary_json,
                                    case_to_summary_json)
 from middleware.job.models import case_to_job
+import arrow
 
 
 class JobApi(Resource):
@@ -130,6 +131,9 @@ class JobsApi(Resource):
         # Try parsing Job JSON to Job object
         try:
             job = json_to_job(job_json)
+            # populate creation datetime
+            job.creation_datetime = arrow.utcnow()
+            job.status = "new"
         except:
             abort(400, message="Message body is not valid Job JSON")
         if self.jobs.exists(job.id):

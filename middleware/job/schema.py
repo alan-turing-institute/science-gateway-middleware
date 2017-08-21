@@ -105,13 +105,25 @@ class JobSchema(ma.ModelSchema):
 
         case = CaseSummarySchema().load(data.get("case")).data
 
-        creation_datetime = arrow.get(
-            data.get("creation_datetime"))
+        # Note, `arrow.get(None)` returns present utc time
+        # rather than `None`
+        data_creation_datetime = data.get("creation_datetime")
+        if data_creation_datetime:
+            creation_datetime = arrow.get(data.get("creation_datetime"))
+        else:
+            creation_datetime = None
 
-        start_datetime = arrow.get(
-            data.get("start_datetime"))
-        end_datetime = arrow.get(
-            data.get("end_datetime"))
+        data_start_datetime = data.get("start_datetime")
+        if data_start_datetime:
+            start_datetime = arrow.get(data.get("start_datetime"))
+        else:
+            start_datetime = None
+
+        data_end_datetime = data.get("end_datetime")
+        if data_end_datetime:
+            end_datetime = arrow.get(data.get("end_datetime"))
+        else:
+            end_datetime = None
 
         job = Job(
             id=data.get("id"),
