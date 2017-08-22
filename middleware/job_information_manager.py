@@ -1,4 +1,5 @@
 import os
+from pathlib import posixpath
 from mako.template import Template
 from middleware.ssh import ssh
 from instance.config import *
@@ -32,10 +33,7 @@ class job_information_manager():
             self.port = 22
             self.simulation_root = '/home/test_user'
 
-        # TODO build data structure here with full remote path information, so
-        # generating full paths is a once only operation
         self.job = job
-
         self.job_id = job.id
         self.template_list = job.templates
         self.patched_templates = []
@@ -45,6 +43,15 @@ class job_information_manager():
         self.user = job.user
         self.extracted_parameters = \
             self._extract_parameters(self.families)
+
+        # TODO case_label cannot contain spaces
+        # (test for this in CaseSchema.make_case())
+        self.case_label = self.job.case.label
+        self.job_working_directory_name = "{}-{}".format(self.case_label,
+                                                         self.job_id)
+        self.job_working_directory_path = posixpath.join(
+            self.simulation_root,
+            self.job_working_directory_name)
 
     def _extract_parameters(self, families):
         parameters = []
@@ -89,6 +96,21 @@ class job_information_manager():
 
             self.patched_templates.append(patched_paths)
 
+    def create_job_directory(self, debug=False):
+        '''
+        Create a job directory (All inputs, scripts, templates are transferred
+        relative to this location). The job directory is named using the
+        following path structure:
+            SIM_ROOT/<case.label>-<job.id>
+        '''
+        connection = ssh(self.hostname, self.username, self.port, debug=True)
+
+        command = "mkdir -p {}".format(self.job_working_directory_path)
+        out, err, exit_code = connection.pass_command(command)
+        if debug:
+            print(out)
+        return out, err, exit_code
+
     def transfer_all_files(self):
         '''
         Method to copy all needed files to the cluster using a single
@@ -102,12 +124,17 @@ class job_information_manager():
         for file_list in all_files:
             for file_object in file_list:
                 file_full_path = file_object.source_uri
-                dest_path = os.path.join(self.simulation_root,
-                                         file_object.destination_path)
+                if file_object.destination_path:
+                    dest_path = posixpath.join(
+                        self.job_working_directory_path,
+                        file_object.destination_path)
+                else:  # support {"destination_path": null} in job json
+                    dest_path = self.job_working_directory_path
+
                 connection.secure_copy(file_full_path, dest_path)
         connection.close_connection()
 
-    def _run_remote_script(self, script_name, remote_path, debug=True):
+    def _run_remote_script(self, script_name, remote_path, debug=False):
         '''
         Method to run a given script, located in a remote location.
         Set the debug flag to print stdout to the terminal, and to enable
@@ -121,7 +148,7 @@ class job_information_manager():
             print(out)
         return out, err, exit_code
 
-    def run_action_script(self, action):
+    def trigger_action_script(self, action):
         '''
         Pass in the job and the required action (eg 'RUN' or 'CANCEL')
         and this method will run the remote script which
@@ -138,8 +165,12 @@ class job_information_manager():
         # If the script isn't found, return a 400 error
         if to_run:
             script_name = os.path.basename(to_run.source_uri)
-            script_path = os.path.join(self.simulation_root,
-                                       to_run.destination_path)
+            if to_run.destination_path:
+                script_path = posixpath.join(
+                    self.job_working_directory_path,
+                    to_run.destination_path)
+            else:  # support {"destination_path": null} in job json
+                script_path = self.job_working_directory_path
 
             a, b, c = self._run_remote_script(script_name, script_path)
             result = {"stdout": a, "stderr": b, "exit_code": c}
@@ -157,7 +188,7 @@ class job_information_manager():
         self.setup()
 
         # Now execute the run script
-        return self.run_action_script('RUN')
+        return self.trigger_action_script('RUN')
 
     def setup(self):
         '''
@@ -167,11 +198,14 @@ class job_information_manager():
         # PATCH EVERYTHING
         self.patch_all_templates()
 
+        # CREATE REQUIRED REMOTE DIRECTORIES
+        self.create_job_directory()
+
         # COPY EVERYTHING
         self.transfer_all_files()
 
         # EXECUTE SETUP SCRIPT
-        return self.run_action_script('SETUP')
+        return self.trigger_action_script('SETUP')
 
     def progress(self):
         '''
@@ -180,7 +214,7 @@ class job_information_manager():
         TODO: Figure out how to track progress and add that code here!
         '''
         # Execute the progress script
-        return self.run_action_script('PROGRESS')
+        return self.trigger_action_script('PROGRESS')
 
     def cancel(self):
         '''
@@ -188,4 +222,4 @@ class job_information_manager():
         any data passed as part of the request.
         '''
         # Execute the cancel script
-        return self.run_action_script('CANCEL')
+        return self.trigger_action_script('CANCEL')

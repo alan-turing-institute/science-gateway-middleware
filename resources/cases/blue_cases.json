@@ -80,7 +80,7 @@
       "scripts": [{
         "destination_path": "project/case/",
         "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
-        "action": "run"
+        "action": "RUN"
       }],
       "user": null,
       "templates": [{
@@ -178,7 +178,7 @@
       "scripts": [{
         "destination_path": "project/case/",
         "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
-        "action": "run"
+        "action": "RUN"
       }],
       "user": null,
       "templates": [{

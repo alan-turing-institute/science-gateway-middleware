@@ -152,13 +152,13 @@ class TestJIM(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
-    def test_run_action_script_valid_verbs(self, mock_run):
+    def test_trigger_action_script_valid_verbs(self, mock_run):
         # Test that the 4 verbs work
         for verb in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS']:
 
             job = new_job5()
             manager = JIM(job)
-            message, code = manager.run_action_script(verb)
+            message, code = manager.trigger_action_script(verb)
 
             first_arg = mock_run.call_args[0][0]
 
@@ -170,11 +170,11 @@ class TestJIM(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
-    def test_run_action_script_invalid_verb(self, mock_run):
+    def test_trigger_action_script_invalid_verb(self, mock_run):
         job = new_job5()
         action = 'JUMP'
         manager = JIM(job)
-        message, code = manager.run_action_script(action)
+        message, code = manager.trigger_action_script(action)
 
         exp_message = {'message': '{} script not found'.format(action)}
 

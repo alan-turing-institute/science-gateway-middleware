@@ -10,7 +10,12 @@
       "scripts": [{
         "destination_path": "./",
         "source_uri": "./resources/scripts/setup_job.sh",
-        "action": "run"
+        "action": "RUN"
+      },
+      {
+        "destination_path": "./",
+        "source_uri": "./resources/scripts/pbs_script.sh",
+        "action": null
       }],
       "user": null,
       "templates": [],

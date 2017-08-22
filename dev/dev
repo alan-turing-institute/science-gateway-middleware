@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# INFO: requires httpie (brew install httpie)
+
+
+# # POST a new job and trigger SETUP action
+# http POST http://localhost:5000/api/jobs \
+#   < job1.json
+#
+# http POST http://localhost:5000/api/setup/zfa6521e-a123-4a76-a04e-c367b6da169a\
+#   < job1.json
+
+
+
+# POST a new job and trigger RUN action
+http POST http://localhost:5000/api/jobs \
+  < job2.json
+
+http POST http://localhost:5000/api/run/zfa6521e-a123-4a76-a04e-c367b6da169a\
+  < job2.json
