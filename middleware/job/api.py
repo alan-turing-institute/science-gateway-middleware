@@ -234,7 +234,7 @@ class SetupApi(Resource):
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_new.id))
         else:
-            manager = JIM(updated_job)
+            manager = JIM(updated_job, job_repository=self.jobs)
             return manager.setup()
 
 
@@ -244,11 +244,11 @@ class ProgressApi(Resource):
         # Inject job service
         self.jobs = kwargs['job_repository']
 
-    def post(self, job_id):
+    def get(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
         if job:
-            manager = JIM(job)
+            manager = JIM(job, job_repository=self.jobs)
             return manager.progress()
         else:
             abort(404, message="Job {} not found".format(job_id))
@@ -264,7 +264,7 @@ class CancelApi(Resource):
 
         job = self.jobs.get_by_id(job_id)
         if job:
-            manager = JIM(job)
+            manager = JIM(job, job_repository=self.jobs)
             return manager.cancel()
         else:
             abort(404, message="Job {} not found".format(job_id))
@@ -320,7 +320,7 @@ class RunApi(Resource):
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_new.id))
         else:
-            manager = JIM(updated_job)
+            manager = JIM(updated_job, job_repository=self.jobs)
             return manager.run()
 
 

@@ -77,10 +77,11 @@ class JobTemplate(db.Model):
 class Job(db.Model):
     id = db.Column(db.String, primary_key=True)
 
-    uri = db.Column(db.String)
+    backend_identifier = db.Column(db.String)
     description = db.Column(db.String)
     name = db.Column(db.String)
     status = db.Column(db.String)
+    uri = db.Column(db.String)
     user = db.Column(db.String)
 
     creation_datetime = db.Column(ArrowType)
@@ -102,10 +103,11 @@ class Job(db.Model):
     def __init__(
             self,
             id=None,
-            uri=None,
+            backend_identifier=None,
             description=None,
             name=None,
             status=None,
+            uri=None,
             user=None,
             creation_datetime=None,
             start_datetime=None,
@@ -124,10 +126,11 @@ class Job(db.Model):
             self.id = str(uuid4())
 
         # string fields
-        self.uri = uri
+        self.backend_identifier = backend_identifier
         self.description = description
         self.name = name
         self.status = status
+        self.uri = uri
         self.user = user
 
         # time fields
@@ -146,11 +149,12 @@ class Job(db.Model):
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return (self.id == other.id and
-                    self.uri == other.uri and
+                    self.backend_identifier == other.backend_identifier and
                     self.description == other.description and
                     self.name == other.name and
-                    self.status == other.status and
+                    self.uri == other.uri and
                     self.user == other.user and
+                    self.status == other.status and
                     self.creation_datetime == other.creation_datetime and
                     self.start_datetime == other.start_datetime and
                     self.end_datetime == other.end_datetime and

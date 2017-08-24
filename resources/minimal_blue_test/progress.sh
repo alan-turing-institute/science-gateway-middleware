@@ -8,5 +8,4 @@ PBS_JOB_ID=$(cat pbs_job_id)
 EXEC_HOST=$(bash get_exec_host.sh)
 TMPDIR="/tmp/pbs.$PBS_JOB_ID"
 
-# TODO tail the Blue csv file
-ssh $EXEC_HOST tail $TMPDIR/aeration.csv
+ssh $EXEC_HOST "cd $TMPDIR && python csv_to_data_json.py"

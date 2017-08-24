@@ -3,12 +3,33 @@
     "status": "new",
     "scripts": [
         {
-            "source_uri": "./resources/scripts/sleep_test.sh",
+            "source_uri": "./resources/scripts/sleep_test/pbs.sh",
+            "action": null,
+            "destination_path": "."
+        },
+        {
+            "source_uri": "./resources/scripts/sleep_test/progress.sh",
+            "action": "PROGRESS",
+            "destination_path": "."
+        },
+        {
+            "source_uri": "./resources/scripts/sleep_test/run.sh",
             "action": "RUN",
-            "destination_path": null
+            "destination_path": "."
+        },
+        {
+            "source_uri": "./resources/scripts/sleep_test/get_exec_host.sh",
+            "action": null,
+            "destination_path": "."
+        },
+        {
+            "source_uri": "./resources/scripts/sleep_test/setup.sh",
+            "action": "SETUP",
+            "destination_path": "."
         }
     ],
     "id": "zfa6521e-a123-4a76-a04e-c367b6da169a",
+    "backend_identifier": null,
     "case": {
         "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
         "uri": null,

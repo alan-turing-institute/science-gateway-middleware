@@ -74,10 +74,11 @@ class JobSchema(ma.ModelSchema):
     class Meta:
         model = Job
         fields = ('id',
-                  'uri',
+                  'backend_identifier',
                   'description',
                   'name',
                   'status',
+                  'uri',
                   'user',
                   'creation_datetime',
                   'start_datetime',
@@ -127,10 +128,11 @@ class JobSchema(ma.ModelSchema):
 
         job = Job(
             id=data.get("id"),
-            uri=data.get("uri"),
+            backend_identifier=data.get("backend_identifier"),
             description=data.get("description"),
             name=data.get("name"),
             status=data.get("status"),
+            uri=data.get("uri"),
             user=data.get("user"),
             creation_datetime=creation_datetime,
             start_datetime=start_datetime,

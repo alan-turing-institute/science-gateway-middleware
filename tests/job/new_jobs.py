@@ -713,7 +713,7 @@ def new_job5():
         destination_path="project/case/"
     ))
     job.scripts.append(Script(action="RUN",
-        source_uri="./resources/scripts/start_job.sh",
+        source_uri="./resources/scripts/run_job.sh",
         destination_path="project/case/"
     ))
     job.scripts.append(Script(

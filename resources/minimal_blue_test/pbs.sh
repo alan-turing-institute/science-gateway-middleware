@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 #PBS -N TEST
 #PBS -o TEST.out
 #PBS -j oe
 #PBS -lselect=1:ncpus=2:icib=true
-#PBS -lwalltime=00:10:00
+#PBS -lwalltime=00:20:00
 #PBS -m be
 #PBS -M l.mason@imperial.ac.uk
 
@@ -15,6 +15,7 @@ PROGRAM="aeration.x"
 
 # Transfer Blue.nml file
 cp $PBS_O_WORKDIR/Blue.nml $TMPDIR
+cp $PBS_O_WORKDIR/csv_to_data_json.py $TMPDIR
 cp $PBS_O_WORKDIR/$PROGRAM $TMPDIR
 
 # Create the project working directory

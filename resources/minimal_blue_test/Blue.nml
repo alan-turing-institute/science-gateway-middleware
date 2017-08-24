@@ -28,7 +28,7 @@
 &TIME_PROPERTIES
 !--------------------------------------------------------------------------------------------------------------------------------
 ! Number of time steps                Real Time Limit (s)         run time limit in hours (if <0, run time limit has no limit)
-  num_time_step=1                     real_time_limit=-1.0d0      run_time_limit=69.0d0
+  num_time_step=200                     real_time_limit=-1.0d0      run_time_limit=69.0d0
 !
 ! Fixed time step                      If fixed then set dt here (note: this dt is always used for 1st time step)
   fixed_time_step=.TRUE.              dt=0.0002D0

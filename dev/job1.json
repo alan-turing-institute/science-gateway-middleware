@@ -14,6 +14,7 @@
         }
     ],
     "id": "zfa6521e-a123-4a76-a04e-c367b6da169a",
+    "backend_identifier": null,
     "case": {
         "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
         "uri": null,
