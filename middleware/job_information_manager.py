@@ -216,12 +216,11 @@ class job_information_manager():
                     self.job.status = "submitted"
                     self.jobs.update(self.job)
 
-            if to_trigger.action == "PROGRESS":
+            if to_trigger.action == "DATA":
                 # convert stdout json string to json
-                stdout_json_dict = json.loads(out)
+                out = json.loads(out)
 
-
-            result = {"stdout": stdout_json_dict, "stderr": err, "exit_code": exit}
+            result = {"stdout": out, "stderr": err, "exit_code": exit}
             return result, 200
         else:
             result = {'message': '{} script not found'.format(action)}

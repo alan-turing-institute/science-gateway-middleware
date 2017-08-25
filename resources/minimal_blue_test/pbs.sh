@@ -1,6 +1,6 @@
 #!/bin/sh
-#PBS -N TEST
-#PBS -o TEST.out
+#PBS -N SHORT
+#PBS -o SHORT.out
 #PBS -j oe
 #PBS -lselect=1:ncpus=2:icib=true
 #PBS -lwalltime=00:20:00

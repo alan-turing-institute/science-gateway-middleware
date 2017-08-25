@@ -3,4 +3,4 @@
 # INFO: requires httpie (brew install httpie)
 
 # GET trigger PROGRESS action
-http GET http://localhost:5000/api/progress/zfa6521e-a123-4a76-a04e-c367b6da169a
+http GET http://localhost:5000/api/data/zfa6521e-a123-4a76-a04e-c367b6da169a

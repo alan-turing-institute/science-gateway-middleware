@@ -7,8 +7,8 @@
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/progress.sh",
-      "action": "PROGRESS",
+      "source_uri": "./resources/minimal_blue_test/data.sh",
+      "action": "DATA",
       "destination_path": "."
     },
     {
