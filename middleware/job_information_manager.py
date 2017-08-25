@@ -4,6 +4,7 @@ from mako.template import Template as MakoTemplate
 from middleware.job.schema import Template
 from middleware.ssh import ssh
 import re
+import json
 from instance.config import *
 
 
@@ -215,7 +216,12 @@ class job_information_manager():
                     self.job.status = "submitted"
                     self.jobs.update(self.job)
 
-            result = {"stdout": out, "stderr": err, "exit_code": exit}
+            if to_trigger.action == "PROGRESS":
+                # convert stdout json string to json
+                stdout_json_dict = json.loads(out)
+
+
+            result = {"stdout": stdout_json_dict, "stderr": err, "exit_code": exit}
             return result, 200
         else:
             result = {'message': '{} script not found'.format(action)}

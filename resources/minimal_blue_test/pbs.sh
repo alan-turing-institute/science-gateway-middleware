@@ -11,6 +11,7 @@ set -vx
 cd $TMPDIR
 
 PROJECT="from_middleware"  # TODO name using submission directory name
+PROJECT=$PBS_O_WORKDIR
 PROGRAM="aeration.x"
 
 # Transfer Blue.nml file
