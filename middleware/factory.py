@@ -4,7 +4,8 @@ from flask_cors import CORS
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.job.sqlalchemy_repository import CaseRepositorySqlAlchemy
 from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
-                                CancelApi, CaseApi, CasesApi, ThumbnailApi)
+                                DataApi, CancelApi, CaseApi, CasesApi,
+                                ThumbnailApi)
 from middleware.database import db, ma
 from middleware.job.schema import CaseSchema
 import json
@@ -139,6 +140,11 @@ def create_app(config_name,
 
     api.add_resource(ProgressApi,
                      '{}/<string:job_id>'.format(URI_STEMS['progress']),
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(DataApi,
+                     '{}/<string:job_id>'.format(URI_STEMS['data']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 

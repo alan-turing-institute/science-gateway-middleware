@@ -239,7 +239,7 @@ class SetupApi(Resource):
 
 
 class ProgressApi(Resource):
-    '''API endpoint called to check the progress a job on the cluster (POST)'''
+    '''API endpoint called to check the progress of a job on the cluster (POST)'''
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -250,6 +250,22 @@ class ProgressApi(Resource):
         if job:
             manager = JIM(job, job_repository=self.jobs)
             return manager.progress()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
+
+
+class DataApi(Resource):
+    '''API endpoint called to check the data of a job on the cluster (POST)'''
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def get(self, job_id):
+
+        job = self.jobs.get_by_id(job_id)
+        if job:
+            manager = JIM(job, job_repository=self.jobs)
+            return manager.data()
         else:
             abort(404, message="Job {} not found".format(job_id))
 
