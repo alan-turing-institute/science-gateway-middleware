@@ -1,7 +1,7 @@
 import paramiko
 import os
 from scp import SCPClient
-from instance.config import SIM_PRIVATE_KEY
+from instance.config import PRIVATE_KEY_PATH
 
 
 class ssh():
@@ -25,16 +25,14 @@ class ssh():
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        if SIM_PRIVATE_KEY:
-            # use specified key from "keys" directory
-            # note, "keys" directory is not under source control
-            key_name = "development"
-            key_path = os.path.join("keys", key_name)
+        if PRIVATE_KEY_PATH:
+            # use specified key
+            key_path = os.path.join(PRIVATE_KEY_PATH)
             k = paramiko.RSAKey.from_private_key_file(key_path)
             self.client.connect(hostname, port=port, username=username,
                                 pkey=k, look_for_keys=False)
         else:
-            # use system keys
+            # look for system keys
             self.client.load_system_host_keys()
             self.client.connect(hostname, port=port, username=username,
                                 look_for_keys=True)
