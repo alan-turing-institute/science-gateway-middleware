@@ -164,6 +164,7 @@ class TestJIM(object):
                 '_run_remote_script', side_effect=mock_run_remote)
     def test_trigger_action_script_valid_verbs(self, mock_run):
         # Test that the 4 verbs work
+        # TODO test DATA
         for verb in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS']:
 
             job = new_job5()

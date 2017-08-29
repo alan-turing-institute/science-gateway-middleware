@@ -24,28 +24,20 @@ class ssh():
             paramiko.util.log_to_file('.logs/ssh.log')
         self.client = paramiko.SSHClient()
 
-        # if private_key_path:
-        #     # use specified key
-        #     k = paramiko.RSAKey.from_private_key_file(private_key_path)
-        #     self.client.connect(hostname, port=port, username=username,
-        #                         pkey=k, look_for_keys=False)
-        # else:
-        #     # look for system keys
-        #     self.client.load_system_host_keys()
-        #     self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        #     self.client.connect(
-        #         hostname,
-        #         port=port,
-        #         username=username,
-        #         look_for_keys=True)
-
-        self.client.load_system_host_keys()
-        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.client.connect(
-            hostname,
-            port=port,
-            username=username,
-            look_for_keys=False)
+        if private_key_path:
+            # use specified key
+            k = paramiko.RSAKey.from_private_key_file(private_key_path)
+            self.client.connect(hostname, port=port, username=username,
+                                pkey=k, look_for_keys=False)
+        else:
+            # look for system keys
+            self.client.load_system_host_keys()
+            self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            self.client.connect(
+                hostname,
+                port=port,
+                username=username,
+                look_for_keys=True)
 
     def pass_command(self, command):
         """

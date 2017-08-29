@@ -93,6 +93,10 @@ def mock_transfer_all():
     return True
 
 
+def mock_create_job_directory():
+    return True
+
+
 def response_to_json(response):
     data = response.get_data(as_text=True)
     if not data:
@@ -647,7 +651,15 @@ class TestRunApi(object):
                 'patch_all_templates', side_effect=mock_patch_all)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 'transfer_all_files', side_effect=mock_transfer_all)
-    def test_run_with_valid_id(self, mock_tr, mock_patch, mock_run, session):
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                'create_job_directory', side_effect=mock_create_job_directory)
+    def test_run_with_valid_id(
+            self,
+            mock_tr,
+            mock_patch,
+            mock_run,
+            mock_create_job_directory,
+            session):
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
         client = test_client(case_repository=cases, job_repository=jobs)
