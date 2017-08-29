@@ -11,3 +11,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 # Load cases from resources json file
 LOAD_CASES = False
 LOAD_DEVELOPMENT_CASES = False
+
+# load private key from "keys" directory
+LOAD_DEVELOPMENT_PRIVATE_KEY = False
