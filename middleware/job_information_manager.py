@@ -30,11 +30,13 @@ class job_information_manager():
             self.hostname = SSH_HOSTNAME
             self.port = SSH_PORT
             self.simulation_root = SIM_ROOT
+            self.private_key_path = PRIVATE_KEY_PATH
         else:
             self.username = 'test_user'
             self.hostname = 'test_host'
             self.port = 22
             self.simulation_root = '/home/test_user'
+            self.private_key_path = None
 
         self.job = job
         self.jobs = job_repository
@@ -118,7 +120,9 @@ class job_information_manager():
         following path structure:
             SIM_ROOT/<case.label>-<job.id>
         """
-        connection = ssh(self.hostname, self.username, self.port, debug=True)
+        connection = ssh(
+            self.hostname, self.username,
+            self.port, private_key_path=self.private_key_path, debug=True)
 
         command = "mkdir -p {}".format(self.job_working_directory_path)
         out, err, exit_code = connection.pass_command(command)
@@ -131,7 +135,9 @@ class job_information_manager():
         Method to copy all needed files to the cluster using a single
         ssh connection.
         """
-        connection = ssh(self.hostname, self.username, self.port, debug=True)
+        connection = ssh(
+            self.hostname, self.username,
+            self.port, private_key_path=self.private_key_path, debug=True)
 
         all_files = []
         all_files.extend(self.script_list)
@@ -158,7 +164,9 @@ class job_information_manager():
         logging in ./logs/ssh.log
         Shouldnt be called directly.
         """
-        connection = ssh(self.hostname, self.username, self.port, debug=True)
+        connection = ssh(
+            self.hostname, self.username,
+            self.port, private_key_path=self.private_key_path, debug=True)
         command = "cd {}; bash {}".format(remote_path, script_name)
         out, err, exit_code = connection.pass_command(command)
         if debug:

@@ -1,7 +1,6 @@
 import paramiko
 import os
 from scp import SCPClient
-from instance.config import PRIVATE_KEY_PATH
 
 
 class ssh():
@@ -10,7 +9,8 @@ class ssh():
     to understand.
     """
 
-    def __init__(self, hostname, username, port, debug=True):
+    def __init__(self, hostname, username, port,
+                 private_key_path=None, debug=True):
         """
         Create an SSHClient object, load host keys from the known_hosts file,
         so this is only posix compliant I think.
@@ -25,10 +25,9 @@ class ssh():
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        if PRIVATE_KEY_PATH:
+        if private_key_path:
             # use specified key
-            key_path = os.path.join(PRIVATE_KEY_PATH)
-            k = paramiko.RSAKey.from_private_key_file(key_path)
+            k = paramiko.RSAKey.from_private_key_file(private_key_path)
             self.client.connect(hostname, port=port, username=username,
                                 pkey=k, look_for_keys=False)
         else:

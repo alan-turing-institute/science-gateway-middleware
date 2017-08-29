@@ -11,19 +11,22 @@ from middleware.job.schema import Template, job_to_json
 def abstract_getting_secrets():
     # This block allows us to test against local secrets or the
     # defaults generated when running our CI tests.
-    secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT']
+    secrets = [
+        'SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT', 'PRIVATE_KEY_PATH']
     if all(x in globals() for x in secrets):
         username = SSH_USR
         hostname = SSH_HOSTNAME
         port = SSH_PORT
         simulation_root = SIM_ROOT
+        private_key_path = PRIVATE_KEY_PATH
     else:
         username = 'test_user'
         hostname = 'test_host'
         port = 22
         simulation_root = '/home/'
+        private_key_path = None
 
-    return username, hostname, port, simulation_root
+    return username, hostname, port, simulation_root, private_key_path
 
 
 def mock_mkdir(path, exist_ok=True):
@@ -50,7 +53,8 @@ class TestJIM(object):
 
     def test_constructor_no_simulation_root(self):
 
-        username, hostname, port, simulation_root = abstract_getting_secrets()
+        username, hostname, port, simulation_root, private_key_path = \
+            abstract_getting_secrets()
 
         # Create a manager
         job = new_job5()
@@ -65,6 +69,7 @@ class TestJIM(object):
         assert jim.script_list == job.scripts
         assert jim.inputs_list == job.inputs
         assert jim.simulation_root == simulation_root
+        assert jim.private_key_path == private_key_path
         assert jim.patched_templates == []
         assert jim.user == job.user
 
@@ -137,7 +142,8 @@ class TestJIM(object):
     @mock.patch('middleware.ssh.ssh.close_connection', side_effect=mock_close)
     @mock.patch('middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
     def test_transfer_all_files(self, mock_copy, mock_close):
-        username, hostname, port, simulation_root = abstract_getting_secrets()
+        username, hostname, port, simulation_root, private_key_path = \
+            abstract_getting_secrets()
         job = new_job5()
         manager = JIM(job)
         with mock.patch.object(ssh, '__init__',
