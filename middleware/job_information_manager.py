@@ -1,5 +1,5 @@
 import os
-from pathlib import posixpath
+from pathlib2 import posixpath
 from mako.template import Template as MakoTemplate
 from middleware.job.schema import Template
 from middleware.ssh import ssh
