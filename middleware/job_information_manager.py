@@ -1,5 +1,5 @@
 import os
-from pathlib2 import posixpath
+# from pathlib2 import posixpath
 from mako.template import Template as MakoTemplate
 from middleware.job.schema import Template
 from middleware.ssh import ssh
@@ -62,7 +62,7 @@ class job_information_manager():
         self.case_label = self.job.case.label
         self.job_working_directory_name = "{}-{}".format(self.case_label,
                                                          self.job_id)
-        self.job_working_directory_path = posixpath.join(
+        self.job_working_directory_path = os.path.join(
             self.simulation_root,
             self.job_working_directory_name)
 
@@ -154,7 +154,7 @@ class job_information_manager():
         for file_object in all_files:
             file_full_path = file_object.source_uri
             if file_object.destination_path:
-                dest_path = posixpath.join(
+                dest_path = os.path.join(
                     self.job_working_directory_path,
                     file_object.destination_path)
             else:  # support {"destination_path": null} in job json
@@ -213,7 +213,7 @@ class job_information_manager():
         if to_trigger:
             script_name = os.path.basename(to_trigger.source_uri)
             if to_trigger.destination_path:
-                script_path = posixpath.join(
+                script_path = os.path.join(
                     self.job_working_directory_path,
                     to_trigger.destination_path)
             else:  # support {"destination_path": null} in job json
