@@ -18,6 +18,7 @@ from new_jobs import (new_job1, new_job2, new_job3, new_job4,
                       new_case1, new_job1_output_json)
 from config.base import MIDDLEWARE_URL, URI_STEMS
 
+
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
 CASES_JSON_FILENAME = './resources/cases/blue_cases.json'
@@ -959,11 +960,14 @@ class TestCaseApi(object):
         expected_json["id"] = response_json.get("id")
         expected_json["uri"] = response_json.get("uri")
         expected_json["user"] = response_json.get("user")
+        expected_json["backend_identifier"] = response_json.get("backend_identifier")
         expected_json["status"] = response_json.get("status")
         expected_json["creation_datetime"] = \
             response_json.get("creation_datetime")
         expected_json["start_datetime"] = response_json.get("start_datetime")
         expected_json["end_datetime"] = response_json.get("end_datetime")
+
+        pp.pprint(response_json)
 
         assert response.status_code == 200
         assert response_json == expected_json
