@@ -45,7 +45,7 @@ class ssh():
             hostname,
             port=port,
             username=username,
-            look_for_keys=True)
+            look_for_keys=False)
 
     def pass_command(self, command):
         """
