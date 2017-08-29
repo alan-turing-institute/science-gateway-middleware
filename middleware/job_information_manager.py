@@ -263,7 +263,6 @@ class job_information_manager():
         # Execute the progress script
         return self.trigger_action_script('PROGRESS')
 
-
     def data(self):
         """
         This is the DATA behaviour for this job manager. Method ignores
@@ -272,7 +271,6 @@ class job_information_manager():
         """
         # Execute the progress script
         return self.trigger_action_script('DATA')
-
 
     def cancel(self):
         """

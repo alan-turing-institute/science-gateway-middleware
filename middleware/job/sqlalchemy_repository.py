@@ -3,7 +3,7 @@ from middleware.job.models import Case
 
 
 class JobRepositorySqlAlchemy():
-    '''Job service backed by an SQLAlchemy provided database.'''
+    """Job service backed by an SQLAlchemy provided database."""
 
     def __init__(self, session):
         self._session = session
@@ -51,8 +51,8 @@ class JobRepositorySqlAlchemy():
 
 
 class CaseRepositorySqlAlchemy():
-    '''Case service backed by an SQLAlchemy provided database.
-    Job service and Case service share the same database.'''
+    """Case service backed by an SQLAlchemy provided database.
+    Job service and Case service share the same database."""
 
     def __init__(self, session):
         self._session = session

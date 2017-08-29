@@ -720,7 +720,8 @@ def new_job5():
     job.templates.append(Template(
         source_uri="./resources/templates/Blue.nml",
         destination_path="project/case/"))
-    job.scripts.append(Script(action="RUN",
+    job.scripts.append(Script(
+        action="RUN",
         source_uri="./resources/scripts/run_job.sh",
         destination_path="project/case/"))
     job.scripts.append(Script(

@@ -878,7 +878,6 @@ class TestProgressApi(object):
             URI_STEMS['progress'],
             job_id))
 
-        print(response_to_json(job_response))
         assert response_to_json(job_response)['stdout'] == 'j4s2source'
         assert job_response.status_code == 200
 
@@ -966,8 +965,6 @@ class TestCaseApi(object):
             response_json.get("creation_datetime")
         expected_json["start_datetime"] = response_json.get("start_datetime")
         expected_json["end_datetime"] = response_json.get("end_datetime")
-
-        pp.pprint(response_json)
 
         assert response.status_code == 200
         assert response_json == expected_json

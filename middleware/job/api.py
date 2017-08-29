@@ -11,8 +11,8 @@ import os
 
 
 class JobApi(Resource):
-    '''API for reading (GET), amending (PUT/PATCH) and deleting (DELETE)
-    individual jobs'''
+    """API for reading (GET), amending (PUT/PATCH) and deleting (DELETE)
+    individual jobs"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -108,8 +108,8 @@ class JobApi(Resource):
 
 
 class JobsApi(Resource):
-    '''API for listing a collection of jobs (GET) and creating a new
-    individual job (POST)'''
+    """API for listing a collection of jobs (GET) and creating a new
+    individual job (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -147,7 +147,7 @@ class JobsApi(Resource):
 
 
 class CasesApi(Resource):
-    '''API endpoint called to get a list of cases (GET)'''
+    """API endpoint called to get a list of cases (GET)"""
     def __init__(self, **kwargs):
         self.cases = kwargs['case_repository']
 
@@ -166,7 +166,7 @@ class CasesApi(Resource):
 
 
 class CaseApi(Resource):
-    '''API endpoint called to get specific case job template (GET)'''
+    """API endpoint called to get specific case job template (GET)"""
 
     def __init__(self, **kwargs):
         # Inject case service
@@ -185,7 +185,7 @@ class CaseApi(Resource):
 
 
 class SetupApi(Resource):
-    '''API endpoint called to setup a job on the cluster (POST)'''
+    """API endpoint called to setup a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -239,7 +239,10 @@ class SetupApi(Resource):
 
 
 class ProgressApi(Resource):
-    '''API endpoint called to check the progress of a job on the cluster (POST)'''
+    """
+    API endpoint called to check the progress of a job
+    on the cluster (POST)
+    """
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -255,7 +258,7 @@ class ProgressApi(Resource):
 
 
 class DataApi(Resource):
-    '''API endpoint called to check the data of a job on the cluster (POST)'''
+    """API endpoint called to check the data of a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -271,7 +274,7 @@ class DataApi(Resource):
 
 
 class CancelApi(Resource):
-    '''API endpoint called to cancel a job on the cluster (POST)'''
+    """API endpoint called to cancel a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -287,7 +290,7 @@ class CancelApi(Resource):
 
 
 class RunApi(Resource):
-    '''API endpoint called to run a job on the cluster (POST)'''
+    """API endpoint called to run a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -341,7 +344,7 @@ class RunApi(Resource):
 
 
 class ThumbnailApi(Resource):
-    '''API endpoint called to return static files (GET)'''
+    """API endpoint called to return static files (GET)"""
     def __init__(self, **kwargs):
         pass
 

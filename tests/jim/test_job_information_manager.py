@@ -5,7 +5,7 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
 from tests.job.new_jobs import new_job5
 from instance.config import *
-from middleware.job.schema import job_to_json
+from middleware.job.schema import Template, job_to_json
 
 
 def abstract_getting_secrets():
@@ -112,7 +112,7 @@ class TestJIM(object):
         src = os.path.join('tmp', dest,
                            os.path.basename(job.templates[0].source_uri))
 
-        expected = [{'source_uri': src, 'destination_path': dest}]
+        expected = [Template(source_uri=src, destination_path=dest)]
         assert manager.patched_templates == expected
 
     @mock.patch('os.makedirs', side_effect=mock_mkdir)
@@ -145,10 +145,14 @@ class TestJIM(object):
             manager.transfer_all_files()
             calls = mock_copy.call_args[0]
 
-        exp_path = os.path.join(simulation_root,
-                                job.scripts[0].destination_path)
+        job_working_directory_name = "{}-{}".format(job.case.label, job.id)
 
-        assert calls[1] == exp_path
+        expected_path = os.path.join(
+            simulation_root,
+            job_working_directory_name,
+            job.scripts[0].destination_path)
+
+        assert calls[1] == expected_path
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)

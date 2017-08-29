@@ -1,8 +1,8 @@
 
 
 class JobRepositoryMemory():
-    '''Job service backed by an in-memory array for job storage. Used for
-    testing'''
+    """Job service backed by an in-memory array for job storage. Used for
+    testing"""
     def __init__(self):
         self._jobs = {}
 
@@ -46,8 +46,8 @@ class JobRepositoryMemory():
 
 
 class CaseRepositoryMemory():
-    '''Case service backed by an in-memory array for case storage. Used for
-    testing'''
+    """Case service backed by an in-memory array for case storage. Used for
+    testing"""
     def __init__(self):
         self._cases = {}
 
