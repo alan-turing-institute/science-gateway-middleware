@@ -85,6 +85,7 @@ def new_job1():
     job.name = "j1name"
     job.status = "j1status"
     job.user = "j1user"
+    job.backend_identifier = "j1backend_identifier"
 
     # emulate the action of sqlalchemy_utils.ArrowType
     # which converts the supplied arrow object UTC
@@ -166,6 +167,7 @@ def new_job1_input_json():
             "name": "j1name",
             "status": "j1status",
             "user": "j1user",
+            "backend_identifier": "j1backend_identifier",
             "creation_datetime": j1c_iso_string,
             "start_datetime": j1s_iso_string,
             "end_datetime": j1e_iso_string,
@@ -231,6 +233,7 @@ def new_job1_output_json():
             "name": "j1name",
             "status": "j1status",
             "user": "j1user",
+            "backend_identifier": "j1backend_identifier",
             "creation_datetime": j1c_utc_string,
             "start_datetime": j1s_utc_string,
             "end_datetime": j1e_utc_string,
@@ -296,6 +299,7 @@ def new_job2():
     job.name = "j2name"
     job.status = "j2status"
     job.user = "j2user"
+    job.backend_identifier = "j2backend_identifier"
 
     # emulate the action of sqlalchemy_utils.ArrowType
     # which converts the supplied arrow object UTC
@@ -376,6 +380,7 @@ def new_job2_input_json():
             "name": "j2name",
             "status": "j2status",
             "user": "j2user",
+            "backend_identifier": "j2backend_identifier",
             "creation_datetime": j2c_iso_string,
             "start_datetime": j2s_iso_string,
             "end_datetime": j2e_iso_string,
@@ -440,6 +445,7 @@ def new_job2_output_json():
             "name": "j2name",
             "status": "j2status",
             "user": "j2user",
+            "backend_identifier": "j2backend_identifier",
             "creation_datetime": j2c_utc_string,
             "start_datetime": j2s_utc_string,
             "end_datetime": j2e_utc_string,
@@ -504,6 +510,7 @@ def new_job3():
     job.name = "j3name"
     job.status = "j3status"
     job.user = "j3user"
+    job.backend_identifier = "j3backend_identifier"
 
     # emulate the action of sqlalchemy_utils.ArrowType
     # which converts the supplied arrow object UTC
@@ -584,6 +591,7 @@ def new_job4():
     job.name = "j4name"
     job.status = "j4status"
     job.user = "j4user"
+    job.backend_identifier = "j4backend_identifier"
 
     # emulate the action of sqlalchemy_utils.ArrowType
     # which converts the supplied arrow object UTC
@@ -673,6 +681,7 @@ def new_job5():
     job.name = "j5name"
     job.status = "j5status"
     job.user = "j5user"
+    job.backend_identifier = "j5backend_identifier"
 
     # emulate the action of sqlalchemy_utils.ArrowType
     # which converts the supplied arrow object UTC
@@ -710,35 +719,28 @@ def new_job5():
 
     job.templates.append(Template(
         source_uri="./resources/templates/Blue.nml",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.scripts.append(Script(action="RUN",
         source_uri="./resources/scripts/run_job.sh",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.scripts.append(Script(
         action="PROGRESS",
         source_uri="./resources/scripts/progress_job.sh",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.scripts.append(Script(
         action="CANCEL",
         source_uri="./resources/scripts/cancel_job.sh",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.scripts.append(Script(
         action="SETUP",
         source_uri="./resources/scripts/setup_job.sh",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.inputs.append(Input(
         source_uri="j5i1source",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.inputs.append(Input(
         source_uri="j5i2source",
-        destination_path="project/case/"
-    ))
+        destination_path="project/case/"))
     job.case = CaseSummary(
         id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
         uri="c1uri",
@@ -785,29 +787,24 @@ def new_job_template1():
 
     job.templates.append(TemplateTemplate(
         source_uri="j1t1source",
-        destination_path="j1t1_dest"
-    ))
+        destination_path="j1t1_dest"))
     job.templates.append(TemplateTemplate(
         source_uri="j1t2source",
         destination_path="j1t2_dest"))
     job.scripts.append(ScriptTemplate(
         action="j1s1action",
         source_uri="j1s1source",
-        destination_path="j1s1_dest"
-    ))
+        destination_path="j1s1_dest"))
     job.scripts.append(ScriptTemplate(
         action="j1s2action",
         source_uri="j1s2source",
-        destination_path="j1s2_dest"
-    ))
+        destination_path="j1s2_dest"))
     job.inputs.append(InputTemplate(
         source_uri="j1i1source",
-        destination_path="j1i1_dest"
-    ))
+        destination_path="j1i1_dest"))
     job.inputs.append(InputTemplate(
         source_uri="j1i2source",
-        destination_path="j1i2_dest"
-    ))
+        destination_path="j1i2_dest"))
     return job
 
 

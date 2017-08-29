@@ -873,9 +873,11 @@ class TestProgressApi(object):
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
-        job_response = client.post("{}/{}".format(URI_STEMS['progress'],
-                                                 job_id))
+        job_response = client.get("{}/{}".format(
+            URI_STEMS['progress'],
+            job_id))
 
+        print(response_to_json(job_response))
         assert response_to_json(job_response)['stdout'] == 'j4s2source'
         assert job_response.status_code == 200
 
