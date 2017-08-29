@@ -893,10 +893,11 @@ class TestProgressApi(object):
 
         bad_id = "2os3"
 
-        job_response = client.post("{}/{}".format(URI_STEMS['progress'],
-                                                 bad_id),
-                                   data=json.dumps(job_to_json(job)),
-                                   content_type='application/json')
+        job_response = client.get("{}/{}".format(
+            URI_STEMS['progress'],
+            bad_id),
+            data=json.dumps(job_to_json(job)),
+            content_type='application/json')
 
         err_message = {'message': ('Job {0} not found. You have requested '
                                    'this URI [/api/progress/{0}] but did '
