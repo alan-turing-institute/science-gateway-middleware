@@ -23,7 +23,7 @@ def abstract_getting_secrets():
         username = 'test_user'
         hostname = 'test_host'
         port = 22
-        simulation_root = '/home/'
+        simulation_root = '/home/test_user'
         private_key_path = None
 
     return username, hostname, port, simulation_root, private_key_path
