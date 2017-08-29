@@ -24,7 +24,13 @@ class job_information_manager():
         """
         # Gathering the needed info from our secrets file. If the info is not
         # there, populate the instance variables with dummy data.
-        secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT']
+        secrets = [
+            'SSH_USR',
+            'SSH_HOSTNAME',
+            'SSH_PORT',
+            'SIM_ROOT',
+            'PRIVATE_KEY_PATH']
+
         if all(x in globals() for x in secrets):
             self.username = SSH_USR
             self.hostname = SSH_HOSTNAME
