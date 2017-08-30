@@ -23,6 +23,7 @@ class ssh():
             os.makedirs(os.path.dirname('.logs/ssh.log'), exist_ok=True)
             paramiko.util.log_to_file('.logs/ssh.log')
         self.client = paramiko.SSHClient()
+        self.client.load_system_host_keys()
 
         if private_key_path:
             # use specified key
@@ -31,7 +32,6 @@ class ssh():
                                 pkey=k, look_for_keys=False)
         else:
             # look for system keys
-            self.client.load_system_host_keys()
             self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             self.client.connect(
                 hostname,

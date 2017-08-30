@@ -5,7 +5,7 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
 from tests.job.new_jobs import new_job5
 from instance.config import *
-from middleware.job.schema import Template, job_to_json
+from middleware.job.schema import Parameter, Template, job_to_json
 
 
 def abstract_getting_secrets():
@@ -78,16 +78,16 @@ class TestJIM(object):
         manager = JIM(job)
 
         # create dict objects for parameters and templates
-        job_json = job_to_json(job)
-        families = job_json.get("families")
-        parameters = families[0].get("parameters")
+
+        families = job.families
+        parameters = families[0].parameters
         parameter = parameters[0]  # choose first parameter
 
-        templates = job_json.get("templates")
+        templates = job.templates
         template = templates[0]  # choose first template
 
-        template_path = template.get("source_uri")
-        in_parameter_value = parameter.get("value")
+        template_path = template.source_uri
+        in_parameter_value = parameter.value
 
         template_filename = os.path.basename(template_path)
         destination_path = os.path.join(tmpdir.strpath, template_filename)
@@ -163,9 +163,8 @@ class TestJIM(object):
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
     def test_trigger_action_script_valid_verbs(self, mock_run):
-        # Test that the 4 verbs work
-        # TODO test DATA
-        for verb in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS']:
+        # TODO test DATA and PROGRESS
+        for verb in ['RUN', 'SETUP', 'CANCEL']:
 
             job = new_job5()
             manager = JIM(job)

@@ -75,6 +75,13 @@ git remote add azure $AZURE_REMOTE
 git push azure master
 ```
 
+Configure any un-committed files using ftp. The ftp address is available via `App Service > Properties` in Azure portal. An example ftp credentials are:
+
+```
+server address: ftps://waws-prod-am2-XXX.ftp.azurewebsites.windows.net
+user: Science-Gateway-Middleware\username
+```
+
 ## Testing
 
 Tests can be run via `python -m pytest`.
