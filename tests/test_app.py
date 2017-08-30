@@ -3,6 +3,7 @@ import pytest
 import xml.etree.cElementTree as ET
 from middleware.factory import create_app
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
+from middleware.job.sqlalchemy_repository import CaseRepositorySqlAlchemy
 from flask import Flask
 from middleware.database import db as _db
 
@@ -12,10 +13,10 @@ TEST_DB_URI = 'sqlite://'
 
 
 def parse_web_config(app):
-    '''
+    """
     Get the value stored in the variable WSGI_ALT_VIRTUALENV_HANDLER in
     the file web.config
-    '''
+    """
     web_config_location = build_web_config_path(app)
     doc = ET.ElementTree(file=web_config_location)
     key_to_find = 'WSGI_ALT_VIRTUALENV_HANDLER'
@@ -28,9 +29,9 @@ def parse_web_config(app):
 
 
 def build_web_config_path(app):
-    '''
+    """
     Build the path to where the web.config file should be
-    '''
+    """
     rootpath = os.path.split(app.root_path)[0]
     return os.path.join(rootpath, 'web.config')
 
@@ -88,28 +89,34 @@ def session(db, request):
 class TestApp(object):
 
     def test_app(self, session):
-        '''
+        """
         Simple test of app.py, checks that the app is built correctly
         using the expected factory.
-        '''
-        app = create_app(CONFIG_NAME, JobRepositorySqlAlchemy(session))
+        """
+        app = create_app(CONFIG_NAME,
+                         case_repository=CaseRepositorySqlAlchemy(session),
+                         job_repository=JobRepositorySqlAlchemy(session))
         assert app.name == 'middleware.factory'
 
-    def test_web_config_exists(self):
-        '''
+    def test_web_config_exists(self, session):
+        """
         Check that a web config file exists for azure
-        '''
-        app = create_app(CONFIG_NAME, JobRepositorySqlAlchemy(session))
+        """
+        app = create_app(CONFIG_NAME,
+                         case_repository=CaseRepositorySqlAlchemy(session),
+                         job_repository=JobRepositorySqlAlchemy(session))
         web_config_location = build_web_config_path(app)
 
         assert os.path.exists(web_config_location) is True
 
-    def test_azure_params(self):
-        '''
+    def test_azure_params(self, session):
+        """
         Check the contents of web.config to ensure that the
         app will deploy correctly on azure as well as locally.
-        '''
-        app = create_app(CONFIG_NAME, JobRepositorySqlAlchemy(session))
+        """
+        app = create_app(CONFIG_NAME,
+                         case_repository=CaseRepositorySqlAlchemy(session),
+                         job_repository=JobRepositorySqlAlchemy(session))
         WSGI_ALT = parse_web_config(app)
         basename = app.name.split('.')[0]
 

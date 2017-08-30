@@ -11,3 +11,7 @@ SQLALCHEMY_DATABASE_URI = 'sqlite://'
 # Disable track modifications as we are not using
 # the Flask-SQLAlchemy event system
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# Load cases from resources json file
+LOAD_CASES = True
+LOAD_DEVELOPMENT_CASES = False

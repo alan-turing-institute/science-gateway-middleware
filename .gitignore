@@ -1,7 +1,13 @@
+# temporary used for pytest and patching
+tmp/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# ssh keys
+keys/*
 
 # C extensions
 *.so

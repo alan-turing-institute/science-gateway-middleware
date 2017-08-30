@@ -5,25 +5,28 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
 from tests.job.new_jobs import new_job5
 from instance.config import *
-from middleware.job.schema import job_to_json
+from middleware.job.schema import Template, job_to_json
 
 
 def abstract_getting_secrets():
     # This block allows us to test against local secrets or the
     # defaults generated when running our CI tests.
-    secrets = ['SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT']
+    secrets = [
+        'SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT', 'PRIVATE_KEY_PATH']
     if all(x in globals() for x in secrets):
         username = SSH_USR
         hostname = SSH_HOSTNAME
         port = SSH_PORT
         simulation_root = SIM_ROOT
+        private_key_path = PRIVATE_KEY_PATH
     else:
         username = 'test_user'
         hostname = 'test_host'
         port = 22
-        simulation_root = '/home/'
+        simulation_root = '/home/test_user'
+        private_key_path = None
 
-    return username, hostname, port, simulation_root
+    return username, hostname, port, simulation_root, private_key_path
 
 
 def mock_mkdir(path, exist_ok=True):
@@ -50,7 +53,8 @@ class TestJIM(object):
 
     def test_constructor_no_simulation_root(self):
 
-        username, hostname, port, simulation_root = abstract_getting_secrets()
+        username, hostname, port, simulation_root, private_key_path = \
+            abstract_getting_secrets()
 
         # Create a manager
         job = new_job5()
@@ -61,10 +65,11 @@ class TestJIM(object):
         assert jim.port == port
         assert jim.job_id == job.id
         assert jim.template_list == job.templates
-        assert jim.parameter_patch == job.parameters
+        assert jim.families == job.families
         assert jim.script_list == job.scripts
         assert jim.inputs_list == job.inputs
         assert jim.simulation_root == simulation_root
+        assert jim.private_key_path == private_key_path
         assert jim.patched_templates == []
         assert jim.user == job.user
 
@@ -74,7 +79,8 @@ class TestJIM(object):
 
         # create dict objects for parameters and templates
         job_json = job_to_json(job)
-        parameters = job_json.get("parameters")
+        families = job_json.get("families")
+        parameters = families[0].get("parameters")
         parameter = parameters[0]  # choose first parameter
 
         templates = job_json.get("templates")
@@ -111,7 +117,7 @@ class TestJIM(object):
         src = os.path.join('tmp', dest,
                            os.path.basename(job.templates[0].source_uri))
 
-        expected = [{'source_uri': src, 'destination_path': dest}]
+        expected = [Template(source_uri=src, destination_path=dest)]
         assert manager.patched_templates == expected
 
     @mock.patch('os.makedirs', side_effect=mock_mkdir)
@@ -136,7 +142,8 @@ class TestJIM(object):
     @mock.patch('middleware.ssh.ssh.close_connection', side_effect=mock_close)
     @mock.patch('middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
     def test_transfer_all_files(self, mock_copy, mock_close):
-        username, hostname, port, simulation_root = abstract_getting_secrets()
+        username, hostname, port, simulation_root, private_key_path = \
+            abstract_getting_secrets()
         job = new_job5()
         manager = JIM(job)
         with mock.patch.object(ssh, '__init__',
@@ -144,20 +151,25 @@ class TestJIM(object):
             manager.transfer_all_files()
             calls = mock_copy.call_args[0]
 
-        exp_path = os.path.join(simulation_root,
-                                job.scripts[0].destination_path)
+        job_working_directory_name = "{}-{}".format(job.case.label, job.id)
 
-        assert calls[1] == exp_path
+        expected_path = os.path.join(
+            simulation_root,
+            job_working_directory_name,
+            job.scripts[0].destination_path)
+
+        assert calls[1] == expected_path
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
-    def test_run_action_script_valid_verbs(self, mock_run):
+    def test_trigger_action_script_valid_verbs(self, mock_run):
         # Test that the 4 verbs work
+        # TODO test DATA
         for verb in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS']:
 
             job = new_job5()
             manager = JIM(job)
-            message, code = manager.run_action_script(verb)
+            message, code = manager.trigger_action_script(verb)
 
             first_arg = mock_run.call_args[0][0]
 
@@ -169,11 +181,11 @@ class TestJIM(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=mock_run_remote)
-    def test_run_action_script_invalid_verb(self, mock_run):
+    def test_trigger_action_script_invalid_verb(self, mock_run):
         job = new_job5()
         action = 'JUMP'
         manager = JIM(job)
-        message, code = manager.run_action_script(action)
+        message, code = manager.trigger_action_script(action)
 
         exp_message = {'message': '{} script not found'.format(action)}
 

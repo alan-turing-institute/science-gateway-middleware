@@ -1,19 +1,18 @@
-import json
 import json_merge_patch
 from flask_restful import Resource, abort, request
+from flask import current_app, send_from_directory
 from middleware.job_information_manager import job_information_manager as JIM
-from middleware.job.schema import job_to_json, json_to_job
-from config.base import URI_Stems
-
-
-def job_summary_json(job):
-    job_id = job.id
-    return {"id": job_id}
+from middleware.job.schema import (job_to_json, json_to_job,
+                                   job_to_summary_json,
+                                   case_to_summary_json)
+from middleware.job.models import case_to_job
+import arrow
+import os
 
 
 class JobApi(Resource):
-    '''API for reading (GET), amending (PUT/PATCH) and deleting (DELETE)
-    individual jobs'''
+    """API for reading (GET), amending (PUT/PATCH) and deleting (DELETE)
+    individual jobs"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -35,6 +34,7 @@ class JobApi(Resource):
             self.abort_if_not_found(job_id)
         # Get Job JSON if present
         job_json = request.json
+
         if job_json is None:
             abort(400, message="Message body could not be parsed as JSON")
         # Try parsing Job JSON to Job object
@@ -108,21 +108,23 @@ class JobApi(Resource):
 
 
 class JobsApi(Resource):
-    '''API for listing a collection of jobs (GET) and creating a new
-    individual job (POST)'''
+    """API for listing a collection of jobs (GET) and creating a new
+    individual job (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
 
     def get(self):
+
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
-            summary_json = job_summary_json(job)
-            summary_json["uri"] = "{}{}".format(URI_Stems['job'], job_id)
+            summary_json = job_to_summary_json(job)
             return summary_json
+
         job_ids = self.jobs.list_ids()
         summary_list = [list_job_summary_json(job_id) for job_id in job_ids]
-        return summary_list, 200, {'Content-Type': 'application/json'}
+        return {"jobs": summary_list}, 200,
+        {'Content-Type': 'application/json'}
 
     def post(self):
         job_json = request.json
@@ -131,6 +133,9 @@ class JobsApi(Resource):
         # Try parsing Job JSON to Job object
         try:
             job = json_to_job(job_json)
+            # populate creation datetime
+            job.creation_datetime = arrow.utcnow()
+            job.status = "new"
         except:
             abort(400, message="Message body is not valid Job JSON")
         if self.jobs.exists(job.id):
@@ -141,8 +146,46 @@ class JobsApi(Resource):
             return job_to_json(job), 200, {'Content-Type': 'application/json'}
 
 
+class CasesApi(Resource):
+    """API endpoint called to get a list of cases (GET)"""
+    def __init__(self, **kwargs):
+        self.cases = kwargs['case_repository']
+
+    def get(self):
+
+        def list_case_summary_json(case_id):
+            case = self.cases.get_by_id(case_id)
+            summary_json = case_to_summary_json(case)
+            return summary_json
+
+        case_ids = self.cases.list_ids()
+        summary_list = [list_case_summary_json(case_id) for
+                        case_id in case_ids]
+        return {"cases": summary_list}, 200,
+        {'Content-Type': 'application/json'}
+
+
+class CaseApi(Resource):
+    """API endpoint called to get specific case job template (GET)"""
+
+    def __init__(self, **kwargs):
+        # Inject case service
+        self.cases = kwargs['case_repository']
+
+    def abort_if_not_found(self, case_id):
+        if not self.cases.exists(case_id):
+            abort(404, message="Case {} not found".format(case_id))
+
+    def get(self, case_id):
+        self.abort_if_not_found(case_id)
+        case = self.cases.get_by_id(case_id)
+        job = case_to_job(case)
+        job_json = job_to_json(job)
+        return job_json, 200, {'Content-Type': 'application/json'}
+
+
 class SetupApi(Resource):
-    '''API endpoint called to setup a job on the cluster (POST)'''
+    """API endpoint called to setup a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -191,28 +234,47 @@ class SetupApi(Resource):
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_new.id))
         else:
-            manager = JIM(updated_job)
+            manager = JIM(updated_job, job_repository=self.jobs)
             return manager.setup()
 
 
 class ProgressApi(Resource):
-    '''API endpoint called to check the progress a job on the cluster (POST)'''
+    """
+    API endpoint called to check the progress of a job
+    on the cluster (POST)
+    """
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
 
-    def post(self, job_id):
+    def get(self, job_id):
 
         job = self.jobs.get_by_id(job_id)
         if job:
-            manager = JIM(job)
+            manager = JIM(job, job_repository=self.jobs)
             return manager.progress()
         else:
             abort(404, message="Job {} not found".format(job_id))
 
 
+class DataApi(Resource):
+    """API endpoint called to check the data of a job on the cluster (POST)"""
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def get(self, job_id):
+
+        job = self.jobs.get_by_id(job_id)
+        if job:
+            manager = JIM(job, job_repository=self.jobs)
+            return manager.data()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
+
+
 class CancelApi(Resource):
-    '''API endpoint called to cancel a job on the cluster (POST)'''
+    """API endpoint called to cancel a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -221,14 +283,14 @@ class CancelApi(Resource):
 
         job = self.jobs.get_by_id(job_id)
         if job:
-            manager = JIM(job)
+            manager = JIM(job, job_repository=self.jobs)
             return manager.cancel()
         else:
             abort(404, message="Job {} not found".format(job_id))
 
 
 class RunApi(Resource):
-    '''API endpoint called to run a job on the cluster (POST)'''
+    """API endpoint called to run a job on the cluster (POST)"""
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
@@ -277,49 +339,18 @@ class RunApi(Resource):
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_new.id))
         else:
-            manager = JIM(updated_job)
+            manager = JIM(updated_job, job_repository=self.jobs)
             return manager.run()
 
 
-class CasesApi(Resource):
-    '''API endpoint called to get a list of cases (GET)'''
+class ThumbnailApi(Resource):
+    """API endpoint called to return static files (GET)"""
     def __init__(self, **kwargs):
-        self.cases_path = kwargs['cases_path']
+        pass
 
-    def get(self):
-
-        try:
-            # Load the case template
-            with open(self.cases_path) as json_data:
-                cases = json.load(json_data)
-        except:
-            abort(404, message=("Cases file, {} not"
-                                " found").format(self.cases_path))
-
-        return cases, 200, {'Content-Type': 'application/json'}
-
-
-class CaseApi(Resource):
-    '''API endpoint called to get specific case job template (GET)'''
-    def __init__(self, **kwargs):
-        self.cases_path = kwargs['cases_path']
-
-    def get(self, case_id):
-
-        # Get the case id from the list of cases
-        try:
-            # Load the cases file
-            with open(self.cases_path) as json_data:
-                cases = json.load(json_data)
-        except:
-            abort(404, message=("Cases file, {} not"
-                                " found").format(self.cases_path))
-
-        # Find the case corresponding to the id from the list of cases
-        case = cases.get(case_id)
-
-        if case:
-            return case, 200, {'Content-Type': 'application/json'}
-        else:
-            abort(404, message=("Case ID, {} not found in "
-                                "list of cases").format(case_id))
+    def get(self, path):
+        static_folder = current_app.static_folder
+        img_folder = os.path.join(static_folder, 'img')
+        return send_from_directory(img_folder, path,
+                                   mimetype='image/png',
+                                   as_attachment=False)

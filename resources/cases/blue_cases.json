@@ -1,197 +1,196 @@
-{"d769843b-6f37-4939-96c7-c382c3e74b46" : {
-  "families": [{
-      "label": "Viscosity information",
-      "name": "viscosity_properties",
-      "collapse": true,
-      "parameters": [{
-          "name": "viscosity_phase_1",
-          "type": "slider",
-          "label": "Viscosity: Phase 1",
-          "units": "Pa s",
-          "type_value": "float",
-          "min_value": "10",
-          "max_value": "20",
-          "value": "13",
-          "options": [],
-          "help": "",
-          "enabled": true
+[{
+    "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
+    "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
+    "label": "Stirred Tank",
+    "thumbnail": "http://localhost:5000/assets/thumbnails/stirred_tank.png",
+    "description": "Here we describe the actual Stirred Tank case.",
+    "job": {
+      "families": [{
+          "label": "Viscosity information",
+          "name": "viscosity_properties",
+          "collapse": true,
+          "parameters": [{
+              "name": "viscosity_phase_1",
+              "type": "slider",
+              "label": "Viscosity: Phase 1",
+              "units": "Pa s",
+              "type_value": "float",
+              "min_value": "10",
+              "max_value": "20",
+              "value": "13",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "viscosity_phase_2",
+              "type": "slider",
+              "label": "Viscosity: Phase 2",
+              "units": "Pa s",
+              "type_value": "float",
+              "min_value": "10",
+              "max_value": "20",
+              "value": "17",
+              "options": ["17"],
+              "help": ""
+            }
+          ]
         },
         {
-          "name": "viscosity_phase_2",
-          "type": "slider",
-          "label": "Viscosity: Phase 2",
-          "units": "Pa s",
-          "type_value": "float",
-          "min_value": "10",
-          "max_value": "20",
-          "value": "17",
-          "options": ["17"],
-          "help": ""
-        }
-      ]
-    },
-    {
-      "label": "Surface tension information",
-      "name": "surface_tension_properties",
-      "collapse": false,
-      "parameters": [{
-        "name": "surface_tension",
-        "type": "text",
-        "label": "Surface Tension",
-        "units": "mN/m",
-        "type_value": "float",
-        "min_value": "1",
-        "max_value": "100",
-        "value": "72.5",
-        "options": [],
-        "help": "",
-        "enabled": true
-      }]
-    },
-    {
-      "label": "Stirrer information",
-      "name": "stirrer_properties",
-      "collapse": false,
-      "parameters": [{
-        "name": "stirrer_rate",
-        "type": "slider",
-        "label": "Stirrer rate",
-        "units": "rpm",
-        "type_value": "float",
-        "min_value": "0",
-        "max_value": "100",
-        "options": [],
-        "value": "25",
-        "help": "",
-        "enabled": true
-      }]
-    }
-  ],
-  "inputs": [{
-    "destination_path": "project/case/",
-    "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
-  }],
-  "scripts": [{
-    "destination_path": "project/case/",
-    "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
-    "action": "run"
-  }],
-  "user": null,
-  "templates": [{
-    "destination_path": "project/case/",
-    "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
-  }],
-  "name": null,
-  "description": null,
-  "creation_datetime": null,
-  "start_datetime": null,
-  "end_datetime": null,
-  "status": "Draft",
-  "case": {
-        "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
-        "uri" : "https://science-gateway-middleware.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
-        "label" : "Stirred Tank",
-        "thumbnail": "https://science-gateway-middleware.azurewebsites.net/assets/img/stirred_tank.png",
-        "description": "Here we describe the actual Stirred Tank case."
-      }
-},
-"85b8995c-63a9-474f-8fdc-52c7582ec2ac":{
-  "families": [{
-      "label": "Viscosity information",
-      "name": "viscosity_properties",
-      "collapse": true,
-      "parameters": [{
-          "name": "viscosity_phase_1",
-          "type": "slider",
-          "label": "Viscosity: Phase 1",
-          "units": "Pa s",
-          "type_value": "float",
-          "min_value": "10",
-          "max_value": "20",
-          "value": "13",
-          "options": [],
-          "help": "",
-          "enabled": true
+          "label": "Surface tension information",
+          "name": "surface_tension_properties",
+          "collapse": false,
+          "parameters": [{
+            "name": "surface_tension",
+            "type": "text",
+            "label": "Surface Tension",
+            "units": "mN/m",
+            "type_value": "float",
+            "min_value": "1",
+            "max_value": "100",
+            "value": "72.5",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }]
         },
         {
-          "name": "viscosity_phase_2",
-          "type": "slider",
-          "label": "Viscosity: Phase 2",
-          "units": "Pa s",
-          "type_value": "float",
-          "min_value": "10",
-          "max_value": "20",
-          "value": "17",
-          "options": ["17"],
-          "help": "",
-          "enabled": true
+          "label": "Stirrer information",
+          "name": "stirrer_properties",
+          "collapse": false,
+          "parameters": [{
+            "name": "stirrer_rate",
+            "type": "slider",
+            "label": "Stirrer rate",
+            "units": "rpm",
+            "type_value": "float",
+            "min_value": "0",
+            "max_value": "100",
+            "options": [],
+            "value": "25",
+            "help": "",
+            "enabled": true
+          }]
         }
-      ]
-    },
-    {
-      "label": "Surface tension information",
-      "name": "surface_tension_properties",
-      "collapse": false,
-      "parameters": [{
-        "name": "surface_tension",
-        "type": "text",
-        "label": "Surface Tension",
-        "units": "mN/m",
-        "type_value": "float",
-        "min_value": "1",
-        "max_value": "100",
-        "value": "72.5",
-        "options": [],
-        "help": "",
-        "enabled": true
-      }]
-    },
-    {
-      "label": "Geometry information",
-      "name": "geometry_properties",
-      "collapse": false,
-      "parameters": [{
-        "name": "pipe_radius",
-        "type": "vtk",
-        "label": "Pipe Radius",
-        "units": "m",
-        "type_value": "float",
-        "min_value": "0.01",
-        "max_value": "0.10",
-        "options": ["0.0725"],
-        "value": "0.0725",
-        "help": "",
-        "enabled": true
-      }]
+      ],
+      "inputs": [{
+        "destination_path": "project/case/",
+        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
+      }],
+      "scripts": [{
+        "destination_path": "project/case/",
+        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
+        "action": "RUN"
+      }],
+      "user": null,
+      "templates": [{
+        "destination_path": "project/case/",
+        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
+      }],
+      "name": null,
+      "description": null,
+      "creation_datetime": null,
+      "start_datetime": null,
+      "end_datetime": null,
+      "status": null
     }
-  ],
-  "inputs": [{
-    "destination_path": "project/case/",
-    "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
-  }],
-  "scripts": [{
-    "destination_path": "project/case/",
-    "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
-    "action": "run"
-  }],
-  "user": null,
-  "templates": [{
-    "destination_path": "project/case/",
-    "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
-  }],
-  "name": null,
-  "description": null,
-  "creation_datetime": null,
-  "start_datetime": null,
-  "end_datetime": null,
-  "status": "Draft",
-  "case": {
-      "id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-      "uri" : "https://science-gateway-middleware.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-      "label" : "Product Changeover",
-      "thumbnail": "https://science-gateway-middleware.azurewebsites.net/assets/img/product_changeover.png",
-      "description": "Here we describe the actual Product Changeover case."
+  },
+  {
+    "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
+    "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+    "label": "Product Changeover",
+    "thumbnail": "http://localhost:5000/assets/thumbnails/product_changeover.png",
+    "description": "Here we describe the actual Product Changeover case.",
+    "job": {
+      "families": [{
+          "label": "Viscosity information",
+          "name": "viscosity_properties",
+          "collapse": true,
+          "parameters": [{
+              "name": "viscosity_phase_1",
+              "type": "slider",
+              "label": "Viscosity: Phase 1",
+              "units": "Pa s",
+              "type_value": "float",
+              "min_value": "10",
+              "max_value": "20",
+              "value": "13",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "viscosity_phase_2",
+              "type": "slider",
+              "label": "Viscosity: Phase 2",
+              "units": "Pa s",
+              "type_value": "float",
+              "min_value": "10",
+              "max_value": "20",
+              "value": "17",
+              "options": ["17"],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Surface tension information",
+          "name": "surface_tension_properties",
+          "collapse": false,
+          "parameters": [{
+            "name": "surface_tension",
+            "type": "text",
+            "label": "Surface Tension",
+            "units": "mN/m",
+            "type_value": "float",
+            "min_value": "1",
+            "max_value": "100",
+            "value": "72.5",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }]
+        },
+        {
+          "label": "Geometry information",
+          "name": "geometry_properties",
+          "collapse": false,
+          "parameters": [{
+            "name": "pipe_radius",
+            "type": "vtk",
+            "label": "Pipe Radius",
+            "units": "m",
+            "type_value": "float",
+            "min_value": "0.01",
+            "max_value": "0.10",
+            "options": ["0.0725"],
+            "value": "0.0725",
+            "help": "",
+            "enabled": true
+          }]
+        }
+      ],
+      "inputs": [{
+        "destination_path": "project/case/",
+        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
+      }],
+      "scripts": [{
+        "destination_path": "project/case/",
+        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
+        "action": "RUN"
+      }],
+      "user": null,
+      "templates": [{
+        "destination_path": "project/case/",
+        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
+      }],
+      "name": null,
+      "description": null,
+      "creation_datetime": null,
+      "start_datetime": null,
+      "end_datetime": null,
+      "status": null
     }
-}
-
-}
+  }
+]

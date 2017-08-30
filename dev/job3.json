@@ -1,0 +1,65 @@
+{
+  "name": null,
+  "status": "new",
+  "scripts": [{
+      "source_uri": "./resources/minimal_blue_test/pbs.sh",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/progress.sh",
+      "action": "PROGRESS",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/run.sh",
+      "action": "RUN",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/get_exec_host.sh",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/setup.sh",
+      "action": "SETUP",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/cancel.sh",
+      "action": "CANCEL",
+      "destination_path": "."
+    }
+  ],
+  "id": "zfa6521e-a123-4a76-a04e-c367b6da169a",
+  "backend_identifier": null,
+  "case": {
+    "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
+    "uri": null,
+    "description": "Test sleeper script",
+    "label": "minimal_blue",
+    "thumbnail": null
+  },
+  "uri": "https://science-gateway-middleware.azurewebsites.net/api/jobs/7b86fd40-3fcd-4367-b12b-ed834320d5c0",
+  "description": null,
+  "end_datetime": null,
+  "start_datetime": null,
+  "families": [],
+  "user": null,
+  "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "templates": [{
+      "source_uri": "./resources/minimal_blue_test/Blue.nml",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/Makefile",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/minimal_blue_test/aeration.f90",
+      "destination_path": "."
+    }
+  ],
+  "inputs": []
+}
