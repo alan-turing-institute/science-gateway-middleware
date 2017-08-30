@@ -137,7 +137,7 @@ class job_information_manager():
             print(out)
         return out, err, exit_code
 
-    def transfer_all_files(self):
+    def transfer_all_files(self, file_system='unix'):
         """
         Method to copy all needed files to the cluster using a single
         ssh connection.
@@ -154,6 +154,7 @@ class job_information_manager():
         # these are Script and Input model objects
         for file_object in all_files:
             file_full_path = file_object.source_uri
+            file_name = os.path.basename(file_full_path)
             if file_object.destination_path:
                 dest_path = posixpath.join(
                     self.job_working_directory_path,
@@ -161,6 +162,12 @@ class job_information_manager():
             else:  # support {"destination_path": null} in job json
                 dest_path = self.job_working_directory_path
             connection.secure_copy(file_full_path, dest_path)
+
+            # convert line endings
+            if file_system == 'unix':
+                destination_full_path = posixpath.join(dest_path, file_name)
+                dos2unix = "dos2unix {}".format(destination_full_path)
+                out, err, exit_code = connection.pass_command(dos2unix)
 
         connection.close_connection()
 

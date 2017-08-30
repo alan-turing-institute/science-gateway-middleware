@@ -50,6 +50,10 @@ def mock_run_remote(script_name, remote_path, debug=True):
     return script_name, 'err', '0'
 
 
+def mock_pass_command(command):
+    return command, 'err', '0'
+
+
 class TestJIM(object):
 
     def test_constructor_no_simulation_root(self):
@@ -140,9 +144,14 @@ class TestJIM(object):
         assert calls[0] == exp_path_1
         assert calls[2] == exp_path_2
 
-    @mock.patch('middleware.ssh.ssh.close_connection', side_effect=mock_close)
-    @mock.patch('middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
-    def test_transfer_all_files(self, mock_copy, mock_close):
+    @mock.patch(
+        'middleware.ssh.ssh.close_connection', side_effect=mock_close)
+    @mock.patch(
+        'middleware.ssh.ssh.secure_copy', side_effect=mock_secure_copy)
+    @mock.patch(
+        'middleware.ssh.ssh.pass_command', side_effect=mock_pass_command)
+    def test_transfer_all_files(
+            self, mock_close, mock_secure_copy, mock_pass_command):
         username, hostname, port, simulation_root, private_key_path = \
             abstract_getting_secrets()
         job = new_job5()
@@ -150,7 +159,7 @@ class TestJIM(object):
         with mock.patch.object(ssh, '__init__',
                                lambda self, *args, **kwargs: None):
             manager.transfer_all_files()
-            calls = mock_copy.call_args[0]
+            calls = mock_secure_copy.call_args[0]
 
         job_working_directory_name = "{}-{}".format(job.case.label, job.id)
 
