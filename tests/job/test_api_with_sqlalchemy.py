@@ -17,7 +17,7 @@ import new_jobs as nj  # for easy access to iso_string values
 from new_jobs import (new_job1, new_job2, new_job3, new_job4,
                       new_case1, new_job1_output_json)
 from config.base import MIDDLEWARE_URL, URI_STEMS
-
+import json
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
@@ -81,8 +81,15 @@ def session(db, request):
     return session
 
 
-def mock_run_remote(script_name, remote_path, debug=True):
+def mock_run_remote(
+        script_name, remote_path, debug=True):
     return script_name, 'err', '0'
+
+
+def mock_run_remote_return_json(
+        script_name, remote_path, debug=True):
+    out = json.dumps({"name": script_name})
+    return out, 'err', '0'
 
 
 def mock_patch_all():
@@ -883,7 +890,7 @@ class TestCancelApi(object):
 class TestProgressApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
-                '_run_remote_script', side_effect=mock_run_remote)
+                '_run_remote_script', side_effect=mock_run_remote_return_json)
     def test_progress_with_valid_id(self, mock_run, session):
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
@@ -898,7 +905,7 @@ class TestProgressApi(object):
             URI_STEMS['progress'],
             job_id))
 
-        assert response_to_json(job_response)['stdout'] == 'j4s2source'
+        assert response_to_json(job_response)['stdout']['name'] == 'j4s2source'
         assert job_response.status_code == 200
 
     def test_progress_with_invalid_id(self, session):
