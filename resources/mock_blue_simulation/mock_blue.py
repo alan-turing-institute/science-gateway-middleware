@@ -88,11 +88,16 @@ def stdout(timestep):
     print(info.format(timestep, time, random.random())+"\n")
 
 
-# and write to this csv file
-with open('output.csv', 'w') as csv_file:
+csv_fname = 'output.csv'
+
+with open(csv_fname, 'w') as csv_file:
     writer = csv.writer(csv_file)
     writer.writerow(['Time(s)', 'timestep', 'linear', 'noisy'])
-    for timestep in range(timestep_max):
+
+# and write to this csv file
+for timestep in range(timestep_max):
+    with open(csv_fname, 'a') as csv_file:
+        writer = csv.writer(csv_file)
         stdout(timestep)
         linear = model_linear(timestep)
         noisy = model_noisy(timestep)

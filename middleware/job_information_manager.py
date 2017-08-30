@@ -280,7 +280,6 @@ class job_information_manager():
         """
         This is the PROGRESS behaviour for this job manager. Method ignores
         any data passed as part of the request.
-        TODO: Figure out how to track progress and add that code here!
         """
         # Execute the progress script
         return self.trigger_action_script('PROGRESS')
@@ -289,7 +288,6 @@ class job_information_manager():
         """
         This is the DATA behaviour for this job manager. Method ignores
         any data passed as part of the request.
-        TODO: Figure out how to track progress and add that code here!
         """
         # Execute the progress script
         return self.trigger_action_script('DATA')
