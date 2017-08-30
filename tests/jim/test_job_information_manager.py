@@ -1,5 +1,6 @@
 import os
 import re
+import posixpath
 import unittest.mock as mock
 from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
@@ -153,7 +154,7 @@ class TestJIM(object):
 
         job_working_directory_name = "{}-{}".format(job.case.label, job.id)
 
-        expected_path = os.path.join(
+        expected_path = posixpath.join(
             simulation_root,
             job_working_directory_name,
             job.scripts[0].destination_path)
