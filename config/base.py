@@ -10,5 +10,5 @@ URI_STEMS = {'jobs': '/api/jobs',
              'cases': '/api/cases',
              'thumbnails': '/assets/thumbnails'}
 
-MIDDLEWARE_URL = "http://dev-science-gateway-middleware.azurewebsites.net"
+MIDDLEWARE_URL = "http://science-gateway-middleware.azurewebsites.net"
 # MIDDLEWARE_URL = "http://localhost:5000"
