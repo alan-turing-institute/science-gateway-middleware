@@ -231,7 +231,7 @@ class job_information_manager():
                     self.job.status = "submitted"
                     self.jobs.update(self.job)
 
-            if to_trigger.action == "DATA":
+            if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
                 out = json.loads(out)
 

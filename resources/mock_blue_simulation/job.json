@@ -22,6 +22,11 @@
       "destination_path": "."
     },
     {
+      "source_uri": "./resources/mock_blue_simulation/progress.sh",
+      "action": "PROGRESS",
+      "destination_path": "."
+    },
+    {
       "source_uri": "./resources/mock_blue_simulation/get_exec_host.sh",
       "action": null,
       "destination_path": "."
@@ -33,6 +38,11 @@
     },
     {
       "source_uri": "./resources/mock_blue_simulation/csv_to_data_json.py",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/mock_blue_simulation/csv_to_progress_json.py",
       "action": null,
       "destination_path": "."
     }

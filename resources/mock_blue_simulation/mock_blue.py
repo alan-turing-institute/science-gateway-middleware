@@ -91,10 +91,10 @@ def stdout(timestep):
 # and write to this csv file
 with open('output.csv', 'w') as csv_file:
     writer = csv.writer(csv_file)
-    writer.writerow(['Time(s)', 'linear', 'noisy'])
+    writer.writerow(['Time(s)', 'timestep', 'linear', 'noisy'])
     for timestep in range(timestep_max):
         stdout(timestep)
         linear = model_linear(timestep)
         noisy = model_noisy(timestep)
-        writer.writerow([time(timestep), linear, noisy])
+        writer.writerow([time(timestep), timestep, linear, noisy])
         delay()

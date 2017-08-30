@@ -15,6 +15,7 @@ mkdir -p $TMPDIR
 cp $PBS_O_WORKDIR/mock_blue.py $TMPDIR
 cp $PBS_O_WORKDIR/Blue.nml $TMPDIR
 cp $PBS_O_WORKDIR/csv_to_data_json.py $TMPDIR
+cp $PBS_O_WORKDIR/csv_to_progress_json.py $TMPDIR
 
 cd $TMPDIR
 

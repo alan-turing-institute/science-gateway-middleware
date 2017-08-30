@@ -23,6 +23,11 @@
         "destination_path": "."
       },
       {
+        "source_uri": "./resources/mock_blue_simulation/progress.sh",
+        "action": "PROGRESS",
+        "destination_path": "."
+      },
+      {
         "source_uri": "./resources/mock_blue_simulation/run.sh",
         "action": "RUN",
         "destination_path": "."

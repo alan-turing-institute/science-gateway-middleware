@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# INFO: requires httpie (brew install httpie)
+
+
+# GET trigger PROGRESS action
+
+# add job again (in case the middleware server has been restarted)
+http POST http://localhost:5000/api/jobs \
+  < ../resources/mock_blue_simulation/job.json
+
+http GET http://localhost:5000/api/progress/f17f97ea-ea74-468e-b637-b78f53f03b2d
