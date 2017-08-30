@@ -22,7 +22,7 @@ import re
 def info(name, value):
     print('Loading parameter: {}={}'.format(name, value))
 
-with open('_Blue.nml', 'r') as f:
+with open('Blue.nml', 'r') as f:
     parameter_lines = f.readlines()
 
 for line in parameter_lines:
