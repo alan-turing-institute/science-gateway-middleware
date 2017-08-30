@@ -25,9 +25,19 @@
 
 # TEST CASE 3
 
-# POST a new blue job and trigger RUN action
-http POST http://localhost:5000/api/jobs \
-  < ../resources/minimal_blue_test/job.json
+# # POST a new blue job and trigger RUN action
+# http POST http://localhost:5000/api/jobs \
+#   < ../resources/minimal_blue_test/job.json
+#
+# http POST http://localhost:5000/api/run/zfa6521e-a123-4a76-a04e-c367b6da169a\
+#   < ../resources/minimal_blue_test/job.json
 
-http POST http://localhost:5000/api/run/zfa6521e-a123-4a76-a04e-c367b6da169a\
-  < ../resources/minimal_blue_test/job.json
+
+# TEST CASE 4
+
+# POST a new *mock* blue job and trigger RUN action
+http POST http://localhost:5000/api/jobs \
+  < ../resources/mock_blue_simulation/job.json
+
+http POST http://localhost:5000/api/run/f17f97ea-ea74-468e-b637-b78f53f03b2d\
+  < ../resources/mock_blue_simulation/job.json

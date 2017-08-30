@@ -70,12 +70,13 @@ class job_information_manager():
         parameters = []
         for family in families:
             parameters.extend(family.parameters)
+        return parameters
 
     def _parameters_to_mako_dict(self, parameters):
         mako_dict = {}
         if parameters:
             for p in parameters:
-                mako_dict[p["name"]] = p["value"]
+                mako_dict[p.name] = p.value
         return mako_dict
 
     def _apply_patch(self, template_path, parameters, destination_path):
