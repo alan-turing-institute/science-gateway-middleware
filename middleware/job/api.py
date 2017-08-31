@@ -133,16 +133,15 @@ class JobsApi(Resource):
         # Try parsing Job JSON to Job object
         try:
             job = json_to_job(job_json)
-            # populate creation datetime
-            job.creation_datetime = arrow.utcnow()
-            # job.status = "Draft"
-            # TODO determine middleware responsibility for status changes
         except:
             abort(400, message="Message body is not valid Job JSON")
         if self.jobs.exists(job.id):
             abort(409, message="Job with ID {} already "
                                "exists".format(job.id))
         else:
+            # Set certain job properties when first persisted
+            job.creation_datetime = arrow.utcnow()
+            job.status = "Draft"
             job = self.jobs.create(job)
             return job_to_json(job), 200, {'Content-Type': 'application/json'}
 
