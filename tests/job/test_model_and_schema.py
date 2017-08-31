@@ -13,6 +13,11 @@ class TestModel(object):
         # ID should be a uuid4 UUID
         assert UUID(job.id).version == 4
 
+    def test_new_job_has_new_status(self):
+        job = Job()
+        # Statu sshould be new_case1
+        assert job.status == "New"
+
     def test_new_job_with_id_sets_id_to_that_provided(self):
         job_id = "ad460823-370c-48dd-a09f-a7564bb458f1"
         job = Job(id=job_id)
