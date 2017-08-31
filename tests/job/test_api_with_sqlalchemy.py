@@ -583,7 +583,8 @@ class TestJobsApi(object):
         job_response_json = response_to_json(job_response)
         job.creation_datetime = \
             arrow.get(job_response_json['creation_datetime'])
-        job.status = 'new'
+        # middleware not currently responsible for status changes
+        # job.status = 'new'
         job_json = job_to_json(job)
 
         assert job_response.status_code == 200

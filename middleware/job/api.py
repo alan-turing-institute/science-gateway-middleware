@@ -135,7 +135,8 @@ class JobsApi(Resource):
             job = json_to_job(job_json)
             # populate creation datetime
             job.creation_datetime = arrow.utcnow()
-            job.status = "new"
+            # job.status = "Draft"
+            # TODO determine middleware responsibility for status changes
         except:
             abort(400, message="Message body is not valid Job JSON")
         if self.jobs.exists(job.id):
