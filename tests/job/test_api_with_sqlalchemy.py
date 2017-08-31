@@ -18,7 +18,6 @@ import new_jobs as nj  # for easy access to iso_string values
 from new_jobs import (new_job1, new_job2, new_job3, new_job4,
                       new_case1, new_job1_output_json)
 from config.base import MIDDLEWARE_URL, URI_STEMS
-import json
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
@@ -702,7 +701,6 @@ class TestRunApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
 
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -796,7 +794,6 @@ class TestSetupApi(object):
         cases = CaseRepositorySqlAlchemy(session)
         client = test_client(case_repository=cases, job_repository=jobs)
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -880,7 +877,6 @@ class TestCancelApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
 
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -926,7 +922,6 @@ class TestProgressApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
 
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -968,7 +963,7 @@ class TestCasesApi(object):
                 'description': 'c1description',
                 'thumbnail': 'c1thumbnail',
                 'uri': 'c1uri'}
-                ]}
+            ]}
 
         assert response.status_code == 200
         assert response_to_json(response) == expected_json
@@ -998,7 +993,8 @@ class TestCaseApi(object):
         expected_json["id"] = response_json.get("id")
         expected_json["uri"] = response_json.get("uri")
         expected_json["user"] = response_json.get("user")
-        expected_json["backend_identifier"] = response_json.get("backend_identifier")
+        expected_json["backend_identifier"] = \
+            response_json.get("backend_identifier")
         expected_json["status"] = response_json.get("status")
         expected_json["creation_datetime"] = \
             response_json.get("creation_datetime")
