@@ -5,7 +5,7 @@ TESTING = True
 DEBUG = True
 
 # Use in-memory SQLlite DB for testing
-SQLALCHEMY_DATABASE_URI = 'sqlite://'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Load cases from resources json file
