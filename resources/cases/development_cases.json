@@ -1,9 +1,9 @@
 [{
   "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
   "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/af7fd241-e816-40e5-9a70-49598a452b7b",
-  "label": null,
+  "label": "Mock Blue label",
   "thumbnail": null,
-  "description": "Mock Blue case",
+  "description": "Mock Blue description",
   "job": {
     "name": null,
     "status": "new",

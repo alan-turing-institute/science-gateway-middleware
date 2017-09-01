@@ -106,7 +106,7 @@ class Job(db.Model):
             backend_identifier=None,
             description=None,
             name=None,
-            status=None,
+            status="New",
             uri=None,
             user=None,
             creation_datetime=None,
