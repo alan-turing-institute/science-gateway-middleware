@@ -85,3 +85,30 @@ user: Science-Gateway-Middleware\username
 ## Testing
 
 Tests can be run via `python -m pytest`.
+
+## Setting up middleware on localhost
+
+Pre-Populate the templates with `config\test.py` and setting to TRUE
+
+### Mock backend connections
+
+1. In `science-gateway-middleware\instance` create a folder call `anythingyoulike`
+2. Place public key into this folder
+3. Place following settings into config.py
+`
+secrets = [
+            'SSH_USR',
+            'SSH_HOSTNAME',
+            'SSH_PORT',
+            'SIM_ROOT',
+            'PRIVATE_KEY_PATH']
+SSH_USR = "vm-admin"
+SSH_HOSTNAME = <backend address> eg abc.easteurope.cloudapp.azure.com
+SSH_PORT = 22
+SIM_ROOT = "blue"
+PRIVATE_KEY_PATH = <path to public key> eg "instance/anythingyoulike/key_file"
+`
+Start the server via `.run-test.sh`
+
+
+
