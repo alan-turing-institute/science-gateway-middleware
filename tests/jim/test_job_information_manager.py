@@ -315,3 +315,63 @@ class TestJIM(object):
             assert code == 200
             assert message == exp_message
             assert job.status == s
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_qstat_status', side_effect=(lambda: 'Q'))
+    def test_job_status_updates_for_qstat_status_of_q(self, mock_qstat):
+        # We only check the qstat queue if the job has been submitted but has
+        # not completed
+        for s in ["Submitted", "Queued", "Running"]:
+            job = new_job5()
+            job.status = s
+            print(job.status)
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == 'Queued'
+        # All other initial statuses should be unchanged
+        for s in ["New", "Complete", "Error", "Gibberish"]:
+            job = new_job5()
+            job.status = s
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == s
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_qstat_status', side_effect=(lambda: 'R'))
+    def test_job_status_updates_for_qstat_status_of_r(self, mock_qstat):
+        # We only check the qstat queue if the job has been submitted but has
+        # not completed
+        for s in ["Submitted", "Queued", "Running"]:
+            job = new_job5()
+            job.status = s
+            print(job.status)
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == 'Running'
+        # All other initial statuses should be unchanged
+        for s in ["New", "Complete", "Error", "Gibberish"]:
+            job = new_job5()
+            job.status = s
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == s
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_qstat_status', side_effect=(lambda: 'C'))
+    def test_job_status_updates_for_qstat_status_of_c(self, mock_qstat):
+        # We only check the qstat queue if the job has been submitted but has
+        # not completed
+        for s in ["Submitted", "Queued", "Running"]:
+            job = new_job5()
+            job.status = s
+            print(job.status)
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == 'Complete'
+        # All other initial statuses should be unchanged
+        for s in ["New", "Complete", "Error", "Gibberish"]:
+            job = new_job5()
+            job.status = s
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == s

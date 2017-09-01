@@ -24,6 +24,12 @@ class JobApi(Resource):
     def get(self, job_id):
         self.abort_if_not_found(job_id)
         job = self.jobs.get_by_id(job_id)
+
+        # Update job status from job manager and save updated job
+        manager = JIM(job, job_repository=self.jobs)
+        job.status = manager.update_job_status()
+        job = self.jobs.update(job)
+
         job_json = job_to_json(job)
         return job_json, 200, {'Content-Type': 'application/json'}
 
@@ -301,7 +307,6 @@ class RunApi(Resource):
 
     def post(self, job_id):
         # TODO: Refactor to not duplicate JobApi.patch() functionality
-
         # Require Job to exist in order to amend it
         job_old = self.jobs.get_by_id(job_id)
         if job_old is None:
