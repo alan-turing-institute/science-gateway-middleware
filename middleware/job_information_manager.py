@@ -255,7 +255,9 @@ class job_information_manager():
                     self.jobs.update(self.job)
             if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
-                out = json.loads(out)
+                # guard against empty string (for queued jobs)
+                if out:
+                    out = json.loads(out)
 
             result = {"stdout": out, "stderr": err, "exit_code": exit}
             return result, 200
