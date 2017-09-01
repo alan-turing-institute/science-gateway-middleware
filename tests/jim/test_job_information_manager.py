@@ -260,8 +260,9 @@ class TestJIM(object):
                     lambda script, path: ('5305301.cx1b\n', 'err', '0')))
     def test_job_status_is_submit_for_valid_imperial_pbs_id(
             self, mock_run, session):
-        # On successful submission, RUN should change status ot "Queued"
-        for s in ["Submitted", "Queued", "Running", "Complete", "Error"]:
+        # On successful submission, RUN should change status ot "Queued",
+        # regardless of the previous job status
+        for s in ["New", "Queued", "Running", "Complete", "Error"]:
             job = new_job5()
             job.status = s
             repo = JobRepositorySqlAlchemy(session)
@@ -281,8 +282,9 @@ class TestJIM(object):
                                           'err', '0')))
     def test_job_status_is_submit_for_valid_azure_torque_id(
             self, mock_run, session):
-        # On successful submission, RUN should change status ot "Queued"
-        for s in ["Submitted", "Queued", "Running", "Complete", "Error"]:
+        # On successful submission, RUN should change status ot "Queued",
+        # regardless of the previous job status
+        for s in ["New", "Queued", "Running", "Complete", "Error"]:
             job = new_job5()
             job.status = s
             repo = JobRepositorySqlAlchemy(session)
@@ -302,7 +304,7 @@ class TestJIM(object):
     def test_job_status_is_not_submit_for_invalid_id(
             self, mock_run, session):
         # As mocked backend job ID is invalid, status should remain unchanged
-        for s in ["Submitted", "Queued", "Running", "Complete", "Error"]:
+        for s in ["New", "Queued", "Running", "Complete", "Error"]:
             job = new_job5()
             job.status = s
             repo = JobRepositorySqlAlchemy(session)
@@ -321,7 +323,7 @@ class TestJIM(object):
     def test_job_status_updates_for_qstat_status_of_q(self, mock_qstat):
         # We only check the qstat queue if the job has been submitted but has
         # not completed
-        for s in ["Submitted", "Queued", "Running"]:
+        for s in ["Queued", "Running"]:
             job = new_job5()
             job.status = s
             print(job.status)
@@ -341,7 +343,7 @@ class TestJIM(object):
     def test_job_status_updates_for_qstat_status_of_r(self, mock_qstat):
         # We only check the qstat queue if the job has been submitted but has
         # not completed
-        for s in ["Submitted", "Queued", "Running"]:
+        for s in ["Queued", "Running"]:
             job = new_job5()
             job.status = s
             print(job.status)
@@ -361,7 +363,7 @@ class TestJIM(object):
     def test_job_status_updates_for_qstat_status_of_c(self, mock_qstat):
         # We only check the qstat queue if the job has been submitted but has
         # not completed
-        for s in ["Submitted", "Queued", "Running"]:
+        for s in ["Queued", "Running"]:
             job = new_job5()
             job.status = s
             print(job.status)

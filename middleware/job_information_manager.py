@@ -289,7 +289,7 @@ class job_information_manager():
     def update_job_status(self):
         # No need to make remote call to qstat if Job is not yet submitted or
         # has already completed
-        if(self.job.status not in ["Submitted", "Queued", "Running"]):
+        if(self.job.status not in ["Queued", "Running"]):
             # Leave job status unchanged
             return self.job.status
 
