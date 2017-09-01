@@ -235,9 +235,8 @@ class job_information_manager():
                 backend_identifier = self._check_for_backend_identifier(out)
                 if backend_identifier:
                     self.job.backend_identifier = backend_identifier
-                    self.job.status = "submitted"
+                    self.job.status = "Queued"
                     self.jobs.update(self.job)
-
             if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
                 out = json.loads(out)
