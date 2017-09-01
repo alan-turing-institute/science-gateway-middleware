@@ -5,7 +5,7 @@ TESTING = True
 DEBUG = True
 
 # Use in-memory SQLlite DB for testing
-SQLALCHEMY_DATABASE_URI = 'sqlite:///database/jobs.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite://'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Load cases from resources json file
