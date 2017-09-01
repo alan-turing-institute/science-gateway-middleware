@@ -298,7 +298,7 @@ class TestJIM(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=(
-                    lambda script, path: ('invalid\n','err', '0')))
+                    lambda script, path: ('invalid\n', 'err', '0')))
     def test_job_status_is_not_submit_for_invalid_id(
             self, mock_run, session):
         # As mocked backend job ID is invalid, status should remain unchanged
