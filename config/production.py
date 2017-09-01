@@ -13,5 +13,5 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///database/jobs.db'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Load cases from resources json file
-LOAD_CASES = True
+LOAD_CASES = False
 LOAD_DEVELOPMENT_CASES = False
