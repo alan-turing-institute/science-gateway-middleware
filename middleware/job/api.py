@@ -27,14 +27,9 @@ class JobApi(Resource):
         job = self.jobs.get_by_id(job_id)
 
         # Update job status from job manager and save updated job
-        try:
-            manager = JIM(job, job_repository=self.jobs)
-            print(manager)
-            job.status = manager.update_job_status()
-            job = self.jobs.update(job)
-        except Exception as e:
-            print(e)
-            self.abort(500)
+        manager = JIM(job, job_repository=self.jobs)
+        job.status = manager.update_job_status()
+        job = self.jobs.update(job)
 
         job_json = job_to_json(job)
         return job_json, 200, {'Content-Type': 'application/json'}
