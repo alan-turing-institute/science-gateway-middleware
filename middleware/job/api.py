@@ -124,6 +124,11 @@ class JobsApi(Resource):
 
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
+            # Update job status from job manager and save updated job
+            manager = JIM(job, job_repository=self.jobs)
+            job.status = manager.update_job_status()
+            job = self.jobs.update(job)
+            # Return summary Job data as JSON
             summary_json = job_to_summary_json(job)
             return summary_json
 
