@@ -70,7 +70,7 @@ class JobApi(Resource):
             return job_to_json(updated_job), 200, {'Content-Type':
                                                    'application/json'}
 
-    def patch(self, job_id):
+    def _patch_job(self, job_id, request):
         # Require Job to exist in order to amend it
         job_old = self.jobs.get_by_id(job_id)
         if job_old is None:
@@ -111,8 +111,12 @@ class JobApi(Resource):
         if updated_job is None:
             abort(404, message="Job {} not found".format(job_new.id))
         else:
-            return job_to_json(updated_job), 200, {'Content-Type':
-                                                   'application/json'}
+            return updated_job
+
+    def patch(self, job_id):
+        updated_job = self._patch_job(job_id, request)
+        return job_to_json(updated_job), 200, {'Content-Type':
+                                               'application/json'}
 
     def delete(self, job_id):
         # Require job to exist in order to delete it
