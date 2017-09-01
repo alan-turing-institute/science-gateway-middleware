@@ -46,6 +46,11 @@
         "source_uri": "./resources/mock_blue_simulation/csv_to_data_json.py",
         "action": null,
         "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/mock_blue_simulation/csv_to_progress_json.py",
+        "action": null,
+        "destination_path": "."
       }
     ],
     "id": "f17f97ea-ea74-468e-b637-b78f53f03b2d",
