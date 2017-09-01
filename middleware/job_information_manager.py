@@ -6,6 +6,7 @@ from middleware.ssh import ssh
 import re
 import json
 from instance.config import *
+from werkzeug.exceptions import ServiceUnavailable
 
 
 class job_information_manager():
@@ -120,6 +121,18 @@ class job_information_manager():
 
             self.patched_templates.append(patched_tempate)
 
+    def _ssh_connection(self):
+        try:
+            connection = ssh(
+                self.hostname, self.username, self.port,
+                private_key_path=self.private_key_path, debug=True)
+            return connection
+        except Exception:
+            # If connection cannot be made, raise a ServiceUnavailble
+            # exception that will be passed to API client as a HTTP error
+            raise(ServiceUnavailable(
+                description="Unable to connect to backend compute resource"))
+
     def create_job_directory(self, debug=False):
         """
         Create a job directory (All inputs, scripts, templates are transferred
@@ -127,10 +140,7 @@ class job_information_manager():
         following path structure:
             SIM_ROOT/<case.label>-<job.id>
         """
-        connection = ssh(
-            self.hostname, self.username,
-            self.port, private_key_path=self.private_key_path, debug=True)
-
+        connection = self._ssh_connection()
         command = "mkdir -p {}".format(self.job_working_directory_path)
         out, err, exit_code = connection.pass_command(command)
         if debug:
@@ -142,10 +152,7 @@ class job_information_manager():
         Method to copy all needed files to the cluster using a single
         ssh connection.
         """
-        connection = ssh(
-            self.hostname, self.username,
-            self.port, private_key_path=self.private_key_path, debug=True)
-
+        connection = self._ssh_connection()
         all_files = []
         all_files.extend(self.script_list)
         all_files.extend(self.inputs_list)
@@ -178,9 +185,7 @@ class job_information_manager():
         logging in ./logs/ssh.log
         Shouldnt be called directly.
         """
-        connection = ssh(
-            self.hostname, self.username,
-            self.port, private_key_path=self.private_key_path, debug=True)
+        connection = self._ssh_connection()
         command = "cd {}; bash {}".format(remote_path, script_name)
         out, err, exit_code = connection.pass_command(command)
         if debug:
@@ -192,9 +197,7 @@ class job_information_manager():
         Method to run a given command remotely via SSH
         Shouldnt be called directly.
         """
-        connection = ssh(
-            self.hostname, self.username,
-            self.port, private_key_path=self.private_key_path, debug=True)
+        connection = self._ssh_connection()
         out, err, exit_code = connection.pass_command(command)
         if debug:
             print(out)

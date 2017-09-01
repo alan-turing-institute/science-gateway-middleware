@@ -11,6 +11,7 @@ from middleware.job.schema import Template
 from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from flask import Flask
 from middleware.database import db as _db
+from werkzeug.exceptions import ServiceUnavailable
 
 
 @pytest.fixture(scope='session')
@@ -106,6 +107,10 @@ def mock_run_remote(script_name, remote_path, debug=True):
 
 def mock_pass_command(command):
     return command, 'err', '0'
+
+
+def mock_ssh_exception():
+    raise Exception()
 
 
 class TestJIM(object):
@@ -254,6 +259,30 @@ class TestJIM(object):
 
         assert code == 400
         assert message == exp_message
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_ssh_connection', side_effect=mock_ssh_exception)
+    def test_failed_ssh_connection_gives_503_exception(self, mock_run):
+        # At least some of the standard Exceptions raised when setting up
+        # an SCP connection in Paramiko do not get magically converted to
+        # HTTP error responses by Flask. These tests ensure that we get
+        # a ServiceUnavailable (503) Exception that Flask will magically pass
+        # on to the client.
+        job = new_job5()
+        manager = JIM(job)
+        expected_message = "Unable to connect to backend compute resource"
+        expected_exception = ServiceUnavailable(description=expected_message)
+        # Check correct Flask exception raised when updating status
+        try:
+            manager.update_job_status()
+        except Exception as e:
+            assert e == expected_exception
+        # Check correct Flask exception raised when executing actions
+        for action in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS', 'DATA']:
+            try:
+                manager.trigger_action_script('action')
+            except Exception as e:
+                assert e == expected_exception
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 '_run_remote_script', side_effect=(
