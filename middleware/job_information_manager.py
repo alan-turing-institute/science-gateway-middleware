@@ -187,6 +187,19 @@ class job_information_manager():
             print(out)
         return out, err, exit_code
 
+    def _run_remote_command(self, command, debug=False):
+        """
+        Method to run a given command remotely via SSH
+        Shouldnt be called directly.
+        """
+        connection = ssh(
+            self.hostname, self.username,
+            self.port, private_key_path=self.private_key_path, debug=True)
+        out, err, exit_code = connection.pass_command(command)
+        if debug:
+            print(out)
+        return out, err, exit_code
+
     def _check_for_backend_identifier(self, string):
         """
         Check for PBS backend_identifier:
@@ -198,7 +211,11 @@ class job_information_manager():
         """
 
         stripped_string = string.strip("\n")
+        # Imperial PBS Job IDs
         if re.match(r"\d+\.cx1b", stripped_string):
+            return stripped_string
+        # Azure Torque Job IDs
+        if re.match(r"\d+\.science-gateway-cluster", stripped_string):
             return stripped_string
         else:
             return None
@@ -216,7 +233,6 @@ class job_information_manager():
             if s.action == action:
                 to_trigger = self.script_list[i]
                 break
-
         # If the script isn't found, return a 400 error
         if to_trigger:
             script_name = os.path.basename(to_trigger.source_uri)
@@ -235,9 +251,8 @@ class job_information_manager():
                 backend_identifier = self._check_for_backend_identifier(out)
                 if backend_identifier:
                     self.job.backend_identifier = backend_identifier
-                    self.job.status = "submitted"
+                    self.job.status = "Queued"
                     self.jobs.update(self.job)
-
             if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
                 out = json.loads(out)
@@ -247,6 +262,56 @@ class job_information_manager():
         else:
             result = {'message': '{} script not found'.format(action)}
             return result, 400
+
+    def _qstat_status_to_job_status(self, qstat_status):
+        if(qstat_status == 'Q' or qstat_status == 'W'):
+            # Q: Job is	queued, eligable to run or routed.
+            # W: Job is waiting for its	execution time (-a option) to
+            #    be reached.
+            return "Queued"
+        if(qstat_status == 'R'):
+            # R: Job is running
+            return "Running"
+        if(qstat_status == 'C'):
+            # C: Job is completed
+            return "Complete"
+        else:
+            return None
+
+    def _qstat_status(self):
+        status_cmd = 'qstat {} -x | grep -P -o "<job_state>\K."'.format(
+            self.job.backend_identifier)
+        out, err, exit = self._run_remote_command(status_cmd)
+        # Strip whitespace as we may get a carriage return in the output
+        qstat_status = out.strip()
+        return qstat_status
+
+    def update_job_status(self):
+        # No need to make remote call to qstat if Job is not yet submitted or
+        # has already completed
+        if(self.job.status not in ["Queued", "Running"]):
+            # Leave job status unchanged
+            return self.job.status
+
+        # Check current qstat status for job
+        qstat_status = self._qstat_status()
+        if(qstat_status is not None):
+            # If we get a qstat status, try and convert it to a job status
+            new_job_status = self._qstat_status_to_job_status(qstat_status)
+        else:
+            if(self.job.status in ["Submitted", "Queued", "Running"]):
+                # If we have a previous backend status confirming the job was
+                # on the queue, an empty qstat status means the Job has
+                # completed and been removed from the queue.
+                # Note: Jobs only stay on the queue for abour 5 mins after they
+                # complete
+                new_job_status = "Complete"
+
+        if(new_job_status is None):
+            # Leave job status unchanged
+            new_job_status = self.job.status
+
+        return new_job_status
 
     def run(self):
         """

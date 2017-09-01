@@ -3,6 +3,7 @@ import json
 import pytest
 from flask import Flask
 import arrow
+import datetime
 import unittest.mock as mock
 from werkzeug.exceptions import NotFound
 from middleware.factory import create_app
@@ -17,7 +18,6 @@ import new_jobs as nj  # for easy access to iso_string values
 from new_jobs import (new_job1, new_job2, new_job3, new_job4,
                       new_case1, new_job1_output_json)
 from config.base import MIDDLEWARE_URL, URI_STEMS
-import json
 
 CONFIG_NAME = "test"
 TEST_DB_URI = 'sqlite://'
@@ -208,7 +208,8 @@ class TestJobApi(object):
         job_new = new_job2()
         job_json = job_new
         job_id_json = job_json.id
-        job_response = client.put("{}/{}".format(URI_STEMS['jobs'], job_id_url),
+        job_response = client.put("{}/{}".format(URI_STEMS['jobs'],
+                                                 job_id_url),
                                   data=json.dumps(job_to_json(job_json)),
                                   content_type='application/json')
         job_existing == job_existing
@@ -264,7 +265,8 @@ class TestJobApi(object):
         jobs.create(job_orig)
 
         invalid_job = {"no-id-field": "valid-json"}
-        job_response = client.put("{}/{}".format(URI_STEMS['jobs'], job_id_orig),
+        job_response = client.put("{}/{}".format(URI_STEMS['jobs'],
+                                                 job_id_orig),
                                   data=json.dumps(invalid_job),
                                   content_type='application/json')
         error_message = {"message": "Message body is not valid Job JSON"}
@@ -282,7 +284,8 @@ class TestJobApi(object):
         jobs.create(job_orig)
 
         invalid_job_json = {"id": job_id_orig, "invalid-name": "valid-value"}
-        job_response = client.put("{}/{}".format(URI_STEMS['jobs'], job_id_orig),
+        job_response = client.put("{}/{}".format(URI_STEMS['jobs'],
+                                                 job_id_orig),
                                   data=json.dumps(invalid_job_json),
                                   content_type='application/json')
         error_message = {"message": "Message body is not valid Job JSON"}
@@ -319,7 +322,7 @@ class TestJobApi(object):
         jobs.create(job_orig)
 
         job_response = client.delete("{}/{}".format(URI_STEMS['jobs'],
-                                                   job_id_orig))
+                                                    job_id_orig))
         assert job_response.status_code == 204
         assert response_to_json(job_response) is None
         assert jobs.get_by_id(job_id_orig) is None
@@ -407,31 +410,31 @@ class TestJobApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
         # Create job
         job_original = new_job1()
-        _created = jobs.create(job_original)
+        jobs.create(job_original)
 
         j1f1p1_changed_param = {
-                "help": "j1f1p1help",
-                "label": "j1f1p1label",
-                "min_value": "j1f1p1min_value",
-                "max_value": "j1f1p1max_value",
-                "name": "j1f1p1name",
-                "type": "j1f1p1type",
-                "type_value": "j1f1p1type_value",
-                "units": "j1f1p1units",
-                "value": "changed_value"
-            }
+            "help": "j1f1p1help",
+            "label": "j1f1p1label",
+            "min_value": "j1f1p1min_value",
+            "max_value": "j1f1p1max_value",
+            "name": "j1f1p1name",
+            "type": "j1f1p1type",
+            "type_value": "j1f1p1type_value",
+            "units": "j1f1p1units",
+            "value": "changed_value"
+        }
 
         j1f1p3_added_param = {
-                "help": "j1f1p3help",
-                "label": "j1f1p3label",
-                "min_value": "j1f1p3min_value",
-                "max_value": "j1f1p3max_value",
-                "name": "j1f1p3name",
-                "type": "j1f1p3type",
-                "type_value": "j1f1p3type_value",
-                "units": "j1f1p3units",
-                "value": "added_value"
-            }
+            "help": "j1f1p3help",
+            "label": "j1f1p3label",
+            "min_value": "j1f1p3min_value",
+            "max_value": "j1f1p3max_value",
+            "name": "j1f1p3name",
+            "type": "j1f1p3type",
+            "type_value": "j1f1p3type_value",
+            "units": "j1f1p3units",
+            "value": "added_value"
+        }
 
         # here we must supply an entire families array
         # as json merge-patch cannot be used to update
@@ -439,19 +442,19 @@ class TestJobApi(object):
         # NOTE: the action of this patch is to remove
         # the parameter j1f1p2
         job_patch_json = {
-                "id": job_original.id,
-                "families": [
-                    {
-                        "name": "j1f1name",
-                        "label": "j1f1label",
-                        "collapse": True,
-                        "parameters": [
-                            j1f1p1_changed_param,
-                            j1f1p3_added_param
-                        ]
-                    }
-                ]
-            }
+            "id": job_original.id,
+            "families": [
+                {
+                    "name": "j1f1name",
+                    "label": "j1f1label",
+                    "collapse": True,
+                    "parameters": [
+                        j1f1p1_changed_param,
+                        j1f1p3_added_param
+                    ]
+                }
+            ]
+        }
 
         job_response = client.patch(
             "{}/{}".format(URI_STEMS['jobs'], job_original.id),
@@ -557,7 +560,7 @@ class TestJobsApi(object):
                     "thumbnail": job3.case.thumbnail
                 }
             }
-         ]}
+        ]}
 
         job_response = client.get(URI_STEMS['jobs'])
         assert job_response.status_code == 200
@@ -577,18 +580,25 @@ class TestJobsApi(object):
         job_response = client.post(URI_STEMS['jobs'],
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
-
-        # ignore differences in `creation_datetime` and `status` as these are
-        # now modified directly by the api
         job_response_json = response_to_json(job_response)
-        job.creation_datetime = \
+        # Job creation time set by API. Check it's pretty much now then set
+        # creation time in source job to that from response job to ensure
+        # later equality test doesn't fail because of this field
+        job_response_creation_datetime = \
             arrow.get(job_response_json['creation_datetime'])
-        # middleware not currently responsible for status changes
-        # job.status = 'new'
-        job_json = job_to_json(job)
+        cdt_diff = abs(arrow.utcnow() - job_response_creation_datetime)
+        # Check if within a second or so
+        ok_diff_seconds = 2
+        assert(cdt_diff <= datetime.timedelta(seconds=ok_diff_seconds))
+        job.creation_datetime = job_response_creation_datetime
+
+        # Job status when first created via API should be "Draft". "New" is
+        # reserved for Jobs created from a case but not yet persisted to
+        # storage
+        job.status = 'Draft'
 
         assert job_response.status_code == 200
-        assert job_response_json == job_json
+        assert job_response_json == job_to_json(job)
         assert jobs.get_by_id(job.id) == job
 
     def test_post_for_existing_job_returns_error_with_409(self, session):
@@ -691,7 +701,6 @@ class TestRunApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
 
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -785,7 +794,6 @@ class TestSetupApi(object):
         cases = CaseRepositorySqlAlchemy(session)
         client = test_client(case_repository=cases, job_repository=jobs)
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -869,7 +877,6 @@ class TestCancelApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
 
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -915,7 +922,6 @@ class TestProgressApi(object):
         client = test_client(case_repository=cases, job_repository=jobs)
 
         job = new_job4()
-        job_id = job.id
         client.post(URI_STEMS['jobs'], data=json.dumps(job_to_json(job)),
                     content_type='application/json')
 
@@ -957,7 +963,7 @@ class TestCasesApi(object):
                 'description': 'c1description',
                 'thumbnail': 'c1thumbnail',
                 'uri': 'c1uri'}
-                ]}
+            ]}
 
         assert response.status_code == 200
         assert response_to_json(response) == expected_json
@@ -987,7 +993,8 @@ class TestCaseApi(object):
         expected_json["id"] = response_json.get("id")
         expected_json["uri"] = response_json.get("uri")
         expected_json["user"] = response_json.get("user")
-        expected_json["backend_identifier"] = response_json.get("backend_identifier")
+        expected_json["backend_identifier"] = \
+            response_json.get("backend_identifier")
         expected_json["status"] = response_json.get("status")
         expected_json["creation_datetime"] = \
             response_json.get("creation_datetime")
