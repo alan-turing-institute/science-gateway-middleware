@@ -198,7 +198,11 @@ class job_information_manager():
         """
 
         stripped_string = string.strip("\n")
+        # Imperial PBS Job IDs
         if re.match(r"\d+\.cx1b", stripped_string):
+            return stripped_string
+        # Azure Torque Job IDs
+        if re.match(r"\d+\.science-gateway-cluster", stripped_string):
             return stripped_string
         else:
             return None
