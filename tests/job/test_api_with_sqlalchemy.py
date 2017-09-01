@@ -232,27 +232,49 @@ class TestJobApi(object):
         assert job_response.status_code == 404
         assert response_to_json(job_response) == error_message
 
-    def test_put_with_existing_job_id_returns_new_job_with_200(self, session):
+    def test_put_for_existing_job_updates_all_user_fields(self, session, app):
+        # PUT should update all fields that are not configured as middleware
+        # only and should ignore any changes to middleware only fields
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
         client = test_client(case_repository=cases, job_repository=jobs)
 
         # Create job
         job_original = new_job1()
+
         job_id_orig = job_original.id
+        # Capture original Job as JSON here as it will be updated by PUT
+        original_job_json = job_to_json(job_original)
         jobs.create(job_original)
 
         job_new = new_job2()
         job_new.id = job_id_orig
+        # Ensure all non-updateable fields are changed in updated Job
+        job_new.status = "CHANGED"
+        job_new.backend_identifier = "CHANGED_backend_identifier"
+        job_new.creation_datetime = arrow.utcnow()
+        job_new.start_datetime = arrow.utcnow()
+        job_new.end_datetime = arrow.utcnow()
 
         job_response = client.put(
             "{}/{}".format(URI_STEMS['jobs'], job_id_orig),
             data=json.dumps(job_to_json(job_new)),
             content_type='application/json')
 
+        # Initialise expected job to new job. We do this in JSON so we can
+        # be sure we're working on a copy of the new Job data when we amend
+        # the non-updateable fields
+        job_expected_json = job_to_json(job_new)
+        # Overwrite expected values for all non-updateable fields with values
+        # from original job
+        for field in app.config.get("MIDDLEWARE_ONLY_JOB_FIELDS"):
+            job_expected_json[field] = original_job_json[field]
+
+        # Check response is as expected
+        job_response_json = response_to_json(job_response)
         assert job_response.status_code == 200
-        assert response_to_json(job_response) == job_to_json(job_new)
-        assert jobs.get_by_id(job_id_orig) == job_new
+        assert job_response_json == job_expected_json
+        assert job_to_json(jobs.get_by_id(job_id_orig)) == job_expected_json
 
     def test_put_with_no_id_in_json_returns_error_with_400(self, session):
         jobs = JobRepositorySqlAlchemy(session)
@@ -404,12 +426,14 @@ class TestJobApi(object):
         assert jobs.get_by_id(job_id_url) == job_existing
         assert jobs.get_by_id(job_id_json) is None
 
-    def test_patch_with_existing_job_id_gives_new_job_with_200(self, session):
+    def test_patch_for_existing_job_updates_all_user_fields(self, session, app):
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
         client = test_client(case_repository=cases, job_repository=jobs)
         # Create job
         job_original = new_job1()
+        # Capture original Job as JSON here as it will be updated by PUT
+        original_job_json = job_to_json(job_original)
         jobs.create(job_original)
 
         j1f1p1_changed_param = {
@@ -421,7 +445,7 @@ class TestJobApi(object):
             "type": "j1f1p1type",
             "type_value": "j1f1p1type_value",
             "units": "j1f1p1units",
-            "value": "changed_value"
+            "value": "changed_value",
         }
 
         j1f1p3_added_param = {
@@ -455,6 +479,11 @@ class TestJobApi(object):
                 }
             ]
         }
+        # We also try to change all middleware only fields to ensure they are
+        # not changed.
+        different_job_json = job_to_json(new_job2())
+        for field in app.config.get("MIDDLEWARE_ONLY_JOB_FIELDS"):
+            job_patch_json[field] = different_job_json.get(field)
 
         job_response = client.patch(
             "{}/{}".format(URI_STEMS['jobs'], job_original.id),

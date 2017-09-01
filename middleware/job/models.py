@@ -690,3 +690,13 @@ def case_to_job(case, job_id=None):
         job.inputs.append(input_template_to_input(input_template))
 
     return job
+
+
+def copy_job_fields(source, destination, fields):
+    for field in fields:
+        try:
+            # Set all ignored fields on new job equal to field value in old job
+            setattr(destination, field, getattr(source, field))
+        except Exception as e:
+            print(e)
+    return destination

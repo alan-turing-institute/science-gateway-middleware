@@ -115,8 +115,10 @@ def create_app(config_name,
     api = Api(app)
 
     api.add_resource(JobApi, '{}/<string:job_id>'.format(URI_STEMS['jobs']),
-                     resource_class_kwargs={'job_repository':
-                                            app._job_repository})
+                     resource_class_kwargs={
+                     'job_repository': app._job_repository,
+                     'middleware_only_fields':
+                     app.config.get("MIDDLEWARE_ONLY_JOB_FIELDS")})
 
     api.add_resource(JobsApi, URI_STEMS['jobs'],
                      resource_class_kwargs={'job_repository':

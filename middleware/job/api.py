@@ -5,7 +5,7 @@ from middleware.job_information_manager import job_information_manager as JIM
 from middleware.job.schema import (job_to_json, json_to_job,
                                    job_to_summary_json,
                                    case_to_summary_json)
-from middleware.job.models import case_to_job
+from middleware.job.models import case_to_job, copy_job_fields
 import arrow
 import os
 
@@ -16,6 +16,7 @@ class JobApi(Resource):
     def __init__(self, **kwargs):
         # Inject job service
         self.jobs = kwargs['job_repository']
+        self.middleware_only_fields = kwargs.get('middleware_only_fields')
 
     def abort_if_not_found(self, job_id):
         if not self.jobs.exists(job_id):
@@ -53,6 +54,9 @@ class JobApi(Resource):
             job_new = json_to_job(job_json)
         except:
             abort(400, message="Message body is not valid Job JSON")
+        # Ignore any middleware only fields by copying the existing values
+        copy_job_fields(source=job_old, destination=job_new,
+                        fields=self.middleware_only_fields)
         # Check job_id route parameter consistent with provided Job data
         if job_id != job_new.id:
             abort(409, message="Job ID in URL ({}) does not match job "
@@ -94,6 +98,9 @@ class JobApi(Resource):
             job_new = json_to_job(job_new_json)
         except:
             abort(400, message="Message body is not valid Job JSON")
+        # Ignore any middleware only fields by copying the existing values
+        copy_job_fields(source=job_old, destination=job_new,
+                        fields=self.middleware_only_fields)
         # Check job_id route parameter consistent with provided Job data
         if job_id != job_new.id:
             abort(409, message="Job ID in URL ({}) does not match job "
