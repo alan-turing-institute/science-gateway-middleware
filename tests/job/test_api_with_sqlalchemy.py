@@ -426,14 +426,12 @@ class TestJobApi(object):
         assert jobs.get_by_id(job_id_url) == job_existing
         assert jobs.get_by_id(job_id_json) is None
 
-    def test_patch_for_existing_job_updates_all_user_fields(self, session, app):
+    def test_patch_for_existing_job_updates_user_fields(self, session, app):
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
         client = test_client(case_repository=cases, job_repository=jobs)
         # Create job
         job_original = new_job1()
-        # Capture original Job as JSON here as it will be updated by PUT
-        original_job_json = job_to_json(job_original)
         jobs.create(job_original)
 
         j1f1p1_changed_param = {
