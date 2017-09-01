@@ -27,6 +27,9 @@ class JobApi(Resource):
         job = self.jobs.get_by_id(job_id)
 
         # Update job status from job manager and save updated job
+        # TODO: Test this directly? (we already test the update_job_status()
+        # method to ensure it returns an exception that will be passed to
+        # client)
         manager = JIM(job, job_repository=self.jobs)
         job.status = manager.update_job_status()
         job = self.jobs.update(job)
@@ -136,6 +139,9 @@ class JobsApi(Resource):
         def list_job_summary_json(job_id):
             job = self.jobs.get_by_id(job_id)
             # Update job status from job manager and save updated job
+            # TODO: Test this directly? (we already test the update_job_status()
+            # method to ensure it returns an exception that will be passed to
+            # client)
             manager = JIM(job, job_repository=self.jobs)
             job.status = manager.update_job_status()
             job = self.jobs.update(job)
