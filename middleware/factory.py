@@ -115,8 +115,10 @@ def create_app(config_name,
     api = Api(app)
 
     api.add_resource(JobApi, '{}/<string:job_id>'.format(URI_STEMS['jobs']),
-                     resource_class_kwargs={'job_repository':
-                                            app._job_repository})
+                     resource_class_kwargs={
+                     'job_repository': app._job_repository,
+                     'middleware_only_fields':
+                     app.config.get("MIDDLEWARE_ONLY_JOB_FIELDS")})
 
     api.add_resource(JobsApi, URI_STEMS['jobs'],
                      resource_class_kwargs={'job_repository':
@@ -131,12 +133,16 @@ def create_app(config_name,
                                             app._case_repository})
 
     api.add_resource(SetupApi, '{}/<string:job_id>'.format(URI_STEMS['setup']),
-                     resource_class_kwargs={'job_repository':
-                                            app._job_repository})
+                     resource_class_kwargs={
+                     'job_repository': app._job_repository,
+                     'middleware_only_fields':
+                     app.config.get("MIDDLEWARE_ONLY_JOB_FIELDS")})
 
     api.add_resource(RunApi, '{}/<string:job_id>'.format(URI_STEMS['run']),
-                     resource_class_kwargs={'job_repository':
-                                            app._job_repository})
+                     resource_class_kwargs={
+                     'job_repository': app._job_repository,
+                     'middleware_only_fields':
+                     app.config.get("MIDDLEWARE_ONLY_JOB_FIELDS")})
 
     api.add_resource(ProgressApi,
                      '{}/<string:job_id>'.format(URI_STEMS['progress']),

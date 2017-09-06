@@ -2,11 +2,66 @@ import os
 import re
 import posixpath
 import unittest.mock as mock
+import pytest
 from middleware.job_information_manager import job_information_manager as JIM
 from middleware.ssh import ssh
 from tests.job.new_jobs import new_job5
 from instance.config import *
-from middleware.job.schema import Parameter, Template, job_to_json
+from middleware.job.schema import Template
+from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
+from flask import Flask
+from middleware.database import db as _db
+from werkzeug.exceptions import ServiceUnavailable
+
+
+@pytest.fixture(scope='session')
+def app(request):
+    """Session-wide test Flask app"""
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object("config.test")
+    _db.init_app(app)
+
+    ctx = app.app_context()
+    ctx.push()
+
+    def teardown():
+        ctx.pop()
+
+    request.addfinalizer(teardown)
+    return app
+
+
+@pytest.fixture(scope='session')
+def db(app, request):
+    """Session-wide test database"""
+    def teardown():
+        _db.drop_all()
+
+    _db.app = app
+    _db.create_all()
+
+    request.addfinalizer(teardown)
+    return _db
+
+
+@pytest.fixture(scope='function')
+def session(db, request):
+    """Function-wide SQLAlchemy session for each test"""
+    connection = db.engine.connect()
+    transaction = connection.begin()
+
+    options = dict(bind=connection, binds={}, expire_on_commit=True)
+    session = db.create_scoped_session(options=options)
+
+    db.session = session
+
+    def teardown():
+        transaction.rollback()
+        connection.close()
+        session.remove()
+
+    request.addfinalizer(teardown)
+    return session
 
 
 def abstract_getting_secrets():
@@ -52,6 +107,10 @@ def mock_run_remote(script_name, remote_path, debug=True):
 
 def mock_pass_command(command):
     return command, 'err', '0'
+
+
+def mock_ssh_exception():
+    raise Exception()
 
 
 class TestJIM(object):
@@ -200,3 +259,150 @@ class TestJIM(object):
 
         assert code == 400
         assert message == exp_message
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_ssh_connection', side_effect=mock_ssh_exception)
+    def test_failed_ssh_connection_gives_503_exception(self, mock_run):
+        # At least some of the standard Exceptions raised when setting up
+        # an SCP connection in Paramiko do not get magically converted to
+        # HTTP error responses by Flask. These tests ensure that we get
+        # a ServiceUnavailable (503) Exception that Flask will magically pass
+        # on to the client.
+        job = new_job5()
+        manager = JIM(job)
+        expected_message = "Unable to connect to backend compute resource"
+        expected_exception = ServiceUnavailable(description=expected_message)
+        # Check correct Flask exception raised when updating status
+        try:
+            manager.update_job_status()
+        except Exception as e:
+            assert e == expected_exception
+        # Check correct Flask exception raised when executing actions
+        for action in ['RUN', 'SETUP', 'CANCEL', 'PROGRESS', 'DATA']:
+            try:
+                manager.trigger_action_script('action')
+            except Exception as e:
+                assert e == expected_exception
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=(
+                    lambda script, path: ('5305301.cx1b\n', 'err', '0')))
+    def test_job_status_is_submit_for_valid_imperial_pbs_id(
+            self, mock_run, session):
+        # On successful submission, RUN should change status ot "Queued",
+        # regardless of the previous job status
+        for s in ["New", "Queued", "Running", "Complete", "Error"]:
+            job = new_job5()
+            job.status = s
+            repo = JobRepositorySqlAlchemy(session)
+            manager = JIM(job, repo)
+            message, code = manager.trigger_action_script("RUN")
+
+            exp_message = {'stdout': '5305301.cx1b\n',
+                           'stderr': 'err', 'exit_code': '0'}
+
+            assert code == 200
+            assert message == exp_message
+            assert job.status == "Queued"
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=(
+                    lambda script, path: ('93.science-gateway-cluster\n',
+                                          'err', '0')))
+    def test_job_status_is_submit_for_valid_azure_torque_id(
+            self, mock_run, session):
+        # On successful submission, RUN should change status ot "Queued",
+        # regardless of the previous job status
+        for s in ["New", "Queued", "Running", "Complete", "Error"]:
+            job = new_job5()
+            job.status = s
+            repo = JobRepositorySqlAlchemy(session)
+            manager = JIM(job, repo)
+            message, code = manager.trigger_action_script("RUN")
+
+            exp_message = {'stdout': '93.science-gateway-cluster\n',
+                           'stderr': 'err', 'exit_code': '0'}
+
+            assert code == 200
+            assert message == exp_message
+            assert job.status == "Queued"
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=(
+                    lambda script, path: ('invalid\n', 'err', '0')))
+    def test_job_status_is_not_submit_for_invalid_id(
+            self, mock_run, session):
+        # As mocked backend job ID is invalid, status should remain unchanged
+        for s in ["New", "Queued", "Running", "Complete", "Error"]:
+            job = new_job5()
+            job.status = s
+            repo = JobRepositorySqlAlchemy(session)
+            manager = JIM(job, repo)
+            message, code = manager.trigger_action_script("RUN")
+
+            exp_message = {'stdout': 'invalid\n',
+                           'stderr': 'err', 'exit_code': '0'}
+
+            assert code == 200
+            assert message == exp_message
+            assert job.status == s
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_qstat_status', side_effect=(lambda: 'Q'))
+    def test_job_status_updates_for_qstat_status_of_q(self, mock_qstat):
+        # We only check the qstat queue if the job has been submitted but has
+        # not completed
+        for s in ["Queued", "Running"]:
+            job = new_job5()
+            job.status = s
+            print(job.status)
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == 'Queued'
+        # All other initial statuses should be unchanged
+        for s in ["New", "Complete", "Error", "Gibberish"]:
+            job = new_job5()
+            job.status = s
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == s
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_qstat_status', side_effect=(lambda: 'R'))
+    def test_job_status_updates_for_qstat_status_of_r(self, mock_qstat):
+        # We only check the qstat queue if the job has been submitted but has
+        # not completed
+        for s in ["Queued", "Running"]:
+            job = new_job5()
+            job.status = s
+            print(job.status)
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == 'Running'
+        # All other initial statuses should be unchanged
+        for s in ["New", "Complete", "Error", "Gibberish"]:
+            job = new_job5()
+            job.status = s
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == s
+
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_qstat_status', side_effect=(lambda: 'C'))
+    def test_job_status_updates_for_qstat_status_of_c(self, mock_qstat):
+        # We only check the qstat queue if the job has been submitted but has
+        # not completed
+        for s in ["Queued", "Running"]:
+            job = new_job5()
+            job.status = s
+            print(job.status)
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == 'Complete'
+        # All other initial statuses should be unchanged
+        for s in ["New", "Complete", "Error", "Gibberish"]:
+            job = new_job5()
+            job.status = s
+            manager = JIM(job)
+            updated_status = manager.update_job_status()
+            assert updated_status == s

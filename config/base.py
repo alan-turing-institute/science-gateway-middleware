@@ -12,3 +12,11 @@ URI_STEMS = {'jobs': '/api/jobs',
 
 MIDDLEWARE_URL = "http://science-gateway-middleware.azurewebsites.net"
 # MIDDLEWARE_URL = "http://localhost:5000"
+
+MIDDLEWARE_ONLY_JOB_FIELDS = [
+    "status",
+    "creation_datetime",
+    "start_datetime",
+    "end_datetime",
+    "backend_identifier"
+]
