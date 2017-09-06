@@ -5,8 +5,50 @@ from middleware.job.schema import Template
 from middleware.ssh import ssh
 import re
 import json
-from instance.config import *
+
 from werkzeug.exceptions import ServiceUnavailable
+
+from instance.config import *
+
+# precedence for secrets variables is:
+# 1. Via environment varables
+# 2. Via instance/config.py
+# 3. Via defaults listed below
+
+# defaults
+if 'SSH_USR' not in locals():
+    SSH_USR = 'test_user'
+if 'SSH_HOSTNAME' not in locals():
+    SSH_HOSTNAME = 'test_host'
+if 'SSH_PORT' not in locals():
+    SSH_PORT = 22
+if 'SSH_PRIVATE_KEY_PATH' not in locals():
+    SSH_PRIVATE_KEY_PATH = None
+if 'SSH_PRIVATE_KEY_STRING' not in locals():
+    SSH_PRIVATE_KEY_STRING = None
+if 'SIM_ROOT' not in locals():
+    SIM_ROOT = '/work/vm-admin/Blue'
+
+# Note, os.environ.get() falls back to second argument (instead of None)
+SSH_USR = os.environ.get('SSH_USR', SSH_USR)
+SSH_HOSTNAME = os.environ.get('SSH_HOSTNAME', SSH_HOSTNAME)
+SSH_PORT = os.environ.get('SSH_PORT', SSH_PORT)
+SSH_PRIVATE_KEY_PATH = os.environ.get(
+    'SSH_PRIVATE_KEY_PATH', SSH_PRIVATE_KEY_PATH)
+SSH_PRIVATE_KEY_STRING = os.environ.get(
+    'SSH_PRIVATE_KEY_STRING', SSH_PRIVATE_KEY_STRING)
+SIM_ROOT = os.environ.get(
+    'SIM_ROOT', SIM_ROOT)
+
+SSH_PORT = int(SSH_PORT)
+
+debug_variables = False
+if debug_variables:
+    print('SSH_USR', SSH_USR)
+    print('SSH_HOSTNAME', SSH_HOSTNAME)
+    print('SSH_PORT', SSH_PORT)
+    print('SSH_PRIVATE_KEY_PATH', SSH_PRIVATE_KEY_PATH)
+    print('SSH_PRIVATE_KEY_STRING', SSH_PRIVATE_KEY_STRING)
 
 
 class job_information_manager():
@@ -23,27 +65,13 @@ class job_information_manager():
         Create a manager object, which is populated with ssh information from
         instance/config.py and job information passed via http post in the api.
         """
-        # Gathering the needed info from our secrets file. If the info is not
-        # there, populate the instance variables with dummy data.
-        secrets = [
-            'SSH_USR',
-            'SSH_HOSTNAME',
-            'SSH_PORT',
-            'SIM_ROOT',
-            'PRIVATE_KEY_PATH']
 
-        if all(x in globals() for x in secrets):
-            self.username = SSH_USR
-            self.hostname = SSH_HOSTNAME
-            self.port = SSH_PORT
-            self.simulation_root = SIM_ROOT
-            self.private_key_path = PRIVATE_KEY_PATH
-        else:
-            self.username = 'test_user'
-            self.hostname = 'test_host'
-            self.port = 22
-            self.simulation_root = '/home/test_user'
-            self.private_key_path = None
+        self.username = SSH_USR
+        self.hostname = SSH_HOSTNAME
+        self.port = SSH_PORT
+        self.simulation_root = SIM_ROOT
+        self.private_key_path = SSH_PRIVATE_KEY_PATH
+        self.private_key_string = SSH_PRIVATE_KEY_STRING
 
         self.job = job
         self.jobs = job_repository
@@ -125,7 +153,9 @@ class job_information_manager():
         try:
             connection = ssh(
                 self.hostname, self.username, self.port,
-                private_key_path=self.private_key_path, debug=True)
+                private_key_path=self.private_key_path,
+                private_key_string=self.private_key_string,
+                debug=True)
             return connection
         except Exception:
             # If connection cannot be made, raise a ServiceUnavailble
