@@ -39,7 +39,7 @@ The middleware can be hosted locally on `localhost` for testing via the `middlew
 ./run_test.sh
 ```
 
-Similarly, the production config file checked into source control can be tested using `./run_production.sh`. However, note that the same `instance/config.py` will be used in all cases, so it will nbot be a true test of production
+Similarly, the production config file checked into source control can be tested using `./run_production.sh`. However, note that the same `instance/config.py` will be used in all cases, so it will nbot be a true test of production 
 
 
 ## Azure deployment
