@@ -5,10 +5,9 @@ from middleware.job.schema import Template
 from middleware.ssh import ssh
 import re
 import json
-
+from instance.config import *
 from werkzeug.exceptions import ServiceUnavailable
 
-from instance.config import *
 
 # precedence for secrets variables is:
 # 1. Via environment varables
