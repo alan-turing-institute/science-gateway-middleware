@@ -3,11 +3,11 @@
 [![Build Status](https://travis-ci.org/alan-turing-institute/science-gateway-middleware.svg?branch=master)](https://travis-ci.org/alan-turing-institute/science-gateway-middleware)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/alan-turing-institute/science-gateway-middleware?branch=master)](https://ci.appveyor.com/api/projects/status/github/alan-turing-institute/science-gateway-middleware)
 
-## Overview 
+## Overview
 
 Currently this is a skeleton app that is designed to take values via `HTTP POST`, build a bash command to multiply them together and run that command via ssh on a remote server.
 
-## Local deployment
+## Local deployment 
 
 This code is tested on `python 3.4` and all dependencies can be installed via `pip`:
 
@@ -39,7 +39,7 @@ The middleware can be hosted locally on `localhost` for testing via the `middlew
 ./run_test.sh
 ```
 
-Similarly, the production config file checked into source control can be tested using `./run_production.sh`. However, note that the same `instance/config.py` will be used in all cases, so it will nbot be a true test of production 
+Similarly, the production config file checked into source control can be tested using `./run_production.sh`. However, note that the same `instance/config.py` will be used in all cases, so it will nbot be a true test of production
 
 
 ## Azure deployment
