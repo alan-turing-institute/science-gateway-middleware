@@ -8,7 +8,6 @@ import json
 from instance.config import *
 from werkzeug.exceptions import ServiceUnavailable
 
-
 # precedence for secrets variables is:
 # 1. Via environment varables
 # 2. Via instance/config.py
@@ -296,7 +295,6 @@ class job_information_manager():
                     self.jobs.update(self.job)
             if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
-                out = json.loads(out)
                 # guard against empty string (for queued jobs)
                 if out:
                     out = json.loads(out)

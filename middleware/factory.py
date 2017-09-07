@@ -7,7 +7,7 @@ from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
                                 DataApi, CancelApi, CaseApi, CasesApi,
                                 ThumbnailApi)
 from middleware.database import db, ma
-from middleware.job.schema import CaseSchema
+from middleware.job.schema import CaseSchema, JobSchema
 import json
 
 
@@ -19,6 +19,12 @@ def json_to_case_list(json_filename):
             case = CaseSchema().make_case(case_json)
             case_list.append(case)
     return case_list
+
+
+def file_to_job_json(json_filename):
+    with open(json_filename) as data_file:
+        data = json.load(data_file)
+    return data
 
 
 def create_app(config_name,
@@ -99,12 +105,23 @@ def create_app(config_name,
     app._case_repository = case_repository
     app._job_repository = job_repository
 
-    if app.config['LOAD_CASES']:
+    if app.config['LOAD_BLUE_CASES']:
         cases_json_filename = './resources/cases/blue_cases.json'
         case_list = json_to_case_list(cases_json_filename)
+
+        pco_job_json_filename = \
+            './resources/prerun_product_changeover/job.json'
+        pco_job_json = file_to_job_json(pco_job_json_filename)
+        pco_job = JobSchema().make_job(pco_job_json)
+
         with app.app_context():
+            # add cases
             for case in case_list:
                 app._case_repository.create(case)
+
+            # add job
+            app._job_repository.create(pco_job)
+
     elif app.config['LOAD_DEVELOPMENT_CASES']:
         cases_json_filename = './resources/cases/development_cases.json'
         case_list = json_to_case_list(cases_json_filename)

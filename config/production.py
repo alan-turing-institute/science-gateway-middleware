@@ -13,5 +13,5 @@ SQLALCHEMY_DATABASE_URI = 'sqlite://'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Load cases from resources json file
-LOAD_CASES = True
+LOAD_BLUE_CASES = True
 LOAD_DEVELOPMENT_CASES = False

@@ -33,13 +33,9 @@ class ssh():
             private_key_string_ = StringIO(private_key_string)
             pkey = paramiko.RSAKey.from_private_key(private_key_string_)
             private_key_string_.close()
-            print("FROM KEY STRING")
-            print(type(pkey))
         elif private_key_path:  # load from file
             look_for_keys = False
             pkey = paramiko.RSAKey.from_private_key_file(private_key_path)
-            print("FROM KEY PATH")
-            print(type(pkey))
 
         self.client.connect(
             hostname,
