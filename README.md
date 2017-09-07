@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/alan-turing-institute/science-gateway-middleware.svg?branch=master)](https://travis-ci.org/alan-turing-institute/science-gateway-middleware)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/alan-turing-institute/science-gateway-middleware?branch=master)](https://ci.appveyor.com/api/projects/status/github/alan-turing-institute/science-gateway-middleware)
 
-## Overview
+## Overview 
 
 Currently this is a skeleton app that is designed to take values via `HTTP POST`, build a bash command to multiply them together and run that command via ssh on a remote server.
 
