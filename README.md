@@ -64,7 +64,7 @@ az group create --name $APP_NAME --location westeurope
 az appservice plan create --name $APP_NAME --resource-group $APP_NAME --sku S1  # use S1 or higher for access to development slots
 az webapp create --name $APP_NAME --resource-group $APP_NAME --plan $APP_NAME
 az webapp config set --python-version 3.4 --name $APP_NAME --resource-group $APP_NAME # set python version
-az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_FILE=../config/production.py # set flask environment variables
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_NAME=production
 ```
 
 Configure web app environment variables.
