@@ -26,7 +26,7 @@ if 'SSH_PRIVATE_KEY_PATH' not in locals():
 if 'SSH_PRIVATE_KEY_STRING' not in locals():
     SSH_PRIVATE_KEY_STRING = None
 if 'SIM_ROOT' not in locals():
-    SIM_ROOT = '/work/vm-admin/Blue'
+    SIM_ROOT = '/home/test_user'
 
 # Note, os.environ.get() falls back to second argument (instead of None)
 SSH_USR = os.environ.get('SSH_USR', SSH_USR)

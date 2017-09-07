@@ -68,13 +68,14 @@ def abstract_getting_secrets():
     # This block allows us to test against local secrets or the
     # defaults generated when running our CI tests.
     secrets = [
-        'SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT', 'SIM_ROOT', 'PRIVATE_KEY_PATH']
+        'SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT',
+        'SIM_ROOT', 'SSH_PRIVATE_KEY_PATH']
     if all(x in globals() for x in secrets):
         username = SSH_USR
         hostname = SSH_HOSTNAME
         port = SSH_PORT
         simulation_root = SIM_ROOT
-        private_key_path = PRIVATE_KEY_PATH
+        private_key_path = SSH_PRIVATE_KEY_PATH
     else:
         username = 'test_user'
         hostname = 'test_host'

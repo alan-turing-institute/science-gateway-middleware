@@ -23,8 +23,8 @@ PASSWORD = "<a password>"
 SSH_USR = "<username to connect to remote server>"
 SSH_HOSTNAME = "<ip address of server to ssh into>"
 SSH_PORT = <optional port to connect via, defaults to 22>
-# PRIVATE_KEY_PATH = None
-PRIVATE_KEY_PATH = "keys/development"  # where development is a private RSA key
+# SSH_PRIVATE_KEY_PATH = None
+SSH_PRIVATE_KEY_PATH = "keys/development"  # where development is a private RSA key
 
 # SQLALCHEMY_DATABASE_URI = 'sqlite://'
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
