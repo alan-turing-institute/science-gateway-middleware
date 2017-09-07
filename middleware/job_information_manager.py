@@ -34,8 +34,17 @@ SSH_HOSTNAME = os.environ.get('SSH_HOSTNAME', SSH_HOSTNAME)
 SSH_PORT = os.environ.get('SSH_PORT', SSH_PORT)
 SSH_PRIVATE_KEY_PATH = os.environ.get(
     'SSH_PRIVATE_KEY_PATH', SSH_PRIVATE_KEY_PATH)
+
+# an SSH_PRIVATE_KEY_STRING environment variable
+# is a multi-line string
+# here, we replace the raw r'\n' placeholders
+# with line breaks "\n"
 SSH_PRIVATE_KEY_STRING = os.environ.get(
     'SSH_PRIVATE_KEY_STRING', SSH_PRIVATE_KEY_STRING)
+
+if isinstance(SSH_PRIVATE_KEY_STRING, str):
+    SSH_PRIVATE_KEY_STRING = SSH_PRIVATE_KEY_STRING.replace(r'\n', "\n")
+
 SIM_ROOT = os.environ.get(
     'SIM_ROOT', SIM_ROOT)
 

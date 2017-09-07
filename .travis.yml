@@ -38,6 +38,11 @@ after_success:
 before_deploy:
 - echo 'start deploying!'
 
+# Note, we currently share a single .travis.yml file amongst all branches
+# Travis will raise the warning below, for all branches other than the current branch that
+# is being tested. This warning can be safely ignored.
+# "Skipping a deployment with the azure_web_apps provider because this branch is not permitted"
+
 deploy:
   - provider: azure_web_apps
     verbose: true
