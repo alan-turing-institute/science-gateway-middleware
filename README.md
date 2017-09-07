@@ -57,7 +57,7 @@ az login
 az webapp deployment user set --user-name <username> --password <password>
 ```
 
-Deploy the web app:
+Create the Azure web app:
 
 ```shell
 az group create --name $APP_NAME --location westeurope
@@ -67,19 +67,50 @@ az webapp config set --python-version 3.4 --name $APP_NAME --resource-group $APP
 az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_FILE=../config/production.py # set flask environment variables
 ```
 
-Push the `master` branch of the middleware repository to Azure:
+Configure web app environment variables.
 
 ```shell
-AZURE_REMOTE=$(az webapp deployment source config-local-git --name $APP_NAME --resource-group $APP_NAME --query url --output tsv) # fetch the remote uri for the app git repository
-git remote add azure $AZURE_REMOTE
-git push azure master
+APP_NAME=Science-Gateway-Middleware
+APP_SLOT=dev
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_USR=<ssh-user>
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_HOSTNAME=<ssh-hostname>
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_PORT=22
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SIM_ROOT=<sim-root>
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_PRIVATE_KEY_STRING=<private-key-string>
 ```
 
-Configure any un-committed files using ftp. The ftp address is available via `App Service > Properties` in Azure portal. An example ftp credentials are:
+The `develop` branch will deploy to a development "slot" on Azure via the following branch-specific `.travis.yml`settings:
+
+```yaml
+deploy:
+  - provider: azure_web_apps
+    verbose: true
+    skip_cleanup: false
+    on: develop
+    slot: science-gateway-middleware-dev
+```
+
+The `staging` branch will deploy to a staging "slot" on Azure via the following branch-specific `.travis.yml`settings:
+
+```yaml
+deploy:
+  - provider: azure_web_apps
+    verbose: true
+    skip_cleanup: false
+    on: staging
+    slot: science-gateway-middleware-staging
+```
+
+Any un-committed files can be added using using ftp. The ftp address is available via `App Service > Properties` in Azure portal. An example ftp credentials are:
 
 ```
-server address: ftps://waws-prod-am2-XXX.ftp.azurewebsites.windows.net
-user: Science-Gateway-Middleware\username
+server address: ftps://<address-details>.ftp.azurewebsites.windows.net
+user: Science-Gateway-Middleware\<username>
 ```
 
 ## Testing
