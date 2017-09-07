@@ -95,8 +95,9 @@ class job_information_manager():
 
         # TODO case_label cannot contain spaces
         # (test for this in CaseSchema.make_case())
-        self.case_label = self.job.case.label
-        self.job_working_directory_name = "{}-{}".format(self.case_label,
+        self.case_dir_label = self.job.case.label.replace(" ", "_")
+
+        self.job_working_directory_name = "{}-{}".format(self.case_dir_label,
                                                          self.job_id)
         self.job_working_directory_path = posixpath.join(
             self.simulation_root,
