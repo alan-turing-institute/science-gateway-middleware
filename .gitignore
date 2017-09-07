@@ -1,6 +1,10 @@
 # temporary used for pytest and patching
 tmp/
 
+# ignore database files
+*.db
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

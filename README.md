@@ -106,6 +106,24 @@ deploy:
     slot: science-gateway-middleware-staging
 ```
 
+Manual deployment to Azure is possible via `dpl`:
+
+```
+sudo gem install dpl
+```
+
+For example, run the following to deploy to the Azure dev slot:
+
+```
+export AZURE_WA_PASSWORD=<password>
+export AZURE_WA_USERNAME=<user-name>
+export AZURE_WA_SITE=science-gateway-middleware
+export AZURE_WA_SLOT=science-gateway-middleware-dev
+dpl --provider=AzureWebApps --verbose
+```
+
+
+
 Any un-committed files can be added using using ftp. The ftp address is available via `App Service > Properties` in Azure portal. An example ftp credentials are:
 
 ```
