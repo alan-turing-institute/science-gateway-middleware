@@ -14,26 +14,38 @@ def csv_to_data_json(fname, data_required=None):
 
         columns_to_process = headers  # default to processing all csv columns
         column_labels = headers
+        column_tags = headers
+        column_units = headers
         if data_required:
             columns_to_process = []
             column_labels = []
+            column_tags = []
+            column_units = []
             for object_ in data_required:
                 columns_to_process.append(object_['csv_variable'])
                 column_labels.append(object_['label'])
+                column_tags.append(object_['tag'])
+                column_units.append(object_['units'])
+
+        # output = {
+        #     "keys": columns_to_process,
+        #     "labels": column_labels,
+        # }
 
         output = {
-            "keys": columns_to_process,
-            "labels": column_labels
+            "keys": column_tags,
+            "labels": column_labels,
+            "units": column_units
         }
 
         # prepare data lists
-        for name in columns_to_process:
+        for name in column_tags:
             output[name] = []
 
         # populate data lists
         for line in d_reader:
-            for name in columns_to_process:
-                output[name].append(float(line[str(name)]))
+            for i, name in enumerate(columns_to_process):
+                output[column_tags[i]].append(float(line[str(name)]))
 
         return {"data": output}
 
@@ -42,11 +54,13 @@ data_required = [
     {
         "csv_variable": "Time",
         "label": "Time",
+        "tag": "time",
         "units": "s"
     },
     {
         "csv_variable": "ptx(EAST) ",
         "label": "Interface position",
+        "tag": "interfacePosition",
         "units": "m"
     }
 ]
