@@ -105,22 +105,25 @@ def create_app(config_name,
     app._case_repository = case_repository
     app._job_repository = job_repository
 
+    prerun_job_list = [
+        './resources/prerun_product_changeover/job.json',
+        './resources/prerun_stirred_tank/job.json'
+    ]
+
     if app.config['LOAD_BLUE_CASES']:
         cases_json_filename = './resources/cases/blue_cases.json'
         case_list = json_to_case_list(cases_json_filename)
-
-        pco_job_json_filename = \
-            './resources/prerun_product_changeover/job.json'
-        pco_job_json = file_to_job_json(pco_job_json_filename)
-        pco_job = JobSchema().make_job(pco_job_json)
 
         with app.app_context():
             # add cases
             for case in case_list:
                 app._case_repository.create(case)
 
-            # add job
-            app._job_repository.create(pco_job)
+            # add jobs
+            for demo_json_filename in prerun_job_list:
+                demo_job_json = file_to_job_json(demo_json_filename)
+                demo_job = JobSchema().make_job(demo_job_json)
+                app._job_repository.create(demo_job)
 
     elif app.config['LOAD_DEVELOPMENT_CASES']:
         cases_json_filename = './resources/cases/development_cases.json'

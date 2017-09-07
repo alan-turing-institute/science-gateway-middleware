@@ -1,7 +1,7 @@
 [{
     "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
-    "label": "Stirred_Tank",
+    "label": "Stirred Tank",
     "thumbnail": "http://science-gateway-middleware-dev.azurewebsites.net/assets/thumbnails/stirred_tank.png",
     "description": "Here we describe the actual Stirred Tank case.",
     "job": {
@@ -98,7 +98,7 @@
   {
     "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
-    "label": "Product_Changeover",
+    "label": "Product Changeover",
     "thumbnail": "http://science-gateway-middleware-dev.azurewebsites.net/assets/thumbnails/product_changeover.png",
     "description": "Here we describe the actual Product Changeover case.",
     "job": {
