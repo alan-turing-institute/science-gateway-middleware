@@ -6,7 +6,7 @@ DEBUG = False
 # Use in-memory SQLlite DB for now
 # (will need to update to Azure specific sql/mysql URI
 # once Azure webapp + SQL integration is implemented)
-SQLALCHEMY_DATABASE_URI = 'sqlite://'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///data/jobs.db'
 
 # Disable track modifications as we are not using
 # the Flask-SQLAlchemy event system
