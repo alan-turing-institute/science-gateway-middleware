@@ -1,8 +1,8 @@
 [{
     "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
-    "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
+    "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
     "label": "Stirred_Tank",
-    "thumbnail": "http://localhost:5000/assets/thumbnails/stirred_tank.png",
+    "thumbnail": "http://science-gateway-middleware-dev/assets/thumbnails/stirred_tank.png",
     "description": "Here we describe the actual Stirred Tank case.",
     "job": {
       "families": [{
@@ -75,17 +75,17 @@
       ],
       "inputs": [{
         "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
+        "source_uri": "https://science-gateway-middleware-dev.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
       }],
       "scripts": [{
         "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
+        "source_uri": "https://science-gateway-middleware-dev.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
         "action": "RUN"
       }],
       "user": null,
       "templates": [{
         "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
+        "source_uri": "https://science-gateway-middleware-dev.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
       }],
       "name": null,
       "description": null,
@@ -97,9 +97,9 @@
   },
   {
     "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
-    "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+    "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
     "label": "Product_Changeover",
-    "thumbnail": "http://localhost:5000/assets/thumbnails/product_changeover.png",
+    "thumbnail": "http://science-gateway-middleware-dev/assets/thumbnails/product_changeover.png",
     "description": "Here we describe the actual Product Changeover case.",
     "job": {
       "families": [{
@@ -173,17 +173,17 @@
       ],
       "inputs": [{
         "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
+        "source_uri": "https://science-gateway-middleware-dev.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
       }],
       "scripts": [{
         "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
+        "source_uri": "https://science-gateway-middleware-dev.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
         "action": "RUN"
       }],
       "user": null,
       "templates": [{
         "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
+        "source_uri": "https://science-gateway-middleware-dev.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
       }],
       "name": null,
       "description": null,
