@@ -63,18 +63,18 @@
   },
   "uri": "http://science-gateway-middleware-dev/api/jobs/96ef005e-e4a6-4cb7-a39a-ca269cca9430",
   "families": [{
-      "label": "Viscosity information",
+      "label": "Viscosities",
       "name": "viscosity_properties",
-      "collapse": true,
+      "collapse": false,
       "parameters": [{
           "name": "viscosity_phase_1",
           "type": "slider",
           "label": "Viscosity: Phase 1",
           "units": "Pa s",
           "type_value": "float",
-          "min_value": "10",
-          "max_value": "20",
-          "value": "13",
+          "min_value": "0.00001",
+          "max_value": "0.01",
+          "value": "0.00001825",
           "options": [],
           "help": "",
           "enabled": true
@@ -85,47 +85,61 @@
           "label": "Viscosity: Phase 2",
           "units": "Pa s",
           "type_value": "float",
-          "min_value": "10",
-          "max_value": "20",
-          "value": "17",
-          "options": ["17"],
+          "min_value": "0.001",
+          "max_value": "0.01",
+          "value": "0.001",
+          "options": [],
           "help": "",
           "enabled": true
         }
       ]
     },
     {
-      "label": "Surface tension information",
+      "label": "Densities",
+      "name": "density_properties",
+      "collapse": false,
+      "parameters": [{
+          "name": "density_phase_1",
+          "type": "slider",
+          "label": "Density: Phase 1",
+          "units": "kg/m3",
+          "type_value": "float",
+          "min_value": "1",
+          "max_value": "100",
+          "value": "1.205",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "density_phase_2",
+          "type": "slider",
+          "label": "Density: Phase 2",
+          "units": "kg/m3",
+          "type_value": "float",
+          "min_value": "100",
+          "max_value": "3000",
+          "value": "1000",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "label": "Surface tension",
       "name": "surface_tension_properties",
       "collapse": false,
       "parameters": [{
         "name": "surface_tension",
-        "type": "text",
+        "type": "slider",
         "label": "Surface Tension",
         "units": "mN/m",
         "type_value": "float",
-        "min_value": "1",
+        "min_value": "0",
         "max_value": "100",
         "value": "72.5",
         "options": [],
-        "help": "",
-        "enabled": true
-      }]
-    },
-    {
-      "label": "Geometry information",
-      "name": "geometry_properties",
-      "collapse": false,
-      "parameters": [{
-        "name": "pipe_radius",
-        "type": "vtk",
-        "label": "Pipe Radius",
-        "units": "m",
-        "type_value": "float",
-        "min_value": "0.01",
-        "max_value": "0.10",
-        "options": ["0.0725"],
-        "value": "0.0725",
         "help": "",
         "enabled": true
       }]
@@ -140,7 +154,7 @@
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/aeration.f90",
+      "source_uri": "./resources/prerun_stirred_tank/input.f90",
       "destination_path": "."
     }
   ],

@@ -107,7 +107,8 @@ def create_app(config_name,
 
     prerun_job_list = [
         './resources/prerun_product_changeover/job.json',
-        './resources/prerun_stirred_tank/job.json'
+        './resources/prerun_stirred_tank/job.json',
+        './resources/prerun_stratified_flow/job.json'
     ]
 
     if app.config['LOAD_BLUE_CASES']:

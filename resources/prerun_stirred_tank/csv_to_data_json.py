@@ -58,9 +58,33 @@ data_required = [
         "units": "s"
     },
     {
-        "csv_variable": "ptx(EAST) ",
-        "label": "Interface position",
-        "tag": "interfacePosition",
+        "csv_variable": "ptz(SOUTH)",
+        "label": "Interface base",
+        "tag": "interfaceBase",
+        "units": "m"
+    },
+    {
+        "csv_variable": "dt",
+        "label": "Timestep magnitude",
+        "tag": "dt",
+        "units": "s"
+    },
+    {
+        "csv_variable": "MAX_VELOCITY_MAGNITUDE",
+        "label": "Maximum velocity magnitude",
+        "tag": "maxVelocityMagnitude",
+        "units": "m/s"
+    },
+    {
+        "csv_variable": "Kinetic Energy",
+        "label": "Kinetic energy",
+        "tag": "kineticEnergy",
+        "units": "J"
+    },
+    {
+        "csv_variable": "INTERFACE_SURFACE_AREA",
+        "label": "Interfacial surface area",
+        "tag": "interfaceSurfaceArea",
         "units": "m"
     }
 ]
