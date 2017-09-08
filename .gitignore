@@ -1,5 +1,6 @@
 # temporary used for pytest and patching
 tmp/
+raw.csv
 
 # ignore database files
 *.db
