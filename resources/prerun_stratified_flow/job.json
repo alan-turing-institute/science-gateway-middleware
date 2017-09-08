@@ -1,8 +1,8 @@
 {
   "id": "19fcb331-6759-4619-bc75-bc7b0588b72f",
-  "name": "Stratified Flow test",
+  "name": "Prerun stratified flow",
   "user": "lrmason",
-  "description": "Testing Stratified Flow",
+  "description": "A prerun stratified flow simulation",
   "status": "Complete",
   "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
   "start_datetime": "2017-08-21T09:56:01.621575+00:00",

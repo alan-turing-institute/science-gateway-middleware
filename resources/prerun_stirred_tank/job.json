@@ -1,8 +1,8 @@
 {
   "id": "96ef005e-e4a6-4cb7-a39a-ca269cca9430",
-  "name": "Test preload stirred tank",
+  "name": "Prerun stirred tank",
   "user": "lrmason",
-  "description": "Describe preload stirred tank",
+  "description": "A prerun stirred tank simulation",
   "status": "Complete",
   "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
   "start_datetime": "2017-08-21T09:56:01.621575+00:00",

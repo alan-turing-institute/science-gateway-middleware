@@ -69,6 +69,7 @@
               "type_value": "float",
               "min_value": "0.00001",
               "max_value": "0.01",
+              "step": "0.0001",
               "value": "0.00001825",
               "options": [],
               "help": "",
@@ -82,6 +83,7 @@
               "type_value": "float",
               "min_value": "0.001",
               "max_value": "0.01",
+              "step": "0.0001",
               "value": "0.001",
               "options": [],
               "help": "",
@@ -101,6 +103,7 @@
               "type_value": "float",
               "min_value": "1",
               "max_value": "100",
+              "step": "1",
               "value": "1.205",
               "options": [],
               "help": "",
@@ -114,6 +117,7 @@
               "type_value": "float",
               "min_value": "100",
               "max_value": "3000",
+              "step": "10",
               "value": "1000",
               "options": [],
               "help": "",
@@ -229,6 +233,7 @@
               "type_value": "float",
               "min_value": "0.001",
               "max_value": "0.01",
+              "step": "0.0001",
               "value": "0.001",
               "options": [],
               "help": "",
@@ -242,6 +247,7 @@
               "type_value": "float",
               "min_value": "0.1",
               "max_value": "10",
+              "step": "0.1",
               "value": "1.0",
               "options": [],
               "help": "",
@@ -261,6 +267,7 @@
               "type_value": "float",
               "min_value": "1",
               "max_value": "100",
+              "step": "1",
               "value": "1",
               "options": [],
               "help": "",
@@ -274,6 +281,7 @@
               "type_value": "float",
               "min_value": "100",
               "max_value": "1000",
+              "step": "10",
               "value": "1000",
               "options": [],
               "help": "",
@@ -293,6 +301,7 @@
             "type_value": "float",
             "min_value": "0",
             "max_value": "100",
+            "step": "1",
             "value": "0",
             "options": [],
             "help": "",
@@ -311,6 +320,7 @@
             "type_value": "float",
             "min_value": "0.01",
             "max_value": "0.10",
+            "step": "0.01",
             "options": ["0.0725"],
             "value": "0.0725",
             "help": "",
@@ -350,47 +360,47 @@
       "start_datetime": null,
       "end_datetime": null,
       "scripts": [{
-          "source_uri": "./resources/prerun_product_changeover/pbs.sh",
+          "source_uri": "./resources/prerun_stratified_flow/pbs.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/data.sh",
+          "source_uri": "./resources/prerun_stratified_flow/data.sh",
           "action": "DATA",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/progress.sh",
+          "source_uri": "./resources/prerun_stratified_flow/progress.sh",
           "action": "PROGRESS",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/run.sh",
+          "source_uri": "./resources/prerun_stratified_flow/run.sh",
           "action": "RUN",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/get_exec_host.sh",
+          "source_uri": "./resources/prerun_stratified_flow/get_exec_host.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/setup.sh",
+          "source_uri": "./resources/prerun_stratified_flow/setup.sh",
           "action": "SETUP",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/cancel.sh",
+          "source_uri": "./resources/prerun_stratified_flow/cancel.sh",
           "action": "CANCEL",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/csv_to_data_json.py",
+          "source_uri": "./resources/prerun_stratified_flow/csv_to_data_json.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/csv_to_progress_json.py",
+          "source_uri": "./resources/prerun_stratified_flow/csv_to_progress_json.py",
           "action": null,
           "destination_path": "."
         }
@@ -407,6 +417,7 @@
               "type_value": "float",
               "min_value": "0",
               "max_value": "10",
+              "step": "0.1",
               "value": "6.7",
               "options": [],
               "help": "",
@@ -420,6 +431,7 @@
               "type_value": "float",
               "min_value": "0",
               "max_value": "10",
+              "step": "0.1",
               "value": "6.7",
               "options": [],
               "help": "",
@@ -433,6 +445,7 @@
               "type_value": "float",
               "min_value": "0",
               "max_value": "0.1",
+              "step": "0.001",
               "value": "0.0315",
               "options": [],
               "help": "",
@@ -452,6 +465,7 @@
               "type_value": "float",
               "min_value": "0.00008",
               "max_value": "0.01",
+              "step": "0.0001",
               "value": "0.00001825",
               "options": [],
               "help": "",
@@ -465,6 +479,7 @@
               "type_value": "float",
               "min_value": "0.00001",
               "max_value": "0.01",
+              "step": "0.0001",
               "value": "0.0000185",
               "options": [],
               "help": "",
@@ -484,6 +499,7 @@
               "type_value": "float",
               "min_value": "1",
               "max_value": "1000",
+              "step": "10",
               "value": "997.561",
               "options": [],
               "help": "",
@@ -497,6 +513,7 @@
               "type_value": "float",
               "min_value": "1",
               "max_value": "10",
+              "step": "0.1",
               "value": "1.18415",
               "options": [],
               "help": "",
@@ -516,6 +533,7 @@
             "type_value": "float",
             "min_value": "0",
             "max_value": "100",
+            "step": "1",
             "value": "72.5",
             "options": [],
             "help": "",
@@ -524,15 +542,15 @@
         }
       ],
       "templates": [{
-          "source_uri": "./resources/prerun_product_changeover/Blue.nml",
+          "source_uri": "./resources/prerun_stratified_flow/Blue.nml",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/Makefile",
+          "source_uri": "./resources/prerun_stratified_flow/Makefile",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/prerun_product_changeover/input.f90",
+          "source_uri": "./resources/prerun_stratified_flow/input.f90",
           "destination_path": "."
         }
       ],

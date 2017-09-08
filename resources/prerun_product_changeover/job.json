@@ -1,8 +1,8 @@
 {
   "id": "3957553c-486a-46ed-87c2-3d67f58e7cbf",
-  "name": "Test preload changeover",
+  "name": "Prerun product changeover",
   "user": "lrmason",
-  "description": "Describe preload changeover",
+  "description": "A prerun product changeover simulation",
   "status": "Complete",
   "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
   "start_datetime": "2017-08-21T09:56:01.621575+00:00",

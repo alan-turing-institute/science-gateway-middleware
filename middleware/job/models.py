@@ -274,6 +274,7 @@ class ParameterTemplate(db.Model):
     label = db.Column(db.String)
     max_value = db.Column(db.String)
     min_value = db.Column(db.String)
+    step = db.Column(db.String)
     name = db.Column(db.String)
     type = db.Column(db.String)
     type_value = db.Column(db.String)
@@ -288,6 +289,7 @@ class ParameterTemplate(db.Model):
                 self.label == other.label and
                 self.max_value == other.max_value and
                 self.min_value == other.min_value and
+                self.step == other.step and
                 self.name == other.name and
                 self.type == other.type and
                 self.type_value == other.type_value and
@@ -317,6 +319,7 @@ class ParameterTemplate(db.Model):
             self.label,
             self.max_value,
             self.min_value,
+            self.step,
             self.name,
             self.type,
             self.type_value,
@@ -333,6 +336,7 @@ class Parameter(db.Model):
     label = db.Column(db.String)
     max_value = db.Column(db.String)
     min_value = db.Column(db.String)
+    step = db.Column(db.String)
     name = db.Column(db.String)
     type = db.Column(db.String)
     type_value = db.Column(db.String)
@@ -350,6 +354,7 @@ class Parameter(db.Model):
                 self.label == other.label and
                 self.max_value == other.max_value and
                 self.min_value == other.min_value and
+                self.step == other.step and
                 self.name == other.name and
                 self.type == other.type and
                 self.type_value == other.type_value and
@@ -379,6 +384,7 @@ class Parameter(db.Model):
             self.label,
             self.max_value,
             self.min_value,
+            self.step,
             self.name,
             self.type,
             self.type_value,

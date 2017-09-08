@@ -437,6 +437,7 @@ class TestJobApi(object):
         j1f1p1_changed_param = {
             "help": "j1f1p1help",
             "label": "j1f1p1label",
+            "step": "j1f1p1step",
             "min_value": "j1f1p1min_value",
             "max_value": "j1f1p1max_value",
             "name": "j1f1p1name",
@@ -449,6 +450,7 @@ class TestJobApi(object):
         j1f1p3_added_param = {
             "help": "j1f1p3help",
             "label": "j1f1p3label",
+            "step": "j1f1p3step",
             "min_value": "j1f1p3min_value",
             "max_value": "j1f1p3max_value",
             "name": "j1f1p3name",
@@ -493,6 +495,8 @@ class TestJobApi(object):
         job_expected.id = job_original.id
         job_expected.families[0].parameters[0].help = "j1f1p1help"
         job_expected.families[0].parameters[0].label = "j1f1p1label"
+        job_expected.families[0].parameters[0].step = \
+            "j1f1p1step"
         job_expected.families[0].parameters[0].min_value = \
             "j1f1p1min_value"
         job_expected.families[0].parameters[0].max_value = \
@@ -506,6 +510,8 @@ class TestJobApi(object):
 
         job_expected.families[0].parameters[1].help = "j1f1p3help"
         job_expected.families[0].parameters[1].label = "j1f1p3label"
+        job_expected.families[0].parameters[1].step = \
+            "j1f1p3step"
         job_expected.families[0].parameters[1].min_value = \
             "j1f1p3min_value"
         job_expected.families[0].parameters[1].max_value = \
