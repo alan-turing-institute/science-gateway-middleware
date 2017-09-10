@@ -58,6 +58,40 @@
         }
       ],
       "families": [{
+          "label": "Tank",
+          "name": "tank_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "tank_radius",
+              "type": "slider",
+              "label": "Radius",
+              "units": "m",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "9",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "tank_height",
+              "type": "slider",
+              "label": "Height",
+              "units": "m",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "4",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
           "label": "Viscosities",
           "name": "viscosity_properties",
           "collapse": false,

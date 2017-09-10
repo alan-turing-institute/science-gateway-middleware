@@ -58,7 +58,7 @@
     "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
     "uri": null,
     "description": "Here we describe the actual Product Changeover case.",
-    "label": "Product_Changeover",
+    "label": "Product Changeover",
     "thumbnail": "http://science-gateway-middleware-dev.azurewebstes.net/assets/thumbnails/product_changeover.png"
   },
   "uri": "http://science-gateway-middleware-dev/api/jobs/3957553c-486a-46ed-87c2-3d67f58e7cbf",
