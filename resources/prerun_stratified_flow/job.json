@@ -204,5 +204,8 @@
     }
   ],
   "inputs": [],
-  "outputs": []
+  "outputs": [{
+    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/stratified_flow.mp4",
+    "type": "video"
+  }]
 }

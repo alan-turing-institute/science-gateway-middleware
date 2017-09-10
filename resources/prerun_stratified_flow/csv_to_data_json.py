@@ -68,6 +68,12 @@ data_required = [
         "label": "Maximum velocity divergence",
         "tag": "maximumVelocityDivergence",
         "units": "m/s2"
+    },
+    {
+        "csv_variable": "1_EAST_MASS_FLUX",
+        "label": "Outlet mass flux (Liquid)",
+        "tag": "outletMassFluxLiquid",
+        "units": "kg/s"
     }
 ]
 
