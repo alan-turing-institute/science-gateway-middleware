@@ -1,23 +1,110 @@
 [{
     "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
-    "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/d769843b-6f37-4939-96c7-c382c3e74b46",
+    "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/af7fd241-e816-40e5-9a70-49598a452b7b",
     "label": "Stirred Tank",
-    "thumbnail": "http://localhost:5000/assets/thumbnails/stirred_tank.png",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank.png",
     "description": "Here we describe the actual Stirred Tank case.",
     "job": {
+      "name": "New Stirred Tank simulation...",
+      "description": "Describe your problem setup...",
+      "status": null,
+      "creation_datetime": null,
+      "start_datetime": null,
+      "end_datetime": null,
+      "scripts": [{
+          "source_uri": "./resources/prerun_stirred_tank/pbs.sh",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/data.sh",
+          "action": "DATA",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/progress.sh",
+          "action": "PROGRESS",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/Pprerun_stirred_tank/run.sh",
+          "action": "RUN",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/get_exec_host.sh",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/setup.sh",
+          "action": "SETUP",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/cancel.sh",
+          "action": "CANCEL",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/csv_to_data_json.py",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/csv_to_progress_json.py",
+          "action": null,
+          "destination_path": "."
+        }
+      ],
       "families": [{
-          "label": "Viscosity information",
+          "label": "Tank",
+          "name": "tank_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "tank_radius",
+              "type": "slider",
+              "label": "Radius",
+              "units": "m",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "9",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "tank_height",
+              "type": "slider",
+              "label": "Height",
+              "units": "m",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "4",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Viscosities",
           "name": "viscosity_properties",
-          "collapse": true,
+          "collapse": false,
           "parameters": [{
               "name": "viscosity_phase_1",
               "type": "slider",
               "label": "Viscosity: Phase 1",
               "units": "Pa s",
               "type_value": "float",
-              "min_value": "10",
-              "max_value": "20",
-              "value": "13",
+              "min_value": "0.00001",
+              "max_value": "0.01",
+              "step": "0.0001",
+              "value": "0.00001825",
               "options": [],
               "help": "",
               "enabled": true
@@ -28,93 +115,161 @@
               "label": "Viscosity: Phase 2",
               "units": "Pa s",
               "type_value": "float",
-              "min_value": "10",
-              "max_value": "20",
-              "value": "17",
-              "options": ["17"],
-              "help": ""
+              "min_value": "0.001",
+              "max_value": "0.01",
+              "step": "0.0001",
+              "value": "0.001",
+              "options": [],
+              "help": "",
+              "enabled": true
             }
           ]
         },
         {
-          "label": "Surface tension information",
+          "label": "Densities",
+          "name": "density_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "density_phase_1",
+              "type": "slider",
+              "label": "Density: Phase 1",
+              "units": "kg/m3",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "100",
+              "step": "1",
+              "value": "1.205",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "density_phase_2",
+              "type": "slider",
+              "label": "Density: Phase 2",
+              "units": "kg/m3",
+              "type_value": "float",
+              "min_value": "100",
+              "max_value": "3000",
+              "step": "10",
+              "value": "1000",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Surface tension",
           "name": "surface_tension_properties",
           "collapse": false,
           "parameters": [{
             "name": "surface_tension",
-            "type": "text",
+            "type": "slider",
             "label": "Surface Tension",
             "units": "mN/m",
             "type_value": "float",
-            "min_value": "1",
+            "min_value": "0",
             "max_value": "100",
             "value": "72.5",
             "options": [],
-            "help": "",
-            "enabled": true
-          }]
-        },
-        {
-          "label": "Stirrer information",
-          "name": "stirrer_properties",
-          "collapse": false,
-          "parameters": [{
-            "name": "stirrer_rate",
-            "type": "slider",
-            "label": "Stirrer rate",
-            "units": "rpm",
-            "type_value": "float",
-            "min_value": "0",
-            "max_value": "100",
-            "options": [],
-            "value": "25",
             "help": "",
             "enabled": true
           }]
         }
       ],
-      "inputs": [{
-        "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
-      }],
-      "scripts": [{
-        "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
-        "action": "RUN"
-      }],
-      "user": null,
       "templates": [{
-        "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
-      }],
-      "name": null,
-      "description": null,
-      "creation_datetime": null,
-      "start_datetime": null,
-      "end_datetime": null,
-      "status": null
+          "source_uri": "./resources/prerun_stirred_tank/Blue.nml",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/Makefile",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stirred_tank/input.f90",
+          "destination_path": "."
+        }
+      ],
+      "inputs": [],
+      "outputs": []
     }
   },
   {
     "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
-    "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/85b8995c-63a9-474f-8fdc-52c7582ec2ac",
+    "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
     "label": "Product Changeover",
-    "thumbnail": "http://localhost:5000/assets/thumbnails/product_changeover.png",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/product_changeover.png",
     "description": "Here we describe the actual Product Changeover case.",
     "job": {
+      "id": null,
+      "user": "lrmason",
+      "name": "New Product Changeover simulation...",
+      "description": "Describe your problem setup...",
+      "status": null,
+      "creation_datetime": null,
+      "start_datetime": null,
+      "end_datetime": null,
+      "scripts": [{
+          "source_uri": "./resources/prerun_product_changeover/pbs.sh",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/data.sh",
+          "action": "DATA",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/progress.sh",
+          "action": "PROGRESS",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/run.sh",
+          "action": "RUN",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/get_exec_host.sh",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/setup.sh",
+          "action": "SETUP",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/cancel.sh",
+          "action": "CANCEL",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/csv_to_data_json.py",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/csv_to_progress_json.py",
+          "action": null,
+          "destination_path": "."
+        }
+      ],
       "families": [{
-          "label": "Viscosity information",
+          "label": "Viscosities",
           "name": "viscosity_properties",
-          "collapse": true,
+          "collapse": false,
           "parameters": [{
               "name": "viscosity_phase_1",
               "type": "slider",
               "label": "Viscosity: Phase 1",
               "units": "Pa s",
               "type_value": "float",
-              "min_value": "10",
-              "max_value": "20",
-              "value": "13",
+              "min_value": "0.001",
+              "max_value": "0.01",
+              "step": "0.0001",
+              "value": "0.001",
               "options": [],
               "help": "",
               "enabled": true
@@ -125,28 +280,64 @@
               "label": "Viscosity: Phase 2",
               "units": "Pa s",
               "type_value": "float",
-              "min_value": "10",
-              "max_value": "20",
-              "value": "17",
-              "options": ["17"],
+              "min_value": "0.1",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "1.0",
+              "options": [],
               "help": "",
               "enabled": true
             }
           ]
         },
         {
-          "label": "Surface tension information",
+          "label": "Densities",
+          "name": "density_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "density_phase_1",
+              "type": "slider",
+              "label": "Density: Phase 1",
+              "units": "kg/m3",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "100",
+              "step": "1",
+              "value": "1",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "density_phase_2",
+              "type": "slider",
+              "label": "Density: Phase 2",
+              "units": "kg/m3",
+              "type_value": "float",
+              "min_value": "100",
+              "max_value": "1000",
+              "step": "10",
+              "value": "1000",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Surface tension",
           "name": "surface_tension_properties",
           "collapse": false,
           "parameters": [{
             "name": "surface_tension",
-            "type": "text",
+            "type": "slider",
             "label": "Surface Tension",
             "units": "mN/m",
             "type_value": "float",
-            "min_value": "1",
+            "min_value": "0",
             "max_value": "100",
-            "value": "72.5",
+            "step": "1",
+            "value": "0",
             "options": [],
             "help": "",
             "enabled": true
@@ -164,6 +355,7 @@
             "type_value": "float",
             "min_value": "0.01",
             "max_value": "0.10",
+            "step": "0.01",
             "options": ["0.0725"],
             "value": "0.0725",
             "help": "",
@@ -171,26 +363,235 @@
           }]
         }
       ],
-      "inputs": [{
-        "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/inputs/mesh_file.stl"
-      }],
-      "scripts": [{
-        "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/scripts/run_job.sh",
-        "action": "RUN"
-      }],
-      "user": null,
       "templates": [{
-        "destination_path": "project/case/",
-        "source_uri": "https://science-gateway-middleware.azurewebstes.net/resources/case/Changeover/templates/Blue.nml"
-      }],
-      "name": null,
-      "description": null,
+          "source_uri": "./resources/prerun_product_changeover/Blue.nml",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/Makefile",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_product_changeover/input.f90",
+          "destination_path": "."
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  },
+  {
+    "id": "50ce1be6-5301-4ff1-95c3-78c83f037b99",
+    "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/50ce1be6-5301-4ff1-95c3-78c83f037b99",
+    "label": "Stratified Flow",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stratified_flow.png",
+    "description": "Here we describe the actual Stratified Flow case.",
+    "job": {
+      "id": null,
+      "user": "lrmason",
+      "name": "New Stratified Flow simulation...",
+      "description": "Describe your problem setup...",
+      "status": null,
       "creation_datetime": null,
       "start_datetime": null,
       "end_datetime": null,
-      "status": null
+      "scripts": [{
+          "source_uri": "./resources/prerun_stratified_flow/pbs.sh",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/data.sh",
+          "action": "DATA",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/progress.sh",
+          "action": "PROGRESS",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/run.sh",
+          "action": "RUN",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/get_exec_host.sh",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/setup.sh",
+          "action": "SETUP",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/cancel.sh",
+          "action": "CANCEL",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/csv_to_data_json.py",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/csv_to_progress_json.py",
+          "action": null,
+          "destination_path": "."
+        }
+      ],
+      "families": [{
+          "label": "Interface settings",
+          "name": "interface_settings",
+          "collapse": false,
+          "parameters": [{
+              "name": "ex_force_phase1",
+              "type": "slider",
+              "label": "External force: Phase 1",
+              "units": "N",
+              "type_value": "float",
+              "min_value": "0",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "6.7",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "ex_force_phase2",
+              "type": "slider",
+              "label": "External force: Phase 2",
+              "units": "N",
+              "type_value": "float",
+              "min_value": "0",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "6.7",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "INT_height",
+              "type": "slider",
+              "label": "Interface height",
+              "units": "m",
+              "type_value": "float",
+              "min_value": "0",
+              "max_value": "0.1",
+              "step": "0.001",
+              "value": "0.0315",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Viscosities",
+          "name": "viscosity_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "viscosity_phase_1",
+              "type": "slider",
+              "label": "Viscosity: Phase 1",
+              "units": "Pa s",
+              "type_value": "float",
+              "min_value": "0.00008",
+              "max_value": "0.01",
+              "step": "0.0001",
+              "value": "0.00001825",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "viscosity_phase_2",
+              "type": "slider",
+              "label": "Viscosity: Phase 2",
+              "units": "Pa s",
+              "type_value": "float",
+              "min_value": "0.00001",
+              "max_value": "0.01",
+              "step": "0.0001",
+              "value": "0.0000185",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Densities",
+          "name": "density_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "density_phase_1",
+              "type": "slider",
+              "label": "Density: Phase 1",
+              "units": "kg/m3",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "1000",
+              "step": "10",
+              "value": "997.561",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "density_phase_2",
+              "type": "slider",
+              "label": "Density: Phase 2",
+              "units": "kg/m3",
+              "type_value": "float",
+              "min_value": "1",
+              "max_value": "10",
+              "step": "0.1",
+              "value": "1.18415",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Surface tension",
+          "name": "surface_tension_properties",
+          "collapse": false,
+          "parameters": [{
+            "name": "surface_tension",
+            "type": "slider",
+            "label": "Surface Tension",
+            "units": "mN/m",
+            "type_value": "float",
+            "min_value": "0",
+            "max_value": "100",
+            "step": "1",
+            "value": "72.5",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }]
+        }
+      ],
+      "templates": [{
+          "source_uri": "./resources/prerun_stratified_flow/Blue.nml",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/Makefile",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/prerun_stratified_flow/input.f90",
+          "destination_path": "."
+        }
+      ],
+      "inputs": [],
+      "outputs": []
     }
   }
 ]

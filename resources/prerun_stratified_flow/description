@@ -1,0 +1,13 @@
+Blue version use: 11.1
+
+-----------------------
+Simulation Description
+-----------------------
+
+This is a LES simulation of stratified air-water flow in a horizontal channel of rectangular cross-section. The channel length, width and height are 2m x 0.2m x 0.1m respectively. Periodic boundary conditions have been imposed in the stream-wise direction. Regular wavy flow pattern is observed. Systematic measurments of the components of the mean velocity are performed to identify secondary flows in the transverse direction.
+
+---------------------------------
+Name of csv variables for charts
+---------------------------------
+Plot 1: Time (column 1) vs Kinetic Energy (column 18)
+Plot 2: Time (column 1) vs Max(div(V)) (column 19)

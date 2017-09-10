@@ -1,6 +1,7 @@
 import paramiko
 import os
 from scp import SCPClient
+from io import StringIO
 
 
 class ssh():
@@ -10,14 +11,10 @@ class ssh():
     """
 
     def __init__(self, hostname, username, port,
-                 private_key_path=None, debug=True):
+                 private_key_path=None, private_key_string=None,
+                 debug=True):
         """
-        Create an SSHClient object, load host keys from the known_hosts file,
-        so this is only posix compliant I think.
-        Setting the missing host keys policy to auto add will do nothing at
-        present, but should update known_hosts in future if we come across a
-        hostname that has never been connected to before. Currently that will
-        cause a failure which is not handled.
+        Load keys from private_key_path and private_key_string
         """
         if debug:
             os.makedirs(os.path.dirname('.logs/ssh.log'), exist_ok=True)
@@ -25,20 +22,27 @@ class ssh():
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-        if private_key_path:
-            # use specified key
-            k = paramiko.RSAKey.from_private_key_file(private_key_path)
-            self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            self.client.connect(hostname, port=port, username=username,
-                                pkey=k, look_for_keys=False)
-        else:
-            # look for system keys
-            self.client.load_system_host_keys()
-            self.client.connect(
-                hostname,
-                port=port,
-                username=username,
-                look_for_keys=True)
+        # default to searching for system keys
+        pkey = None
+        look_for_keys = True
+
+        # here a supplied key string will take precendence
+        # over a supplied key path
+        if private_key_string:  # load from string
+            look_for_keys = False
+            private_key_string_ = StringIO(private_key_string)
+            pkey = paramiko.RSAKey.from_private_key(private_key_string_)
+            private_key_string_.close()
+        elif private_key_path:  # load from file
+            look_for_keys = False
+            pkey = paramiko.RSAKey.from_private_key_file(private_key_path)
+
+        self.client.connect(
+            hostname,
+            port=port,
+            username=username,
+            pkey=pkey,
+            look_for_keys=look_for_keys)
 
     def pass_command(self, command):
         """

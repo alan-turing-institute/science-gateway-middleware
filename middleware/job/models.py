@@ -28,14 +28,16 @@ class JobTemplate(db.Model):
     name = db.Column(db.String)
     user = db.Column(db.String)
 
-    families = db.relationship("FamilyTemplate", back_populates="job",
-                               lazy="joined")
-    templates = db.relationship("TemplateTemplate", back_populates="job",
-                                lazy="joined")
-    scripts = db.relationship("ScriptTemplate", back_populates="job",
-                              lazy="joined")
-    inputs = db.relationship("InputTemplate", back_populates="job",
-                             lazy="joined")
+    families = db.relationship(
+        "FamilyTemplate", back_populates="job", lazy="joined")
+    templates = db.relationship(
+        "TemplateTemplate", back_populates="job", lazy="joined")
+    scripts = db.relationship(
+        "ScriptTemplate", back_populates="job", lazy="joined")
+    inputs = db.relationship(
+        "InputTemplate", back_populates="job", lazy="joined")
+    outputs = db.relationship(
+        "OutputTemplate", back_populates="job", lazy="joined")
 
     def __init__(
             self,
@@ -44,7 +46,8 @@ class JobTemplate(db.Model):
             families=[],
             templates=[],
             scripts=[],
-            inputs=[]):
+            inputs=[],
+            outputs=[]):
 
         # string fields
         self.description = description
@@ -55,6 +58,7 @@ class JobTemplate(db.Model):
         self.templates = templates
         self.scripts = scripts
         self.inputs = inputs
+        self.outputs = outputs
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -63,7 +67,8 @@ class JobTemplate(db.Model):
                     sorted(self.families) == sorted(other.families) and
                     sorted(self.templates) == sorted(other.templates) and
                     sorted(self.scripts) == sorted(other.scripts) and
-                    sorted(self.inputs) == sorted(other.inputs)
+                    sorted(self.inputs) == sorted(other.inputs) and
+                    sorted(self.outputs) == sorted(other.outputs)
                     # TODO case equivalency
                     )
         return NotImplemented
@@ -88,14 +93,16 @@ class Job(db.Model):
     start_datetime = db.Column(ArrowType)
     end_datetime = db.Column(ArrowType)
 
-    families = db.relationship("Family", back_populates="job",
-                               lazy="joined")
-    templates = db.relationship("Template", back_populates="job",
-                                lazy="joined")
-    scripts = db.relationship("Script", back_populates="job",
-                              lazy="joined")
-    inputs = db.relationship("Input", back_populates="job",
-                             lazy="joined")
+    families = db.relationship(
+        "Family", back_populates="job", lazy="joined")
+    templates = db.relationship(
+        "Template", back_populates="job", lazy="joined")
+    scripts = db.relationship(
+        "Script", back_populates="job", lazy="joined")
+    inputs = db.relationship(
+        "Input", back_populates="job", lazy="joined")
+    outputs = db.relationship(
+        "Output", back_populates="job", lazy="joined")
 
     case_id = db.Column(db.Integer, db.ForeignKey('case_summary._id'))
     case = db.relationship("CaseSummary", back_populates="jobs", lazy="joined")
@@ -116,6 +123,7 @@ class Job(db.Model):
             templates=[],
             scripts=[],
             inputs=[],
+            outputs=[],
             case=None):
 
         if id:
@@ -143,6 +151,7 @@ class Job(db.Model):
         self.templates = templates
         self.scripts = scripts
         self.inputs = inputs
+        self.outputs = outputs
 
         self.case = case
 
@@ -161,7 +170,8 @@ class Job(db.Model):
                     sorted(self.families) == sorted(other.families) and
                     sorted(self.templates) == sorted(other.templates) and
                     sorted(self.scripts) == sorted(other.scripts) and
-                    sorted(self.inputs) == sorted(other.inputs)
+                    sorted(self.inputs) == sorted(other.inputs) and
+                    sorted(self.outputs) == sorted(other.outputs)
                     # TODO case equivalency
                     )
         return NotImplemented
@@ -274,6 +284,7 @@ class ParameterTemplate(db.Model):
     label = db.Column(db.String)
     max_value = db.Column(db.String)
     min_value = db.Column(db.String)
+    step = db.Column(db.String)
     name = db.Column(db.String)
     type = db.Column(db.String)
     type_value = db.Column(db.String)
@@ -288,6 +299,7 @@ class ParameterTemplate(db.Model):
                 self.label == other.label and
                 self.max_value == other.max_value and
                 self.min_value == other.min_value and
+                self.step == other.step and
                 self.name == other.name and
                 self.type == other.type and
                 self.type_value == other.type_value and
@@ -317,6 +329,7 @@ class ParameterTemplate(db.Model):
             self.label,
             self.max_value,
             self.min_value,
+            self.step,
             self.name,
             self.type,
             self.type_value,
@@ -333,6 +346,7 @@ class Parameter(db.Model):
     label = db.Column(db.String)
     max_value = db.Column(db.String)
     min_value = db.Column(db.String)
+    step = db.Column(db.String)
     name = db.Column(db.String)
     type = db.Column(db.String)
     type_value = db.Column(db.String)
@@ -350,6 +364,7 @@ class Parameter(db.Model):
                 self.label == other.label and
                 self.max_value == other.max_value and
                 self.min_value == other.min_value and
+                self.step == other.step and
                 self.name == other.name and
                 self.type == other.type and
                 self.type_value == other.type_value and
@@ -379,6 +394,7 @@ class Parameter(db.Model):
             self.label,
             self.max_value,
             self.min_value,
+            self.step,
             self.name,
             self.type,
             self.type_value,
@@ -589,6 +605,70 @@ class Input(db.Model):
         return hash((self.source_uri, self.destination_path))
 
 
+class OutputTemplate(db.Model):
+    _id = db.Column(db.Integer, primary_key=True)
+    destination_path = db.Column(db.String)
+    type = db.Column(db.String)
+    job_id = db.Column(db.Integer, db.ForeignKey('job_template._id'))
+    job = db.relationship("JobTemplate", back_populates="outputs")
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.destination_path == other.destination_path and
+                    self.type == other.type)
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        # Need to support < operator for sorting
+        if isinstance(other, self.__class__):
+            # We have no strong view of a canonical sort order but do want to
+            # be able to sort consistently to allow comparison of lists so we
+            # just sort by hash, which hashes all fields used for equality
+            # checking
+            return self.__hash__() < other.__hash__()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash((self.destination_path, self.type))
+
+
+class Output(db.Model):
+    _id = db.Column(db.Integer, primary_key=True)
+    destination_path = db.Column(db.String)
+    type = db.Column(db.String)
+    job_id = db.Column(db.Integer, db.ForeignKey('job.id'))
+    job = db.relationship("Job", back_populates="outputs")
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (self.destination_path == other.destination_path and
+                    self.type == other.type)
+        return NotImplemented
+
+    def __ne__(self, other):
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __lt__(self, other):
+        # Need to support < operator for sorting
+        if isinstance(other, self.__class__):
+            # We have no strong view of a canonical sort order but do want to
+            # be able to sort consistently to allow comparison of lists so we
+            # just sort by hash, which hashes all fields used for equality
+            # checking
+            return self.__hash__() < other.__hash__()
+        return NotImplemented
+
+    def __hash__(self):
+        return hash((self.destination_path, self.type))
+
+
 class CaseSummary(db.Model):
     _id = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.String)
@@ -660,6 +740,15 @@ def input_template_to_input(input_template):
     return input_
 
 
+def output_template_to_output(output_template):
+    output_ = Output()
+    attribute_list = get_attribute_list(output_template)
+    for attribute in attribute_list:
+        source = getattr(output_template, attribute)
+        setattr(output_, attribute, source)
+    return output_
+
+
 def case_to_job(case, job_id=None):
     job = Job(job_id)
     job.description = case.job.description
@@ -688,6 +777,9 @@ def case_to_job(case, job_id=None):
 
     for input_template in case.job.inputs:
         job.inputs.append(input_template_to_input(input_template))
+
+    for output_template in case.job.outputs:
+        job.outputs.append(output_template_to_output(output_template))
 
     return job
 

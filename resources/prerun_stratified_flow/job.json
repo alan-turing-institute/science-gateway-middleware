@@ -1,0 +1,208 @@
+{
+  "id": "19fcb331-6759-4619-bc75-bc7b0588b72f",
+  "name": "Prerun stratified flow",
+  "user": "lrmason",
+  "description": "A prerun stratified flow simulation",
+  "status": "Complete",
+  "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "start_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "end_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "scripts": [{
+      "source_uri": "./resources/prerun_stratified_flow/pbs.sh",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/data.sh",
+      "action": "DATA",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/progress.sh",
+      "action": "PROGRESS",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/Pprerun_stratified_flow/run.sh",
+      "action": "RUN",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/get_exec_host.sh",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/setup.sh",
+      "action": "SETUP",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/cancel.sh",
+      "action": "CANCEL",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/csv_to_data_json.py",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/csv_to_progress_json.py",
+      "action": null,
+      "destination_path": "."
+    }
+  ],
+  "backend_identifier": null,
+  "case": {
+    "id": "50ce1be6-5301-4ff1-95c3-78c83f037b99",
+    "uri": null,
+    "description": "Here we describe the actual Stratified Flow case.",
+    "label": "Stratified Flow",
+    "thumbnail": "http://sgmiddleware.blob.core.windows.net/blue/stratified_flow.png"
+  },
+  "uri": "http://science-gateway-middleware-dev/api/jobs/19fcb331-6759-4619-bc75-bc7b0588b72f",
+  "families": [{
+      "label": "Interface settings",
+      "name": "interface_settings",
+      "collapse": false,
+      "parameters": [{
+          "name": "ex_force_phase1",
+          "type": "slider",
+          "label": "External force: Phase 1",
+          "units": "N",
+          "type_value": "float",
+          "min_value": "0",
+          "max_value": "10",
+          "value": "6.7",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "ex_force_phase2",
+          "type": "slider",
+          "label": "External force: Phase 2",
+          "units": "N",
+          "type_value": "float",
+          "min_value": "0",
+          "max_value": "10",
+          "value": "6.7",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "INT_height",
+          "type": "slider",
+          "label": "Interface height",
+          "units": "m",
+          "type_value": "float",
+          "min_value": "0",
+          "max_value": "0.1",
+          "value": "0.0315",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "label": "Viscosities",
+      "name": "viscosity_properties",
+      "collapse": false,
+      "parameters": [{
+          "name": "viscosity_phase_1",
+          "type": "slider",
+          "label": "Viscosity: Phase 1",
+          "units": "Pa s",
+          "type_value": "float",
+          "min_value": "0.00008",
+          "max_value": "0.01",
+          "value": "0.00001825",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "viscosity_phase_2",
+          "type": "slider",
+          "label": "Viscosity: Phase 2",
+          "units": "Pa s",
+          "type_value": "float",
+          "min_value": "0.00001",
+          "max_value": "0.01",
+          "value": "0.0000185",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "label": "Densities",
+      "name": "density_properties",
+      "collapse": false,
+      "parameters": [{
+          "name": "density_phase_1",
+          "type": "slider",
+          "label": "Density: Phase 1",
+          "units": "kg/m3",
+          "type_value": "float",
+          "min_value": "1",
+          "max_value": "1000",
+          "value": "997.561",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "density_phase_2",
+          "type": "slider",
+          "label": "Density: Phase 2",
+          "units": "kg/m3",
+          "type_value": "float",
+          "min_value": "1",
+          "max_value": "10",
+          "value": "1.18415",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "label": "Surface tension",
+      "name": "surface_tension_properties",
+      "collapse": false,
+      "parameters": [{
+        "name": "surface_tension",
+        "type": "slider",
+        "label": "Surface Tension",
+        "units": "mN/m",
+        "type_value": "float",
+        "min_value": "0",
+        "max_value": "100",
+        "value": "72.5",
+        "options": [],
+        "help": "",
+        "enabled": true
+      }]
+    }
+  ],
+  "templates": [{
+      "source_uri": "./resources/prerun_stratified_flow/Blue.nml",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/Makefile",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stratified_flow/input.f90",
+      "destination_path": "."
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

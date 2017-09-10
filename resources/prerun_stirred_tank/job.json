@@ -1,0 +1,163 @@
+{
+  "id": "96ef005e-e4a6-4cb7-a39a-ca269cca9430",
+  "name": "Prerun stirred tank",
+  "user": "lrmason",
+  "description": "A prerun stirred tank simulation",
+  "status": "Complete",
+  "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "start_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "end_datetime": "2017-08-21T09:56:01.621575+00:00",
+  "scripts": [{
+      "source_uri": "./resources/prerun_stirred_tank/pbs.sh",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/data.sh",
+      "action": "DATA",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/progress.sh",
+      "action": "PROGRESS",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/Pprerun_stirred_tank/run.sh",
+      "action": "RUN",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/get_exec_host.sh",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/setup.sh",
+      "action": "SETUP",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/cancel.sh",
+      "action": "CANCEL",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/csv_to_data_json.py",
+      "action": null,
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/csv_to_progress_json.py",
+      "action": null,
+      "destination_path": "."
+    }
+  ],
+  "backend_identifier": null,
+  "case": {
+    "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
+    "uri": null,
+    "description": "Here we describe the actual Stirred Tank case.",
+    "label": "Stirred Tank",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank.png"
+  },
+  "uri": "http://science-gateway-middleware-dev/api/jobs/96ef005e-e4a6-4cb7-a39a-ca269cca9430",
+  "families": [{
+      "label": "Viscosities",
+      "name": "viscosity_properties",
+      "collapse": false,
+      "parameters": [{
+          "name": "viscosity_phase_1",
+          "type": "slider",
+          "label": "Viscosity: Phase 1",
+          "units": "Pa s",
+          "type_value": "float",
+          "min_value": "0.00001",
+          "max_value": "0.01",
+          "value": "0.00001825",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "viscosity_phase_2",
+          "type": "slider",
+          "label": "Viscosity: Phase 2",
+          "units": "Pa s",
+          "type_value": "float",
+          "min_value": "0.001",
+          "max_value": "0.01",
+          "value": "0.001",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "label": "Densities",
+      "name": "density_properties",
+      "collapse": false,
+      "parameters": [{
+          "name": "density_phase_1",
+          "type": "slider",
+          "label": "Density: Phase 1",
+          "units": "kg/m3",
+          "type_value": "float",
+          "min_value": "1",
+          "max_value": "100",
+          "value": "1.205",
+          "options": [],
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "density_phase_2",
+          "type": "slider",
+          "label": "Density: Phase 2",
+          "units": "kg/m3",
+          "type_value": "float",
+          "min_value": "100",
+          "max_value": "3000",
+          "value": "1000",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "label": "Surface tension",
+      "name": "surface_tension_properties",
+      "collapse": false,
+      "parameters": [{
+        "name": "surface_tension",
+        "type": "slider",
+        "label": "Surface Tension",
+        "units": "mN/m",
+        "type_value": "float",
+        "min_value": "0",
+        "max_value": "100",
+        "value": "72.5",
+        "options": [],
+        "help": "",
+        "enabled": true
+      }]
+    }
+  ],
+  "templates": [{
+      "source_uri": "./resources/prerun_stirred_tank/Blue.nml",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/Makefile",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/prerun_stirred_tank/input.f90",
+      "destination_path": "."
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

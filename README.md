@@ -7,7 +7,7 @@
 
 Currently this is a skeleton app that is designed to take values via `HTTP POST`, build a bash command to multiply them together and run that command via ssh on a remote server.
 
-## Local deployment
+## Local deployment 
 
 This code is tested on `python 3.4` and all dependencies can be installed via `pip`:
 
@@ -23,8 +23,8 @@ PASSWORD = "<a password>"
 SSH_USR = "<username to connect to remote server>"
 SSH_HOSTNAME = "<ip address of server to ssh into>"
 SSH_PORT = <optional port to connect via, defaults to 22>
-# PRIVATE_KEY_PATH = None
-PRIVATE_KEY_PATH = "keys/development"  # where development is a private RSA key
+# SSH_PRIVATE_KEY_PATH = None
+SSH_PRIVATE_KEY_PATH = "keys/development"  # where development is a private RSA key
 
 # SQLALCHEMY_DATABASE_URI = 'sqlite://'
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
@@ -57,29 +57,78 @@ az login
 az webapp deployment user set --user-name <username> --password <password>
 ```
 
-Deploy the web app:
+Create the Azure web app:
 
 ```shell
 az group create --name $APP_NAME --location westeurope
-az appservice plan create --name $APP_NAME --resource-group $APP_NAME --sku B1
+az appservice plan create --name $APP_NAME --resource-group $APP_NAME --sku S1  # use S1 or higher for access to development slots
 az webapp create --name $APP_NAME --resource-group $APP_NAME --plan $APP_NAME
 az webapp config set --python-version 3.4 --name $APP_NAME --resource-group $APP_NAME # set python version
-az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_FILE=../config/production.py # set flask environment variables
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --settings APP_CONFIG_NAME=production
 ```
 
-Push the `master` branch of the middleware repository to Azure:
+Configure web app environment variables.
 
 ```shell
-AZURE_REMOTE=$(az webapp deployment source config-local-git --name $APP_NAME --resource-group $APP_NAME --query url --output tsv) # fetch the remote uri for the app git repository
-git remote add azure $AZURE_REMOTE
-git push azure master
+APP_NAME=Science-Gateway-Middleware
+APP_SLOT=dev
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_USR=<ssh-user>
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_HOSTNAME=<ssh-hostname>
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_PORT=22
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SIM_ROOT=<sim-root>
+
+az webapp config appsettings set --name $APP_NAME --resource-group $APP_NAME --slot  $APP_SLOT --settings SSH_PRIVATE_KEY_STRING=<private-key-string>
 ```
 
-Configure any un-committed files using ftp. The ftp address is available via `App Service > Properties` in Azure portal. An example ftp credentials are:
+The `develop` branch will deploy to a development "slot" on Azure via the following branch-specific `.travis.yml`settings:
+
+```yaml
+deploy:
+  - provider: azure_web_apps
+    verbose: true
+    skip_cleanup: false
+    on: develop
+    slot: science-gateway-middleware-dev
+```
+
+The `staging` branch will deploy to a staging "slot" on Azure via the following branch-specific `.travis.yml`settings:
+
+```yaml
+deploy:
+  - provider: azure_web_apps
+    verbose: true
+    skip_cleanup: false
+    on: staging
+    slot: science-gateway-middleware-staging
+```
+
+Manual deployment to Azure is possible via `dpl`:
 
 ```
-server address: ftps://waws-prod-am2-XXX.ftp.azurewebsites.windows.net
-user: Science-Gateway-Middleware\username
+sudo gem install dpl
+```
+
+For example, run the following to deploy to the Azure dev slot:
+
+```
+export AZURE_WA_PASSWORD=<password>
+export AZURE_WA_USERNAME=<user-name>
+export AZURE_WA_SITE=science-gateway-middleware
+export AZURE_WA_SLOT=science-gateway-middleware-dev
+dpl --provider=AzureWebApps --verbose
+```
+
+
+
+Any un-committed files can be added using using ftp. The ftp address is available via `App Service > Properties` in Azure portal. An example ftp credentials are:
+
+```
+server address: ftps://<address-details>.ftp.azurewebsites.windows.net
+user: Science-Gateway-Middleware\<username>
 ```
 
 ## Testing

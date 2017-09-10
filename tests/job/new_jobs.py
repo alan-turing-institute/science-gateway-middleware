@@ -5,6 +5,7 @@ from middleware.job.models import (
     Parameter, ParameterTemplate,
     Template, TemplateTemplate,
     Input, InputTemplate,
+    Output, OutputTemplate,
     Script, ScriptTemplate,
     CaseSummary
 )
@@ -104,6 +105,7 @@ def new_job1():
                           label="j1f1p1label",
                           max_value="j1f1p1max_value",
                           min_value="j1f1p1min_value",
+                          step="j1f1p1step",
                           name="j1f1p1name",
                           type="j1f1p1type",
                           type_value="j1f1p1type_value",
@@ -113,6 +115,7 @@ def new_job1():
                           label="j1f1p2label",
                           max_value="j1f1p2max_value",
                           min_value="j1f1p2min_value",
+                          step="j1f1p2step",
                           name="j1f1p2name",
                           type="j1f1p2type",
                           type_value="j1f1p2type_value",
@@ -146,6 +149,10 @@ def new_job1():
     job.inputs.append(Input(
         source_uri="j1i2source",
         destination_path="j1i2_dest"
+    ))
+    job.outputs.append(Output(
+        destination_path="j1o1_dest",
+        type="j1o1_type"
     ))
     job.case = CaseSummary(
         id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
@@ -182,6 +189,7 @@ def new_job1_input_json():
                             "label": "j1f1p1label",
                             "max_value": "j1f1p1max_value",
                             "min_value": "j1f1p1min_value",
+                            "step": "j1f1p1step",
                             "name": "j1f1p1name",
                             "type": "j1f1p1type",
                             "type_value": "j1f1p1type_value",
@@ -193,6 +201,7 @@ def new_job1_input_json():
                             "label": "j1f1p2label",
                             "max_value": "j1f1p2max_value",
                             "min_value": "j1f1p2min_value",
+                            "step": "j1f1p2step",
                             "name": "j1f1p2name",
                             "type": "j1f1p2type",
                             "type_value": "j1f1p2type_value",
@@ -214,6 +223,9 @@ def new_job1_input_json():
                         "destination_path": "j1i1_dest"},
                        {"source_uri": "j1i2source",
                         "destination_path": "j1i2_dest"}],
+            "outputs": [{
+                "destination_path": "j1o1_dest",
+                "type": "j1o1_type"}],
             "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
                      "uri": "c1uri",
                      "label": "c1label",
@@ -248,6 +260,7 @@ def new_job1_output_json():
                             "label": "j1f1p1label",
                             "max_value": "j1f1p1max_value",
                             "min_value": "j1f1p1min_value",
+                            "step": "j1f1p1step",
                             "name": "j1f1p1name",
                             "type": "j1f1p1type",
                             "type_value": "j1f1p1type_value",
@@ -259,6 +272,7 @@ def new_job1_output_json():
                             "label": "j1f1p2label",
                             "max_value": "j1f1p2max_value",
                             "min_value": "j1f1p2min_value",
+                            "step": "j1f1p2step",
                             "name": "j1f1p2name",
                             "type": "j1f1p2type",
                             "type_value": "j1f1p2type_value",
@@ -280,6 +294,9 @@ def new_job1_output_json():
                         "destination_path": "j1i1_dest"},
                        {"source_uri": "j1i2source",
                         "destination_path": "j1i2_dest"}],
+            "outputs": [{
+                "destination_path": "j1o1_dest",
+                "type": "j1o1_type"}],
             "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
                      "uri": "c1uri",
                      "label": "c1label",
@@ -318,6 +335,7 @@ def new_job2():
                           label="j2f1p1label",
                           max_value="j2f1p1max_value",
                           min_value="j2f1p1min_value",
+                          step="j2f1p1step",
                           name="j2f1p1name",
                           type="j2f1p1type",
                           type_value="j2f1p1type_value",
@@ -327,6 +345,7 @@ def new_job2():
                           label="j2f1p2label",
                           max_value="j2f1p2max_value",
                           min_value="j2f1p2min_value",
+                          step="j2f1p2step",
                           name="j2f1p2name",
                           type="j2f1p2type",
                           type_value="j2f1p2type_value",
@@ -360,6 +379,10 @@ def new_job2():
     job.inputs.append(Input(
         source_uri="j2i2source",
         destination_path="j2i2_dest"
+    ))
+    job.outputs.append(Output(
+        destination_path="j2o1_dest",
+        type="j2o1_type"
     ))
     job.case = CaseSummary(
         id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
@@ -395,6 +418,7 @@ def new_job2_input_json():
                             "label": "j2f1p1label",
                             "max_value": "j2f1p1max_value",
                             "min_value": "j2f1p1min_value",
+                            "step": "j2f1p1step",
                             "name": "j2f1p1name",
                             "type": "j2f1p1type",
                             "type_value": "j2f1p1type_value",
@@ -406,6 +430,7 @@ def new_job2_input_json():
                             "label": "j2f1p2label",
                             "max_value": "j2f1p2max_value",
                             "min_value": "j2f1p2min_value",
+                            "step": "j2f1p2step",
                             "name": "j2f1p2name",
                             "type": "j2f1p2type",
                             "type_value": "j2f1p2type_value",
@@ -427,6 +452,9 @@ def new_job2_input_json():
                         "destination_path": "j2i1_dest"},
                        {"source_uri": "j2i2source",
                         "destination_path": "j2i2_dest"}],
+            "outputs": [{
+                "destination_path": "j2o1_dest",
+                "type": "j2o1_type"}],
             "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
                      "uri": "j1c1uri",
                      "label": "j1c1label",
@@ -460,6 +488,7 @@ def new_job2_output_json():
                             "label": "j2f1p1label",
                             "max_value": "j2f1p1max_value",
                             "min_value": "j2f1p1min_value",
+                            "step": "j2f1p1step",
                             "name": "j2f1p1name",
                             "type": "j2f1p1type",
                             "type_value": "j2f1p1type_value",
@@ -471,6 +500,7 @@ def new_job2_output_json():
                             "label": "j2f1p2label",
                             "max_value": "j2f1p2max_value",
                             "min_value": "j2f1p2min_value",
+                            "step": "j2f1p2step",
                             "name": "j2f1p2name",
                             "type": "j2f1p2type",
                             "type_value": "j2f1p2type_value",
@@ -492,6 +522,9 @@ def new_job2_output_json():
                         "destination_path": "j2i1_dest"},
                        {"source_uri": "j2i2source",
                         "destination_path": "j2i2_dest"}],
+            "outputs": [{
+                "destination_path": "j2o1_dest",
+                "type": "j2o1_type"}],
             "case": {"id": "85b8995c-63a9-474f-8fdc-52c7582ec2ac",
                      "uri": "c1uri",
                      "label": "c1label",
@@ -529,6 +562,7 @@ def new_job3():
                           label="j3f1p1label",
                           max_value="j3f1p1max_value",
                           min_value="j3f1p1min_value",
+                          step="j3f1p1step",
                           name="j3f1p1name",
                           type="j3f1p1type",
                           type_value="j3f1p1type_value",
@@ -538,6 +572,7 @@ def new_job3():
                           label="j3f1p2label",
                           max_value="j3f1p2max_value",
                           min_value="j3f1p2min_value",
+                          step="j3f1p2step",
                           name="j3f1p2name",
                           type="j3f1p2type",
                           type_value="j3f1p2type_value",
@@ -571,6 +606,10 @@ def new_job3():
     job.inputs.append(Input(
         source_uri="j3i2source",
         destination_path="j3i2_dest"
+    ))
+    job.outputs.append(Output(
+        destination_path="j3o1_dest",
+        type="j3o1_type"
     ))
     job.case = CaseSummary(
         id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
@@ -610,6 +649,7 @@ def new_job4():
                           label="j4f1p1label",
                           max_value="j4f1p1max_value",
                           min_value="j4f1p1min_value",
+                          step="j4f1p1step",
                           name="j4f1p1name",
                           type="j4f1p1type",
                           type_value="j4f1p1type_value",
@@ -619,6 +659,7 @@ def new_job4():
                           label="j4f1p2label",
                           max_value="j4f1p2max_value",
                           min_value="j4f1p2min_value",
+                          step="j4f1p2step",
                           name="j4f1p2name",
                           type="j4f1p2type",
                           type_value="j4f1p2type_value",
@@ -662,6 +703,10 @@ def new_job4():
         source_uri="j4i2source",
         destination_path="j4i2_dest"
     ))
+    job.outputs.append(Output(
+        destination_path="j4o1_dest",
+        type="j4o1_type"
+    ))
     job.case = CaseSummary(
         id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
         uri="c1uri",
@@ -700,6 +745,7 @@ def new_job5():
                           label="j5f1p1label",
                           max_value="j5f1p1max_value",
                           min_value="j5f1p1min_value",
+                          step="j5f1p1step",
                           name="viscosity_phase_1",
                           type="j5f1p1type",
                           type_value="j5f1p1type_value",
@@ -709,6 +755,7 @@ def new_job5():
                           label="j5f1p2label",
                           max_value="j5f1p2max_value",
                           min_value="j5f1p2min_value",
+                          step="j5f1p2step",
                           name="j5f1p2name",
                           type="j5f1p2type",
                           type_value="j5f1p2type_value",
@@ -742,6 +789,10 @@ def new_job5():
     job.inputs.append(Input(
         source_uri="j5i2source",
         destination_path="project/case/"))
+    job.outputs.append(Output(
+        destination_path="j4o1_dest",
+        type="j4o1_type"
+    ))
     job.case = CaseSummary(
         id="85b8995c-63a9-474f-8fdc-52c7582ec2ac",
         uri="c1uri",
@@ -768,6 +819,7 @@ def new_job_template1():
                     label="j1f1p1label",
                     max_value="j1f1p1max_value",
                     min_value="j1f1p1min_value",
+                    step="j1f1p1step",
                     name="j1f1p1name",
                     type="j1f1p1type",
                     type_value="j1f1p1type_value",
@@ -778,6 +830,7 @@ def new_job_template1():
                     label="j1f1p2label",
                     max_value="j1f1p2max_value",
                     min_value="j1f1p2min_value",
+                    step="j1f1p2step",
                     name="j1f1p2name",
                     type="j1f1p2type",
                     type_value="j1f1p2type_value",
@@ -806,6 +859,10 @@ def new_job_template1():
     job.inputs.append(InputTemplate(
         source_uri="j1i2source",
         destination_path="j1i2_dest"))
+    job.outputs.append(OutputTemplate(
+        destination_path="j1o1_dest",
+        type="j1o1_type"
+    ))
     return job
 
 
