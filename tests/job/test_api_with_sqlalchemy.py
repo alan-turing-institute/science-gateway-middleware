@@ -11,7 +11,8 @@ from middleware.job.api import JobApi, CaseApi, CasesApi
 from middleware.job.sqlalchemy_repository import (
     JobRepositorySqlAlchemy, CaseRepositorySqlAlchemy)
 from middleware.database import db as _db
-from middleware.job.models import Job, Parameter, Template, Script, Input
+from middleware.job.models import (
+    Job, Parameter, Template, Script, Input, Output)
 from middleware.job.schema import job_to_json
 from middleware.factory import json_to_case_list
 import new_jobs as nj  # for easy access to iso_string values

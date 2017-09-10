@@ -59,7 +59,7 @@
     "uri": null,
     "description": "Here we describe the actual Stirred Tank case.",
     "label": "Stirred Tank",
-    "thumbnail": "http://science-gateway-middleware-dev.azurewebstes.net/assets/thumbnails/stirred_tank.png"
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank.png"
   },
   "uri": "http://science-gateway-middleware-dev/api/jobs/96ef005e-e4a6-4cb7-a39a-ca269cca9430",
   "families": [{
@@ -158,5 +158,6 @@
       "destination_path": "."
     }
   ],
-  "inputs": []
+  "inputs": [],
+  "outputs": []
 }

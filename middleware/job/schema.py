@@ -6,6 +6,7 @@ from middleware.job.models import (
     Parameter, ParameterTemplate,
     Template, TemplateTemplate,
     Input, InputTemplate,
+    Output, OutputTemplate,
     Script, ScriptTemplate,
     CaseSummary
 )
@@ -42,12 +43,14 @@ class JobTemplateSchema(ma.ModelSchema):
                   'templates',
                   'scripts',
                   'inputs',
+                  'outputs'
                   )
 
     families = ma.List(ma.Nested('FamilyTemplateSchema'))
     templates = ma.List(ma.Nested('TemplateTemplateSchema'))
     scripts = ma.List(ma.Nested('ScriptTemplateSchema'))
     inputs = ma.List(ma.Nested('InputTemplateSchema'))
+    outputs = ma.List(ma.Nested('OutputTemplateSchema'))
     case = ma.Nested('CaseSchema')
 
     def make_job_template(self, data):
@@ -59,6 +62,8 @@ class JobTemplateSchema(ma.ModelSchema):
             ScriptTemplateSchema(many=True).load(data.get("scripts")).data
         inputs = \
             InputTemplateSchema(many=True).load(data.get("inputs")).data
+        outputs = \
+            OutputTemplateSchema(many=True).load(data.get("outputs")).data
 
         job_template = JobTemplate(
             description=data.get("description"),
@@ -66,7 +71,8 @@ class JobTemplateSchema(ma.ModelSchema):
             families=families,
             templates=templates,
             scripts=scripts,
-            inputs=inputs)
+            inputs=inputs,
+            outputs=outputs)
         return job_template
 
 
@@ -87,6 +93,7 @@ class JobSchema(ma.ModelSchema):
                   'templates',
                   'scripts',
                   'inputs',
+                  'outputs',
                   'case'
                   )
 
@@ -94,6 +101,7 @@ class JobSchema(ma.ModelSchema):
     templates = ma.List(ma.Nested('TemplateSchema'))
     scripts = ma.List(ma.Nested('ScriptSchema'))
     inputs = ma.List(ma.Nested('InputSchema'))
+    outputs = ma.List(ma.Nested('OutputSchema'))
     case = ma.Nested('CaseSummarySchema')
 
     def make_job(self, data):
@@ -103,6 +111,7 @@ class JobSchema(ma.ModelSchema):
         templates = TemplateSchema(many=True).load(data.get("templates")).data
         scripts = ScriptSchema(many=True).load(data.get("scripts")).data
         inputs = InputSchema(many=True).load(data.get("inputs")).data
+        outputs = OutputSchema(many=True).load(data.get("outputs")).data
 
         case = CaseSummarySchema().load(data.get("case")).data
 
@@ -141,6 +150,7 @@ class JobSchema(ma.ModelSchema):
             templates=templates,
             scripts=scripts,
             inputs=inputs,
+            outputs=outputs,
             case=case)
         return job
 
@@ -243,6 +253,18 @@ class InputSchema(ma.ModelSchema):
     class Meta:
         model = Input
         fields = ('source_uri', 'destination_path')
+
+
+class OutputTemplateSchema(ma.ModelSchema):
+    class Meta:
+        model = OutputTemplate
+        fields = ('destination_path', 'type')
+
+
+class OutputSchema(ma.ModelSchema):
+    class Meta:
+        model = Output
+        fields = ('destination_path', 'type')
 
 
 class CaseSummarySchema(ma.ModelSchema):

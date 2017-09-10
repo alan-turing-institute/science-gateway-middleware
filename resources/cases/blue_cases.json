@@ -2,7 +2,7 @@
     "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/af7fd241-e816-40e5-9a70-49598a452b7b",
     "label": "Stirred Tank",
-    "thumbnail": "http://science-gateway-middleware-dev.azurewebsites.net/assets/thumbnails/stirred_tank.png",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank.png",
     "description": "Here we describe the actual Stirred Tank case.",
     "job": {
       "name": "New Stirred Tank simulation...",
@@ -191,14 +191,15 @@
           "destination_path": "."
         }
       ],
-      "inputs": []
+      "inputs": [],
+      "outputs": []
     }
   },
   {
     "id": "b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
     "label": "Product Changeover",
-    "thumbnail": "http://science-gateway-middleware-dev.azurewebsites.net/assets/thumbnails/product_changeover.png",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/product_changeover.png",
     "description": "Here we describe the actual Product Changeover case.",
     "job": {
       "id": null,
@@ -375,14 +376,15 @@
           "destination_path": "."
         }
       ],
-      "inputs": []
+      "inputs": [],
+      "outputs": []
     }
   },
   {
     "id": "50ce1be6-5301-4ff1-95c3-78c83f037b99",
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/50ce1be6-5301-4ff1-95c3-78c83f037b99",
     "label": "Stratified Flow",
-    "thumbnail": "http://science-gateway-middleware-dev.azurewebsites.net/assets/thumbnails/stratified_flow.png",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stratified_flow.png",
     "description": "Here we describe the actual Stratified Flow case.",
     "job": {
       "id": null,
@@ -588,7 +590,8 @@
           "destination_path": "."
         }
       ],
-      "inputs": []
+      "inputs": [],
+      "outputs": []
     }
   }
 ]

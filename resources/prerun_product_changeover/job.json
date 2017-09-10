@@ -59,7 +59,7 @@
     "uri": null,
     "description": "Here we describe the actual Product Changeover case.",
     "label": "Product Changeover",
-    "thumbnail": "http://science-gateway-middleware-dev.azurewebstes.net/assets/thumbnails/product_changeover.png"
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/product_changeover.png"
   },
   "uri": "http://science-gateway-middleware-dev/api/jobs/3957553c-486a-46ed-87c2-3d67f58e7cbf",
   "families": [{
@@ -176,5 +176,6 @@
       "destination_path": "."
     }
   ],
-  "inputs": []
+  "inputs": [],
+  "outputs": []
 }
