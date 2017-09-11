@@ -159,5 +159,5 @@
     }
   ],
   "inputs": [],
-  "outputs": []
+  "outputs": [{"destination_path": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank_centred.stl", "type": "interface"}]
 }
