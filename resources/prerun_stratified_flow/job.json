@@ -59,7 +59,7 @@
     "uri": null,
     "description": "Here we describe the actual Stratified Flow case.",
     "label": "Stratified Flow",
-    "thumbnail": "http://sgmiddleware.blob.core.windows.net/blue/stratified_flow.png"
+    "thumbnail": "http://sgmiddleware.blob.core.windows.net/blue/thumbnails/stratified_flow.png"
   },
   "uri": "http://science-gateway-middleware-dev/api/jobs/19fcb331-6759-4619-bc75-bc7b0588b72f",
   "families": [{
@@ -205,7 +205,10 @@
   ],
   "inputs": [],
   "outputs": [{
-    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/stratified_flow.mp4",
+    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_stratified_flow/video.mp4",
     "type": "video"
+  },{
+    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_stratified_flow/output.csv",
+    "type": "csv"
   }]
 }

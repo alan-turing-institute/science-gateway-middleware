@@ -59,7 +59,7 @@
     "uri": null,
     "description": "Here we describe the actual Stirred Tank case.",
     "label": "Stirred Tank",
-    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank.png"
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/stirred_tank.png"
   },
   "uri": "http://science-gateway-middleware-dev/api/jobs/96ef005e-e4a6-4cb7-a39a-ca269cca9430",
   "families": [{
@@ -159,5 +159,11 @@
     }
   ],
   "inputs": [],
-  "outputs": [{"destination_path": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank_centred.stl", "type": "interface"}]
+  "outputs": [{
+    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_stirred_tank/interface.stl",
+    "type": "interface"
+  }, {
+    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_stirred_tank/output.csv",
+    "type": "csv"
+  }]
 }
