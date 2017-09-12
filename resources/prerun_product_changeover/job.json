@@ -1,12 +1,12 @@
 {
   "id": "3957553c-486a-46ed-87c2-3d67f58e7cbf",
-  "name": "Prerun product changeover",
+  "name": "Product changeover (Demo)",
   "user": "lrmason",
   "description": "A prerun product changeover simulation",
   "status": "Complete",
   "creation_datetime": "2017-09-03T09:56:01.621575+00:00",
-  "start_datetime": "2017-09-03T09:56:01.621575+00:00",
-  "end_datetime": "2017-09-03T09:56:01.621575+00:00",
+  "start_datetime": "2017-09-05T09:56:01.621575+00:00",
+  "end_datetime": "2017-09-10T09:56:01.621575+00:00",
   "scripts": [{
       "source_uri": "./resources/prerun_product_changeover/pbs.sh",
       "action": null,
@@ -105,7 +105,7 @@
           "units": "kg/m3",
           "type_value": "float",
           "min_value": "1",
-          "max_value": "100",
+          "max_value": "4000",
           "value": "1",
           "options": [],
           "help": "",
@@ -117,8 +117,8 @@
           "label": "Density: Phase 2",
           "units": "kg/m3",
           "type_value": "float",
-          "min_value": "100",
-          "max_value": "1000",
+          "min_value": "1",
+          "max_value": "4000",
           "value": "1000",
           "options": [],
           "help": "",
@@ -145,22 +145,38 @@
       }]
     },
     {
-      "label": "Geometry information",
-      "name": "geometry_properties",
+      "label": "Pipe geometry",
+      "name": "pipe_properties",
       "collapse": false,
       "parameters": [{
-        "name": "pipe_radius",
-        "type": "vtk",
-        "label": "Pipe Radius",
-        "units": "m",
-        "type_value": "float",
-        "min_value": "0.01",
-        "max_value": "0.10",
-        "options": ["0.0725"],
-        "value": "0.0725",
-        "help": "",
-        "enabled": true
-      }]
+          "name": "pipe_radius",
+          "type": "slider",
+          "label": "Radius",
+          "units": "m",
+          "type_value": "float",
+          "min_value": "0.02",
+          "max_value": "0.4",
+          "step": "0.001",
+          "options": [],
+          "value": "0.05",
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "pipe_length",
+          "type": "slider",
+          "label": "Length",
+          "units": "m",
+          "type_value": "float",
+          "min_value": "1",
+          "max_value": "10",
+          "step": "0.1",
+          "options": [],
+          "value": "2",
+          "help": "",
+          "enabled": true
+        }
+      ]
     }
   ],
   "templates": [{
@@ -180,5 +196,8 @@
   "outputs": [{
     "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_product_changeover/output.csv",
     "type": "csv"
+  },{
+    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_product_changeover/video.mp4",
+    "type": "video"
   }]
 }

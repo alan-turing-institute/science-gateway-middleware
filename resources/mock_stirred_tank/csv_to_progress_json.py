@@ -21,7 +21,7 @@ import re
 
 def get_reference_value():
 
-    reference_value = 33.89  # hard-coded reference time for demo
+    reference_value = 0.958954545  # hard-coded reference time for demo
 
     return reference_value
 

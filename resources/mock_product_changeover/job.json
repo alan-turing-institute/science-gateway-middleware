@@ -1,5 +1,5 @@
 {
-  "id": "3957553c-486a-46ed-87c2-3d67f58e7cbf",
+  "id": null,
   "name": "Prerun product changeover",
   "user": "lrmason",
   "description": "A prerun product changeover simulation",
@@ -145,22 +145,38 @@
       }]
     },
     {
-      "label": "Geometry information",
-      "name": "geometry_properties",
+      "label": "Pipe geometry",
+      "name": "pipe_properties",
       "collapse": false,
       "parameters": [{
-        "name": "pipe_radius",
-        "type": "vtk",
-        "label": "Pipe Radius",
-        "units": "m",
-        "type_value": "float",
-        "min_value": "0.01",
-        "max_value": "0.10",
-        "options": ["0.0725"],
-        "value": "0.0725",
-        "help": "",
-        "enabled": true
-      }]
+          "name": "pipe_radius",
+          "type": "slider",
+          "label": "Radius",
+          "units": "m",
+          "type_value": "float",
+          "min_value": "0.02",
+          "max_value": "0.4",
+          "step": "0.001",
+          "options": [],
+          "value": "0.05",
+          "help": "",
+          "enabled": true
+        },
+        {
+          "name": "pipe_length",
+          "type": "slider",
+          "label": "Length",
+          "units": "m",
+          "type_value": "float",
+          "min_value": "1",
+          "max_value": "10",
+          "step": "0.1",
+          "options": [],
+          "value": "2",
+          "help": "",
+          "enabled": true
+        }
+      ]
     }
   ],
   "templates": [{

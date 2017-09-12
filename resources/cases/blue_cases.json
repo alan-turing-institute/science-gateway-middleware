@@ -3,10 +3,10 @@
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/af7fd241-e816-40e5-9a70-49598a452b7b",
     "label": "Stirred Tank",
     "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/stirred_tank.png",
-    "description": "Here we describe the actual Stirred Tank case.",
+    "description": "BLUE multiphase simulation of a stirred tank.",
     "job": {
-      "name": "New Stirred Tank simulation...",
-      "description": "Describe your problem setup...",
+      "name": "Simulation name...",
+      "description": "Describe your simulation...",
       "status": null,
       "creation_datetime": null,
       "start_datetime": null,
@@ -32,13 +32,18 @@
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/get_exec_host.sh",
+          "source_uri": "./resources/mock_stirred_tank/mock_blue.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/setup.sh",
-          "action": "SETUP",
+          "source_uri": "./resources/mock_stirred_tank/source.csv",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/mock_stirred_tank/get_exec_host.sh",
+          "action": null,
           "destination_path": "."
         },
         {
@@ -248,12 +253,12 @@
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/b69eb49b-3045-41d9-8dd7-1c84ea609ff0",
     "label": "Product Changeover",
     "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/product_changeover.png",
-    "description": "Here we describe the actual Product Changeover case.",
+    "description": "BLUE multiphase simulation of product changeover.",
     "job": {
       "id": null,
       "user": "lrmason",
-      "name": "New Product Changeover simulation...",
-      "description": "Describe your problem setup...",
+      "name": "Simulation name...",
+      "description": "Describe your simulation...",
       "status": null,
       "creation_datetime": null,
       "start_datetime": null,
@@ -473,12 +478,12 @@
     "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/50ce1be6-5301-4ff1-95c3-78c83f037b99",
     "label": "Stratified Flow",
     "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/stratified_flow.png",
-    "description": "Here we describe the actual Stratified Flow case.",
+    "description": "BLUE multiphase simulation of a stratified flow.",
     "job": {
       "id": null,
       "user": "lrmason",
-      "name": "New Stratified Flow simulation...",
-      "description": "Describe your problem setup...",
+      "name": "Simulation name...",
+      "description": "Describe your simulation...",
       "status": null,
       "creation_datetime": null,
       "start_datetime": null,
@@ -504,13 +509,18 @@
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/get_exec_host.sh",
+          "source_uri": "./resources/mock_stratified_flow/mock_blue.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/setup.sh",
-          "action": "SETUP",
+          "source_uri": "./resources/mock_stratified_flow/source.csv",
+          "action": null,
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/mock_stratified_flow/get_exec_host.sh",
+          "action": null,
           "destination_path": "."
         },
         {
