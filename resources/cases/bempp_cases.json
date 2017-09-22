@@ -1,0 +1,145 @@
+[{
+    "id": "d932ec58-ea5a-452d-a4ce-bfe190735087",
+    "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/d932ec58-ea5a-452d-a4ce-bfe190735087",
+    "label": "Acoustic Far Field Computation",
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/stirred_tank.png",
+    "description": "Computes scattering from a far object. E.g. SONAR off a submarine.",
+    "job": {
+      "name": "New OSRC simulation...",
+      "description": "Describe your problem setup...",
+      "status": null,
+      "creation_datetime": null,
+      "start_datetime": null,
+      "end_datetime": null,
+      "scripts": [{
+          "source_uri": "./resources/data.sh",
+          "action": "DATA",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/progress.sh",
+          "action": "PROGRESS",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/run.sh",
+          "action": "RUN",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/setup.sh",
+          "action": "SETUP",
+          "destination_path": "."
+        },
+        {
+          "source_uri": "./resources/cancel.sh",
+          "action": "CANCEL",
+          "destination_path": "."
+        }
+      ],
+      "families": [{
+          "label": "Mesh",
+          "name": "input_mesh",
+          "collapse": false,
+          "parameters": [{
+              "name": "mesh_file",
+              "type": "mesh_file",
+              "label": "Radius",
+              "value": "",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Wave Properties",
+          "name": "wave_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "frequency",
+              "type": "input",
+              "label": "frequency",
+              "units": "Hz",
+              "type_value": "float",
+              "min_value": "1e-17",
+              "max_value": "Double.Max_Value",
+              "value": "3000",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "incident_angle",
+              "type": "slider",
+              "label": "Incident Angle",
+              "units": "Degree",
+              "type_value": "float",
+              "min_value": "0",
+              "max_value": "2*pi",
+              "step": "0.0000001",
+              "value": "0",
+              "options": [],
+              "help": "",
+              "enabled": true
+            },
+            {
+              "name": "speed_of_sound",
+              "type": "input",
+              "label": "Speed of Sound in Medium",
+              "units": "m/s",
+              "type_value": "float",
+              "min_value": "0",
+              "value": "1484",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Solver",
+          "name": "solver_properties",
+          "collapse": false,
+          "parameters": [{
+              "name": "solver_tolerance",
+              "type": "input",
+              "label": "Solver Tolerance",
+              "units": "",
+              "type_value": "float",
+              "min_value": "1e-17",
+              "value": "1e-5",
+              "options": [],
+              "help": "",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "label": "Output",
+          "name": "output_properties",
+          "collapse": false,
+          "parameters": [{
+            "name": "evaluation_points",
+            "type": "input",
+            "label": "Far Field Evaluation Points",
+            "units": "",
+            "type_value": "int",
+            "min_value": "0",
+            "value": "400",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }]
+        }
+      ],
+      "templates": [{
+          "source_uri": "./resources/osrc_burton_miller.py",
+          "destination_path": "."
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  }
+]
