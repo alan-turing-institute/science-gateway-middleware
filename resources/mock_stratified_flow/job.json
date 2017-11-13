@@ -61,7 +61,7 @@
     "label": "Stirred Tank",
     "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/stirred_tank.png"
   },
-  "uri": "http://science-gateway-middleware-dev/api/jobs/96ef005e-e4a6-4cb7-a39a-ca269cca9430",
+  "uri": "https://science-gateway-middleware-dev/api/jobs/96ef005e-e4a6-4cb7-a39a-ca269cca9430",
   "families": [
     {
         "label": "Tank",

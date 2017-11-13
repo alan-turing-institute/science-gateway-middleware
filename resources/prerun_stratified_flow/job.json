@@ -4,9 +4,9 @@
   "user": "lrmason",
   "description": "A prerun stratified flow simulation",
   "status": "Complete",
-  "creation_datetime": "2017-09-06T09:56:01.621575+00:00",
-  "start_datetime": "2017-09-06T09:56:01.621575+00:00",
-  "end_datetime": "2017-09-06T09:56:01.621575+00:00",
+  "creation_datetime": "2017-11-06T09:56:01.621575+00:00",
+  "start_datetime": "2017-11-06T09:56:01.621575+00:00",
+  "end_datetime": "2017-11-06T09:56:01.621575+00:00",
   "scripts": [{
       "source_uri": "./resources/prerun_stratified_flow/pbs.sh",
       "action": null,
@@ -59,9 +59,9 @@
     "uri": null,
     "description": "Here we describe the actual Stratified Flow case.",
     "label": "Stratified Flow",
-    "thumbnail": "http://sgmiddleware.blob.core.windows.net/blue/thumbnails/stratified_flow.png"
+    "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/stratified_flow.png"
   },
-  "uri": "http://science-gateway-middleware-dev/api/jobs/19fcb331-6759-4619-bc75-bc7b0588b72f",
+  "uri": "https://science-gateway-middleware-dev/api/jobs/19fcb331-6759-4619-bc75-bc7b0588b72f",
   "families": [{
       "label": "Interface settings",
       "name": "interface_settings",
