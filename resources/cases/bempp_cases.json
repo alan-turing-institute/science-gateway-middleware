@@ -12,27 +12,27 @@
       "start_datetime": null,
       "end_datetime": null,
       "scripts": [{
-          "source_uri": "./resources/data.sh",
+          "source_uri": "./resources/bempp_ex01/data.sh",
           "action": "DATA",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/progress.sh",
+          "source_uri": "./resources/bempp_ex01/progress.sh",
           "action": "PROGRESS",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/run.sh",
+          "source_uri": "./resources/bempp_ex01/run.sh",
           "action": "RUN",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/setup.sh",
+          "source_uri": "./resources/bempp_ex01/setup.sh",
           "action": "SETUP",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/cancel.sh",
+          "source_uri": "./resources/bempp_ex01/cancel.sh",
           "action": "CANCEL",
           "destination_path": "."
         }
@@ -134,7 +134,7 @@
         }
       ],
       "templates": [{
-          "source_uri": "./resources/osrc_burton_miller.py",
+          "source_uri": "./resources/bempp_ex01/job_template.json",
           "destination_path": "."
         }
       ],
