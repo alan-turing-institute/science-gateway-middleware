@@ -10,4 +10,5 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Load cases from resources json file
 LOAD_BLUE_CASES = False
+LOAD_OPENFOAM_CASES = False
 LOAD_DEVELOPMENT_CASES = False

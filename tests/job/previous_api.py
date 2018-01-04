@@ -392,18 +392,18 @@ class TestRunApi(object):
             "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
             "templates": [
                 {
-                    "source_uri": "./resources/templates/Blue.nml",
+                    "source_uri": "./tests/tests/resources/templates/Blue.nml",
                     "destination_path": "project/case/"
                 }
             ],
             "scripts": [
-                {"source_uri": "./resources/scripts/start_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/start_job.sh",
                  "destination_path": "project/case/", "action": "RUN"},
-                {"source_uri": "./resources/scripts/cancel_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/cancel_job.sh",
                  "destination_path": "project/case/", "action": "CANCEL"},
-                {"source_uri": "./resources/scripts/progress_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/progress_job.sh",
                  "destination_path": "project/case/", "action": "PROGRESS"},
-                {"source_uri": "./resources/scripts/setup_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/setup_job.sh",
                  "destination_path": "project/case/", "action": "SETUP"}
             ],
             "parameters": {
@@ -507,18 +507,18 @@ class TestSetupApi(object):
             "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
             "templates": [
                 {
-                    "source_uri": "./resources/templates/Blue.nml",
+                    "source_uri": "./tests/tests/resources/templates/Blue.nml",
                     "destination_path": "project/case/"
                 }
             ],
             "scripts": [
-                {"source_uri": "./resources/scripts/start_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/start_job.sh",
                  "destination_path": "project/case/", "action": "RUN"},
-                {"source_uri": "./resources/scripts/cancel_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/cancel_job.sh",
                  "destination_path": "project/case/", "action": "CANCEL"},
-                {"source_uri": "./resources/scripts/progress_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/progress_job.sh",
                  "destination_path": "project/case/", "action": "PROGRESS"},
-                {"source_uri": "./resources/scripts/setup_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/setup_job.sh",
                  "destination_path": "project/case/", "action": "SETUP"}
             ],
             "parameters": {
@@ -619,18 +619,18 @@ class TestCancelApi(object):
             "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
             "templates": [
                 {
-                    "source_uri": "./resources/templates/Blue.nml",
+                    "source_uri": "./tests/tests/resources/templates/Blue.nml",
                     "destination_path": "project/case/"
                 }
             ],
             "scripts": [
-                {"source_uri": "./resources/scripts/start_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/start_job.sh",
                  "destination_path": "project/case/", "action": "RUN"},
-                {"source_uri": "./resources/scripts/cancel_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/cancel_job.sh",
                  "destination_path": "project/case/", "action": "CANCEL"},
-                {"source_uri": "./resources/scripts/progress_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/progress_job.sh",
                  "destination_path": "project/case/", "action": "PROGRESS"},
-                {"source_uri": "./resources/scripts/setup_job.sh",
+                {"source_uri": "./tests/tests/resources/scripts/setup_job.sh",
                  "destination_path": "project/case/", "action": "SETUP"}
             ],
             "parameters": {
@@ -692,18 +692,18 @@ class TestProgressApi(object):
             "id": "d769843b-6f37-4939-96c7-c382c3e74b46",
             "templates": [
                 {
-                    "source_uri": "./resources/templates/Blue.nml",
+                    "source_uri": "./tests/resources/templates/Blue.nml",
                     "destination_path": "project/case/"
                 }
             ],
             "scripts": [
-                {"source_uri": "./resources/scripts/start_job.sh",
+                {"source_uri": "./tests/resources/scripts/start_job.sh",
                  "destination_path": "project/case/", "action": "RUN"},
-                {"source_uri": "./resources/scripts/cancel_job.sh",
+                {"source_uri": "./tests/resources/scripts/cancel_job.sh",
                  "destination_path": "project/case/", "action": "CANCEL"},
-                {"source_uri": "./resources/scripts/progress_job.sh",
+                {"source_uri": "./tests/resources/scripts/progress_job.sh",
                  "destination_path": "project/case/", "action": "PROGRESS"},
-                {"source_uri": "./resources/scripts/setup_job.sh",
+                {"source_uri": "./tests/resources/scripts/setup_job.sh",
                  "destination_path": "project/case/", "action": "SETUP"}
             ],
             "parameters": {
