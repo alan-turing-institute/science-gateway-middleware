@@ -1,12 +1,12 @@
 {
-  "id": "3957553c-486a-46ed-87c2-3d67f58e7cbf",
-  "name": "Product changeover (Demo)",
+  "id": null,
+  "name": "Prerun product changeover",
   "user": "lrmason",
   "description": "A prerun product changeover simulation",
   "status": "Complete",
-  "creation_datetime": "2017-11-03T09:56:01.621575+00:00",
-  "start_datetime": "2017-11-05T09:56:01.621575+00:00",
-  "end_datetime": "2017-11-10T09:56:01.621575+00:00",
+  "creation_datetime": "2017-09-03T09:56:01.621575+00:00",
+  "start_datetime": "2017-09-03T09:56:01.621575+00:00",
+  "end_datetime": "2017-09-03T09:56:01.621575+00:00",
   "scripts": [{
       "source_uri": "./resources/prerun_product_changeover/pbs.sh",
       "action": null,
@@ -105,7 +105,7 @@
           "units": "kg/m3",
           "type_value": "float",
           "min_value": "1",
-          "max_value": "4000",
+          "max_value": "100",
           "value": "1",
           "options": [],
           "help": "",
@@ -117,8 +117,8 @@
           "label": "Density: Phase 2",
           "units": "kg/m3",
           "type_value": "float",
-          "min_value": "1",
-          "max_value": "4000",
+          "min_value": "100",
+          "max_value": "1000",
           "value": "1000",
           "options": [],
           "help": "",
@@ -196,8 +196,5 @@
   "outputs": [{
     "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_product_changeover/output.csv",
     "type": "csv"
-  },{
-    "destination_path": "https://sgmiddleware.blob.core.windows.net/blue/prerun_product_changeover/video.mp4",
-    "type": "video"
   }]
 }

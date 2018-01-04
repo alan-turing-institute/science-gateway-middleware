@@ -58,22 +58,10 @@ data_required = [
         "units": "s"
     },
     {
-        "csv_variable": "Kinetic Energy",
-        "label": "Kinetic energy",
-        "tag": "kineticEnergy",
-        "units": "J"
-    },
-    {
-        "csv_variable": "Max(div(V))",
-        "label": "Maximum velocity divergence",
-        "tag": "maximumVelocityDivergence",
-        "units": "m/s2"
-    },
-    {
-        "csv_variable": "1_EAST_MASS_FLUX",
-        "label": "Outlet mass flux (Liquid)",
-        "tag": "outletMassFluxLiquid",
-        "units": "kg/s"
+        "csv_variable": "ptx(EAST) ",
+        "label": "Interface position",
+        "tag": "interfacePosition",
+        "units": "m"
     }
 ]
 

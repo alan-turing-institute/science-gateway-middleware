@@ -1,12 +1,12 @@
 {
-  "id": "96ef005e-e4a6-4cb7-a39a-ca269cca9430",
-  "name": "Stirred tank (Demo)",
+  "id": null,
+  "name": "DEMO Stirred tank",
   "user": "lrmason",
   "description": "Stirred tank example.",
   "status": "Complete",
-  "creation_datetime": "2017-11-01T09:56:01.621575+00:00",
-  "start_datetime": "2017-11-08T09:56:01.621575+00:00",
-  "end_datetime": "2017-11-11T09:56:01.621575+00:00",
+  "creation_datetime": "2017-09-01T09:56:01.621575+00:00",
+  "start_datetime": "2017-09-08T09:56:01.621575+00:00",
+  "end_datetime": "2017-09-11T09:56:01.621575+00:00",
   "scripts": [{
       "source_uri": "./resources/prerun_stirred_tank/pbs.sh",
       "action": null,

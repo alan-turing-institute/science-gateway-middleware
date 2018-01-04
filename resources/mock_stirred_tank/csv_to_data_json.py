@@ -58,22 +58,34 @@ data_required = [
         "units": "s"
     },
     {
+        "csv_variable": "ptz(SOUTH)",
+        "label": "Interface base",
+        "tag": "interfaceBase",
+        "units": "m"
+    },
+    {
+        "csv_variable": "dt",
+        "label": "Timestep magnitude",
+        "tag": "dt",
+        "units": "s"
+    },
+    {
+        "csv_variable": "MAX_VELOCITY_MAGNITUDE",
+        "label": "Maximum velocity magnitude",
+        "tag": "maxVelocityMagnitude",
+        "units": "m/s"
+    },
+    {
         "csv_variable": "Kinetic Energy",
         "label": "Kinetic energy",
         "tag": "kineticEnergy",
         "units": "J"
     },
     {
-        "csv_variable": "Max(div(V))",
-        "label": "Maximum velocity divergence",
-        "tag": "maximumVelocityDivergence",
-        "units": "m/s2"
-    },
-    {
-        "csv_variable": "1_EAST_MASS_FLUX",
-        "label": "Outlet mass flux (Liquid)",
-        "tag": "outletMassFluxLiquid",
-        "units": "kg/s"
+        "csv_variable": "INTERFACE_SURFACE_AREA",
+        "label": "Interfacial surface area",
+        "tag": "interfaceSurfaceArea",
+        "units": "m"
     }
 ]
 

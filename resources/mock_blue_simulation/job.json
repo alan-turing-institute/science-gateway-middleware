@@ -12,6 +12,11 @@
       "destination_path": "."
     },
     {
+      "source_uri": "./resources/mock_blue_simulation/source.csv",
+      "action": null,
+      "destination_path": "."
+    },
+    {
       "source_uri": "./resources/mock_blue_simulation/data.sh",
       "action": "DATA",
       "destination_path": "."

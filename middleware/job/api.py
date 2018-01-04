@@ -297,6 +297,7 @@ class RunApi(Resource):
         job_api = JobApi(job_repository=self.jobs,
                          middleware_only_fields=self.middleware_only_fields)
         updated_job = job_api._patch_job(job_id, request)
+        updated_job.start_datetime = arrow.utcnow()
         manager = JIM(updated_job, job_repository=self.jobs)
         return manager.run()
 
