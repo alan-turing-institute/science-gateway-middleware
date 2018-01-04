@@ -106,13 +106,13 @@ def create_app(config_name,
     app._job_repository = job_repository
 
     prerun_job_list = [
-        './resources/prerun_product_changeover/job.json',
-        './resources/prerun_stirred_tank/job.json',
-        './resources/prerun_stratified_flow/job.json'
+        './resources/blue/prerun_product_changeover/job.json',
+        './resources/blue/prerun_stirred_tank/job.json',
+        './resources/blue/prerun_stratified_flow/job.json'
     ]
 
     if app.config['LOAD_BLUE_CASES']:
-        cases_json_filename = './resources/cases/blue_cases.json'
+        cases_json_filename = './resources/case_lists/blue.json'
         case_list = json_to_case_list(cases_json_filename)
 
         with app.app_context():
@@ -127,7 +127,7 @@ def create_app(config_name,
                 app._job_repository.create(demo_job)
 
     elif app.config['LOAD_DEVELOPMENT_CASES']:
-        cases_json_filename = './resources/cases/development_cases.json'
+        cases_json_filename = './resources/case_lists/development.json'
         case_list = json_to_case_list(cases_json_filename)
         with app.app_context():
             for case in case_list:
