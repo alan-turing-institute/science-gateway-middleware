@@ -28,8 +28,13 @@
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/data.sh",
-        "action": "DATA",
+        "source_uri": "./resources/openfoam/damBreak/get_exec_host.sh",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/setup.sh",
+        "action": "SETUP",
         "destination_path": "."
       },
       {
@@ -38,13 +43,13 @@
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/progress.sh",
-        "action": "PROGRESS",
+        "source_uri": "./resources/openfoam/damBreak/data.sh",
+        "action": "DATA",
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/get_exec_host.sh",
-        "action": null,
+        "source_uri": "./resources/openfoam/damBreak/progress.sh",
+        "action": "PROGRESS",
         "destination_path": "."
       },
       {
@@ -65,33 +70,34 @@
     ],
     "families": [
       {
-        "label": "Viscosities",
-        "name": "viscosity_properties",
+        "label": "Kinematic viscosities",
+        "name": "kinematic_viscosity_properties",
         "collapse": false,
-        "parameters": [{
-            "name": "viscosity_phase_1",
+        "parameters": [
+          {
+            "name": "disperse_nu",
             "type": "slider",
-            "label": "Viscosity: Phase 1",
-            "units": "Pa s",
+            "label": "Disperse phase",
+            "units": "m/s²",
             "type_value": "float",
-            "min_value": "0.00001",
-            "max_value": "0.01",
-            "step": "0.0001",
-            "value": "0.00001825",
+            "min_value": "1e-6",
+            "max_value": "1e-4",
+            "step": "1e-06",
+            "value": "1e-06",
             "options": [],
             "help": "",
             "enabled": true
           },
           {
-            "name": "viscosity_phase_2",
+            "name": "continuous_nu",
             "type": "slider",
-            "label": "Viscosity: Phase 2",
-            "units": "Pa s",
+            "label": "Continuous phase",
+            "units": "m/s²",
             "type_value": "float",
-            "min_value": "0.001",
-            "max_value": "0.01",
-            "step": "0.0001",
-            "value": "0.001",
+            "min_value": "1e-06",
+            "max_value": "1e-04",
+            "step": "1e-06",
+            "value": "1.48e-05",
             "options": [],
             "help": "",
             "enabled": true
@@ -102,30 +108,31 @@
         "label": "Densities",
         "name": "density_properties",
         "collapse": false,
-        "parameters": [{
-            "name": "density_phase_1",
+        "parameters": [
+          {
+            "name": "disperse_rho",
             "type": "slider",
-            "label": "Density: Phase 1",
-            "units": "kg/m3",
+            "label": "Density: Disperse phase",
+            "units": "kg/m³",
             "type_value": "float",
             "min_value": "1",
-            "max_value": "100",
+            "max_value": "2000",
             "step": "1",
-            "value": "1.205",
+            "value": "1000",
             "options": [],
             "help": "",
             "enabled": true
           },
           {
-            "name": "density_phase_2",
+            "name": "continuous_rho",
             "type": "slider",
-            "label": "Density: Phase 2",
-            "units": "kg/m3",
+            "label": "Density: Disperse phase",
+            "units": "kg/m³",
             "type_value": "float",
-            "min_value": "100",
-            "max_value": "3000",
+            "min_value": "1",
+            "max_value": "2000",
             "step": "10",
-            "value": "1000",
+            "value": "1",
             "options": [],
             "help": "",
             "enabled": true
@@ -140,11 +147,12 @@
           "name": "surface_tension",
           "type": "slider",
           "label": "Surface Tension",
-          "units": "mN/m",
+          "units": "N/m",
           "type_value": "float",
-          "min_value": "0",
-          "max_value": "100",
-          "value": "72.5",
+          "min_value": "0.01",
+          "max_value": "0.1",
+          "step": "0.001",
+          "value": "0.07",
           "options": [],
           "help": "",
           "enabled": true
@@ -152,6 +160,10 @@
       }
     ],
     "templates": [
+      {
+        "source_uri": "./resources/openfoam/damBreak/pyfoam_patch.py",
+        "destination_path": "."
+      },
       {
         "source_uri": "./resources/openfoam/damBreak/system/blockMeshDict",
         "destination_path": "system/blockMeshDict"

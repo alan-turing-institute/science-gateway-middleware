@@ -238,7 +238,7 @@ class job_information_manager():
         command = "cd {}; bash {}".format(remote_path, script_name)
         out, err, exit_code = connection.pass_command(command)
         if debug:
-            print(out)
+            print(out, err, exit_code)
         return out, err, exit_code
 
     def _run_remote_command(self, command, debug=False):
@@ -307,6 +307,7 @@ class job_information_manager():
             else:  # support {"destination_path": null} in job json
                 script_path = self.job_working_directory_path
 
+            print("self._run_remote_script({}, {})".format(script_name, script_path))
             out, err, exit = self._run_remote_script(script_name, script_path)
 
             # for "RUN" actions, we need to persist the backend identifier

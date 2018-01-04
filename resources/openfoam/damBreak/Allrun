@@ -7,6 +7,9 @@ cd ${0%/*} || exit 1    # Run from this directory
 # Get application name
 application=`getApplication`
 
+# patch openfoam input parameters
+python pyfoam_patch.py
+
 runApplication blockMesh
 runApplication setFields
 runApplication $application
