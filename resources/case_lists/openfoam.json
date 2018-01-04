@@ -1,7 +1,7 @@
 [{
   "id": "4bddb6ba-f726-436a-826f-bc529e339594",
   "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/4bddb6ba-f726-436a-826f-bc529e339594",
-  "label": "openfoam_dambreak",
+  "label": "Dam Break",
   "thumbnail": "https://sgmiddleware.blob.core.windows.net/openfoam/thumbnails/damBreak.png",
   "description": "OpenFOAM breaking of a dam.",
   "job": {
@@ -52,7 +52,7 @@
         "destination_path": "."
       }
     ],
-    "families": [{},
+    "families": [
       {
         "label": "Viscosities",
         "name": "viscosity_properties",
@@ -140,25 +140,10 @@
         }]
       }
     ],
-    "templates": [{
-        "source_uri": "./resources/openfoam/damBreak/0",
-        "destination_path": "."
-      },
+    "templates": [
       {
-        "source_uri": "./resources/openfoam/damBreak/constant",
-        "destination_path": "."
-      },
-      {
-        "source_uri": "./resources/openfoam/damBreak/system",
-        "destination_path": "."
-      },
-      {
-        "source_uri": "./resources/openfoam/damBreak/Allrun",
-        "destination_path": "."
-      },
-      {
-        "source_uri": "./resources/openfoam/damBreak/Allclean",
-        "destination_path": "."
+        "source_uri": "./resources/openfoam/damBreak/system/blockMeshDict",
+        "destination_path": "system/blockMeshDict"
       }
     ],
     "inputs": [],

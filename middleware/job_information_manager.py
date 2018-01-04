@@ -196,7 +196,9 @@ class job_information_manager():
         all_files.extend(self.inputs_list)
         all_files.extend(self.patched_templates)
 
-        # these are Script and Input model objects
+        # these are Script, Input and Template model objects
+        existing_remote_dirs = [self.job_working_directory_path]
+
         for file_object in all_files:
             file_full_path = file_object.source_uri
             file_name = os.path.basename(file_full_path)
@@ -206,6 +208,15 @@ class job_information_manager():
                     file_object.destination_path)
             else:  # support {"destination_path": null} in job json
                 dest_path = self.job_working_directory_path
+
+            # creating a remote dir may be bandwidth expensive
+            # so keep track of what has been created already
+            dest_dir = posixpath.dirname(dest_path)
+            if dest_dir not in existing_remote_dirs:
+                make_remote_dir = "mkdir -p {}".format(dest_dir)
+                connection.pass_command(make_remote_dir)
+                existing_remote_dirs.append(dest_dir)
+
             connection.secure_copy(file_full_path, dest_path)
 
             # convert line endings
@@ -236,6 +247,18 @@ class job_information_manager():
         Shouldnt be called directly.
         """
         connection = self._ssh_connection()
+        out, err, exit_code = connection.pass_command(command)
+        if debug:
+            print(out)
+        return out, err, exit_code
+
+    def _make_remote_directory(self, relative_path, debug=True):
+        """
+        Method to make a remote directory.
+        """
+        connection = self._ssh_connection()
+        command = "cd {}; mkdir -p {}".format(self.job_working_directory_path, relative_path)
+        if debug: print("DEBUG INFO:", command)
         out, err, exit_code = connection.pass_command(command)
         if debug:
             print(out)

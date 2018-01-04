@@ -61,7 +61,7 @@ class ssh():
         Use SCPClient to copy files over an ssh connection.
         """
         with SCPClient(self.client.get_transport()) as scp:
-            scp.put(filename, destination_path)
+            scp.put(filename, destination_path, recursive=True)
 
     def close_connection(self):
         """
