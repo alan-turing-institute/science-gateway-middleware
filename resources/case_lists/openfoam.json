@@ -1,0 +1,167 @@
+[{
+  "id": "4bddb6ba-f726-436a-826f-bc529e339594",
+  "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/4bddb6ba-f726-436a-826f-bc529e339594",
+  "label": "openfoam_dambreak",
+  "thumbnail": "https://sgmiddleware.blob.core.windows.net/openfoam/thumbnails/damBreak.png",
+  "description": "OpenFOAM breaking of a dam.",
+  "job": {
+    "name": "Simulation name...",
+    "description": "Describe your simulation...",
+    "status": null,
+    "creation_datetime": null,
+    "start_datetime": null,
+    "end_datetime": null,
+    "scripts": [{
+        "source_uri": "./resources/openfoam/damBreak/pbs.sh",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/data.sh",
+        "action": "DATA",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/run.sh",
+        "action": "RUN",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/progress.sh",
+        "action": "PROGRESS",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/get_exec_host.sh",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/cancel.sh",
+        "action": "CANCEL",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/csv_to_data_json.py",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/csv_to_progress_json.py",
+        "action": null,
+        "destination_path": "."
+      }
+    ],
+    "families": [{},
+      {
+        "label": "Viscosities",
+        "name": "viscosity_properties",
+        "collapse": false,
+        "parameters": [{
+            "name": "viscosity_phase_1",
+            "type": "slider",
+            "label": "Viscosity: Phase 1",
+            "units": "Pa s",
+            "type_value": "float",
+            "min_value": "0.00001",
+            "max_value": "0.01",
+            "step": "0.0001",
+            "value": "0.00001825",
+            "options": [],
+            "help": "",
+            "enabled": true
+          },
+          {
+            "name": "viscosity_phase_2",
+            "type": "slider",
+            "label": "Viscosity: Phase 2",
+            "units": "Pa s",
+            "type_value": "float",
+            "min_value": "0.001",
+            "max_value": "0.01",
+            "step": "0.0001",
+            "value": "0.001",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "Densities",
+        "name": "density_properties",
+        "collapse": false,
+        "parameters": [{
+            "name": "density_phase_1",
+            "type": "slider",
+            "label": "Density: Phase 1",
+            "units": "kg/m3",
+            "type_value": "float",
+            "min_value": "1",
+            "max_value": "100",
+            "step": "1",
+            "value": "1.205",
+            "options": [],
+            "help": "",
+            "enabled": true
+          },
+          {
+            "name": "density_phase_2",
+            "type": "slider",
+            "label": "Density: Phase 2",
+            "units": "kg/m3",
+            "type_value": "float",
+            "min_value": "100",
+            "max_value": "3000",
+            "step": "10",
+            "value": "1000",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "Surface tension",
+        "name": "surface_tension_properties",
+        "collapse": false,
+        "parameters": [{
+          "name": "surface_tension",
+          "type": "slider",
+          "label": "Surface Tension",
+          "units": "mN/m",
+          "type_value": "float",
+          "min_value": "0",
+          "max_value": "100",
+          "value": "72.5",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }]
+      }
+    ],
+    "templates": [{
+        "source_uri": "./resources/openfoam/damBreak/0",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/constant",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/system",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/Allrun",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/Allclean",
+        "destination_path": "."
+      }
+    ],
+    "inputs": [],
+    "outputs": []
+  }
+}]
