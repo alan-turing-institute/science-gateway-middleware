@@ -11,7 +11,18 @@
     "creation_datetime": null,
     "start_datetime": null,
     "end_datetime": null,
-    "scripts": [{
+    "scripts": [
+      {
+        "source_uri": "./resources/openfoam/damBreak/Allrun",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/Allclean",
+        "action": null,
+        "destination_path": "."
+      },
+      {
         "source_uri": "./resources/openfoam/damBreak/pbs.sh",
         "action": null,
         "destination_path": "."
@@ -144,6 +155,54 @@
       {
         "source_uri": "./resources/openfoam/damBreak/system/blockMeshDict",
         "destination_path": "system/blockMeshDict"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/system/controlDict",
+        "destination_path": "system/controlDict"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/system/decomposeParDict",
+        "destination_path": "system/decomposeParDict"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/system/fvSchemes",
+        "destination_path": "system/fvSchemes"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/system/fvSolution",
+        "destination_path": "system/fvSolution"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/system/setFieldsDict",
+        "destination_path": "system/setFieldsDict"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/constant/g",
+        "destination_path": "constant/g"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/constant/transportProperties",
+        "destination_path": "constant/transportProperties"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/constant/turbulenceProperties",
+        "destination_path": "constant/turbulenceProperties"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/0/U",
+        "destination_path": "0/U"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/0/alpha.water",
+        "destination_path": "0/alpha.water"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/0/alpha.water.orig",
+        "destination_path": "0/alpha.water.orig"
+      },
+      {
+        "source_uri": "./resources/openfoam/damBreak/0/p_rgh",
+        "destination_path": "0/p_rgh"
       }
     ],
     "inputs": [],
