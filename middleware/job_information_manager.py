@@ -257,8 +257,8 @@ class job_information_manager():
         Method to make a remote directory.
         """
         connection = self._ssh_connection()
-        command = "cd {}; mkdir -p {}".format(self.job_working_directory_path, relative_path)
-        if debug: print("DEBUG INFO:", command)
+        command = "cd {}; mkdir -p {}".format(
+            self.job_working_directory_path, relative_path)
         out, err, exit_code = connection.pass_command(command)
         if debug:
             print(out)
