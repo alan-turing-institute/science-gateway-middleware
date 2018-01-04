@@ -2,33 +2,38 @@
   "name": null,
   "status": "new",
   "scripts": [{
-      "source_uri": "./resources/minimal_blue_test/pbs.sh",
+      "source_uri": "./resources/blue/minimal_blue_test/pbs.sh",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/progress.sh",
-      "action": "PROGRESS",
+      "source_uri": "./resources/blue/minimal_blue_test/data.sh",
+      "action": "DATA",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/run.sh",
+      "source_uri": "./resources/blue/minimal_blue_test/run.sh",
       "action": "RUN",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/get_exec_host.sh",
+      "source_uri": "./resources/blue/minimal_blue_test/get_exec_host.sh",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/setup.sh",
+      "source_uri": "./resources/blue/minimal_blue_test/setup.sh",
       "action": "SETUP",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/cancel.sh",
+      "source_uri": "./resources/blue/minimal_blue_test/cancel.sh",
       "action": "CANCEL",
+      "destination_path": "."
+    },
+    {
+      "source_uri": "./resources/blue/minimal_blue_test/csv_to_data_json.py",
+      "action": null,
       "destination_path": "."
     }
   ],
@@ -49,15 +54,15 @@
   "user": null,
   "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
   "templates": [{
-      "source_uri": "./resources/minimal_blue_test/Blue.nml",
+      "source_uri": "./resources/blue/minimal_blue_test/Blue.nml",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/Makefile",
+      "source_uri": "./resources/blue/minimal_blue_test/Makefile",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/minimal_blue_test/aeration.f90",
+      "source_uri": "./resources/blue/minimal_blue_test/aeration.f90",
       "destination_path": "."
     }
   ],

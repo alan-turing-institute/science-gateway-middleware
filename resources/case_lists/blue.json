@@ -12,52 +12,52 @@
       "start_datetime": null,
       "end_datetime": null,
       "scripts": [{
-          "source_uri": "./resources/mock_stirred_tank/pbs.sh",
+          "source_uri": "./resources/blue/mock_stirred_tank/pbs.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/data.sh",
+          "source_uri": "./resources/blue/mock_stirred_tank/data.sh",
           "action": "DATA",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/progress.sh",
+          "source_uri": "./resources/blue/mock_stirred_tank/progress.sh",
           "action": "PROGRESS",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/run.sh",
+          "source_uri": "./resources/blue/mock_stirred_tank/run.sh",
           "action": "RUN",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/mock_blue.py",
+          "source_uri": "./resources/blue/mock_stirred_tank/mock_blue.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/source.csv",
+          "source_uri": "./resources/blue/mock_stirred_tank/source.csv",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/get_exec_host.sh",
+          "source_uri": "./resources/blue/mock_stirred_tank/get_exec_host.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/cancel.sh",
+          "source_uri": "./resources/blue/mock_stirred_tank/cancel.sh",
           "action": "CANCEL",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/csv_to_data_json.py",
+          "source_uri": "./resources/blue/mock_stirred_tank/csv_to_data_json.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/csv_to_progress_json.py",
+          "source_uri": "./resources/blue/mock_stirred_tank/csv_to_progress_json.py",
           "action": null,
           "destination_path": "."
         }
@@ -232,15 +232,15 @@
         }
       ],
       "templates": [{
-          "source_uri": "./resources/mock_stirred_tank/Blue.nml",
+          "source_uri": "./resources/blue/mock_stirred_tank/Blue.nml",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/Makefile",
+          "source_uri": "./resources/blue/mock_stirred_tank/Makefile",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stirred_tank/input.f90",
+          "source_uri": "./resources/blue/mock_stirred_tank/input.f90",
           "destination_path": "."
         }
       ],
@@ -264,52 +264,52 @@
       "start_datetime": null,
       "end_datetime": null,
       "scripts": [{
-          "source_uri": "./resources/mock_product_changeover/pbs.sh",
+          "source_uri": "./resources/blue/mock_product_changeover/pbs.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/data.sh",
+          "source_uri": "./resources/blue/mock_product_changeover/data.sh",
           "action": "DATA",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/progress.sh",
+          "source_uri": "./resources/blue/mock_product_changeover/progress.sh",
           "action": "PROGRESS",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/run.sh",
+          "source_uri": "./resources/blue/mock_product_changeover/run.sh",
           "action": "RUN",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/mock_blue.py",
+          "source_uri": "./resources/blue/mock_product_changeover/mock_blue.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/source.csv",
+          "source_uri": "./resources/blue/mock_product_changeover/source.csv",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/get_exec_host.sh",
+          "source_uri": "./resources/blue/mock_product_changeover/get_exec_host.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/cancel.sh",
+          "source_uri": "./resources/blue/mock_product_changeover/cancel.sh",
           "action": "CANCEL",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/csv_to_data_json.py",
+          "source_uri": "./resources/blue/mock_product_changeover/csv_to_data_json.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/csv_to_progress_json.py",
+          "source_uri": "./resources/blue/mock_product_changeover/csv_to_progress_json.py",
           "action": null,
           "destination_path": "."
         }
@@ -457,15 +457,15 @@
         }
       ],
       "templates": [{
-          "source_uri": "./resources/mock_product_changeover/Blue.nml",
+          "source_uri": "./resources/blue/mock_product_changeover/Blue.nml",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/Makefile",
+          "source_uri": "./resources/blue/mock_product_changeover/Makefile",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_product_changeover/input.f90",
+          "source_uri": "./resources/blue/mock_product_changeover/input.f90",
           "destination_path": "."
         }
       ],
@@ -489,52 +489,52 @@
       "start_datetime": null,
       "end_datetime": null,
       "scripts": [{
-          "source_uri": "./resources/mock_stratified_flow/pbs.sh",
+          "source_uri": "./resources/blue/mock_stratified_flow/pbs.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/data.sh",
+          "source_uri": "./resources/blue/mock_stratified_flow/data.sh",
           "action": "DATA",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/progress.sh",
+          "source_uri": "./resources/blue/mock_stratified_flow/progress.sh",
           "action": "PROGRESS",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/run.sh",
+          "source_uri": "./resources/blue/mock_stratified_flow/run.sh",
           "action": "RUN",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/mock_blue.py",
+          "source_uri": "./resources/blue/mock_stratified_flow/mock_blue.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/source.csv",
+          "source_uri": "./resources/blue/mock_stratified_flow/source.csv",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/get_exec_host.sh",
+          "source_uri": "./resources/blue/mock_stratified_flow/get_exec_host.sh",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/cancel.sh",
+          "source_uri": "./resources/blue/mock_stratified_flow/cancel.sh",
           "action": "CANCEL",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/csv_to_data_json.py",
+          "source_uri": "./resources/blue/mock_stratified_flow/csv_to_data_json.py",
           "action": null,
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/csv_to_progress_json.py",
+          "source_uri": "./resources/blue/mock_stratified_flow/csv_to_progress_json.py",
           "action": null,
           "destination_path": "."
         }
@@ -676,15 +676,15 @@
         }
       ],
       "templates": [{
-          "source_uri": "./resources/mock_stratified_flow/Blue.nml",
+          "source_uri": "./resources/blue/mock_stratified_flow/Blue.nml",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/Makefile",
+          "source_uri": "./resources/blue/mock_stratified_flow/Makefile",
           "destination_path": "."
         },
         {
-          "source_uri": "./resources/mock_stratified_flow/input.f90",
+          "source_uri": "./resources/blue/mock_stratified_flow/input.f90",
           "destination_path": "."
         }
       ],

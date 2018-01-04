@@ -1,54 +1,54 @@
 {
-  "id": null,
-  "name": "DEMO Stirred tank",
+  "id": "96ef005e-e4a6-4cb7-a39a-ca269cca9430",
+  "name": "Stirred tank (Demo)",
   "user": "lrmason",
   "description": "Stirred tank example.",
   "status": "Complete",
-  "creation_datetime": "2017-09-01T09:56:01.621575+00:00",
-  "start_datetime": "2017-09-08T09:56:01.621575+00:00",
-  "end_datetime": "2017-09-11T09:56:01.621575+00:00",
+  "creation_datetime": "2017-11-01T09:56:01.621575+00:00",
+  "start_datetime": "2017-11-08T09:56:01.621575+00:00",
+  "end_datetime": "2017-11-11T09:56:01.621575+00:00",
   "scripts": [{
-      "source_uri": "./resources/prerun_stirred_tank/pbs.sh",
+      "source_uri": "./resources/blue/prerun_stirred_tank/pbs.sh",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/data.sh",
+      "source_uri": "./resources/blue/prerun_stirred_tank/data.sh",
       "action": "DATA",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/progress.sh",
+      "source_uri": "./resources/blue/prerun_stirred_tank/progress.sh",
       "action": "PROGRESS",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/Pprerun_stirred_tank/run.sh",
+      "source_uri": "./resources/blue/Pprerun_stirred_tank/run.sh",
       "action": "RUN",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/get_exec_host.sh",
+      "source_uri": "./resources/blue/prerun_stirred_tank/get_exec_host.sh",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/setup.sh",
+      "source_uri": "./resources/blue/prerun_stirred_tank/setup.sh",
       "action": "SETUP",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/cancel.sh",
+      "source_uri": "./resources/blue/prerun_stirred_tank/cancel.sh",
       "action": "CANCEL",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/csv_to_data_json.py",
+      "source_uri": "./resources/blue/prerun_stirred_tank/csv_to_data_json.py",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/csv_to_progress_json.py",
+      "source_uri": "./resources/blue/prerun_stirred_tank/csv_to_progress_json.py",
       "action": null,
       "destination_path": "."
     }
@@ -233,15 +233,15 @@
       }
   ],
   "templates": [{
-      "source_uri": "./resources/prerun_stirred_tank/Blue.nml",
+      "source_uri": "./resources/blue/prerun_stirred_tank/Blue.nml",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/Makefile",
+      "source_uri": "./resources/blue/prerun_stirred_tank/Makefile",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_stirred_tank/input.f90",
+      "source_uri": "./resources/blue/prerun_stirred_tank/input.f90",
       "destination_path": "."
     }
   ],

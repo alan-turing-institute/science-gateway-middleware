@@ -8,47 +8,47 @@
   "start_datetime": "2017-11-05T09:56:01.621575+00:00",
   "end_datetime": "2017-11-10T09:56:01.621575+00:00",
   "scripts": [{
-      "source_uri": "./resources/prerun_product_changeover/pbs.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/pbs.sh",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/data.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/data.sh",
       "action": "DATA",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/progress.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/progress.sh",
       "action": "PROGRESS",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/run.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/run.sh",
       "action": "RUN",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/get_exec_host.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/get_exec_host.sh",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/setup.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/setup.sh",
       "action": "SETUP",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/cancel.sh",
+      "source_uri": "./resources/blue/prerun_product_changeover/cancel.sh",
       "action": "CANCEL",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/csv_to_data_json.py",
+      "source_uri": "./resources/blue/prerun_product_changeover/csv_to_data_json.py",
       "action": null,
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/csv_to_progress_json.py",
+      "source_uri": "./resources/blue/prerun_product_changeover/csv_to_progress_json.py",
       "action": null,
       "destination_path": "."
     }
@@ -180,15 +180,15 @@
     }
   ],
   "templates": [{
-      "source_uri": "./resources/prerun_product_changeover/Blue.nml",
+      "source_uri": "./resources/blue/prerun_product_changeover/Blue.nml",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/Makefile",
+      "source_uri": "./resources/blue/prerun_product_changeover/Makefile",
       "destination_path": "."
     },
     {
-      "source_uri": "./resources/prerun_product_changeover/input.f90",
+      "source_uri": "./resources/blue/prerun_product_changeover/input.f90",
       "destination_path": "."
     }
   ],

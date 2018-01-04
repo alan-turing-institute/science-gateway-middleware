@@ -8,42 +8,42 @@
     "name": null,
     "status": "new",
     "scripts": [{
-        "source_uri": "./resources/mock_blue_simulation/pbs.sh",
+        "source_uri": "./resources/blue/mock_blue_simulation/pbs.sh",
         "action": null,
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/mock_blue.py",
+        "source_uri": "./resources/blue/mock_blue_simulation/mock_blue.py",
         "action": null,
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/data.sh",
+        "source_uri": "./resources/blue/mock_blue_simulation/data.sh",
         "action": "DATA",
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/progress.sh",
+        "source_uri": "./resources/blue/mock_blue_simulation/progress.sh",
         "action": "PROGRESS",
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/run.sh",
+        "source_uri": "./resources/blue/mock_blue_simulation/run.sh",
         "action": "RUN",
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/get_exec_host.sh",
+        "source_uri": "./resources/blue/mock_blue_simulation/get_exec_host.sh",
         "action": null,
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/cancel.sh",
+        "source_uri": "./resources/blue/mock_blue_simulation/cancel.sh",
         "action": "CANCEL",
         "destination_path": "."
       },
       {
-        "source_uri": "./resources/mock_blue_simulation/csv_to_data_json.py",
+        "source_uri": "./resources/blue/mock_blue_simulation/csv_to_data_json.py",
         "action": null,
         "destination_path": "."
       }
@@ -118,7 +118,7 @@
     "user": null,
     "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
     "templates": [{
-      "source_uri": "./resources/mock_blue_simulation/Blue.nml",
+      "source_uri": "./resources/blue/mock_blue_simulation/Blue.nml",
       "destination_path": "."
     }],
     "inputs": []
