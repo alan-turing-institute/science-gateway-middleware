@@ -1,0 +1,4 @@
+{"speed_of_sound": ${parameters["speed_of_sound"]},
+ "incident_angle": ${parameters["incident_angle"]},
+ "frequency": ${parameters["frequency"]}
+ }
