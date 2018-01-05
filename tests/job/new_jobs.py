@@ -688,7 +688,7 @@ def new_job4():
     job.scripts.append(Script(
         action="CANCEL",
         source_uri="j4s3source",
-        destination_path="j4s1_dest"
+        destination_path="j4s3_dest"
     ))
     job.scripts.append(Script(
         action="SETUP",

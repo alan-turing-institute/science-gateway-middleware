@@ -15,57 +15,57 @@
       {
         "source_uri": "./resources/openfoam/damBreak/Allrun",
         "action": null,
-        "destination_path": "."
+        "destination_path": "Allrun"
       },
       {
         "source_uri": "./resources/openfoam/damBreak/Allclean",
         "action": null,
-        "destination_path": "."
+        "destination_path": "Allclean"
       },
       {
         "source_uri": "./resources/openfoam/damBreak/pbs.sh",
         "action": null,
-        "destination_path": "."
+        "destination_path": "pbs.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/get_exec_host.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/get_exec_host.sh",
         "action": null,
-        "destination_path": "."
+        "destination_path": "bin/get_exec_host.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/setup.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/setup.sh",
         "action": "SETUP",
-        "destination_path": "."
+        "destination_path": "bin/setup.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/run.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/run.sh",
         "action": "RUN",
-        "destination_path": "."
+        "destination_path": "bin/run.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/data.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/data.sh",
         "action": "DATA",
-        "destination_path": "."
+        "destination_path": "bin/data.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/progress.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/progress.sh",
         "action": "PROGRESS",
-        "destination_path": "."
+        "destination_path": "bin/progress.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/cancel.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/cancel.sh",
         "action": "CANCEL",
-        "destination_path": "."
+        "destination_path": "bin/cancel.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/csv_to_data_json.py",
+        "source_uri": "./resources/openfoam/damBreak/bin/csv_to_data_json.py",
         "action": null,
-        "destination_path": "."
+        "destination_path": "bin/csv_to_data_json.py"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/csv_to_progress_json.py",
+        "source_uri": "./resources/openfoam/damBreak/bin/csv_to_progress_json.py",
         "action": null,
-        "destination_path": "."
+        "destination_path": "bin/csv_to_data_json.py"
       }
     ],
     "families": [
@@ -161,8 +161,8 @@
     ],
     "templates": [
       {
-        "source_uri": "./resources/openfoam/damBreak/pyfoam_patch.py",
-        "destination_path": "."
+        "source_uri": "./resources/openfoam/damBreak/bin/pyfoam_patch.py",
+        "destination_path": "bin/pyfoam_patch.py"
       },
       {
         "source_uri": "./resources/openfoam/damBreak/system/blockMeshDict",

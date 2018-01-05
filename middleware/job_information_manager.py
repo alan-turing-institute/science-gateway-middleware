@@ -227,7 +227,7 @@ class job_information_manager():
 
         connection.close_connection()
 
-    def _run_remote_script(self, script_name, remote_path, debug=False):
+    def _run_remote_script(self, script_path, call_dir, debug=False):
         """
         Method to run a given script, located in a remote location.
         Set the debug flag to print stdout to the terminal, and to enable
@@ -235,7 +235,7 @@ class job_information_manager():
         Shouldnt be called directly.
         """
         connection = self._ssh_connection()
-        command = "cd {}; bash {}".format(remote_path, script_name)
+        command = "cd {}; bash {}".format(call_dir, script_path)
         out, err, exit_code = connection.pass_command(command)
         if debug:
             print(out, err, exit_code)
@@ -299,15 +299,19 @@ class job_information_manager():
                 break
         # If the script isn't found, return a 400 error
         if to_trigger:
-            script_name = os.path.basename(to_trigger.source_uri)
-            if to_trigger.destination_path:
-                script_path = posixpath.join(
-                    self.job_working_directory_path,
-                    to_trigger.destination_path)
-            else:  # support {"destination_path": null} in job json
-                script_path = self.job_working_directory_path
+            # script_name = os.path.basename(to_trigger.source_uri)
+            # if to_trigger.destination_path:
+            #     script_path = posixpath.join(
+            #         self.job_working_directory_path,
+            #         to_trigger.destination_path)
+            # else:  # support {"destination_path": null} in job json
+            #     script_path = self.job_working_directory_path
 
-            out, err, exit = self._run_remote_script(script_name, script_path)
+            # call all scripts from the job working directory
+            script_path = to_trigger.destination_path
+            call_dir = self.job_working_directory_path
+
+            out, err, exit = self._run_remote_script(script_path, call_dir)
 
             # for "RUN" actions, we need to persist the backend identifier
             # and submission status to the database
