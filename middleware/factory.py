@@ -5,7 +5,7 @@ from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.job.sqlalchemy_repository import CaseRepositorySqlAlchemy
 from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
                                 DataApi, CancelApi, CaseApi, CasesApi,
-                                ThumbnailApi)
+                                StoreApi, ThumbnailApi)
 from middleware.database import db, ma
 from middleware.job.schema import CaseSchema, JobSchema
 import json
@@ -184,6 +184,11 @@ def create_app(config_name,
 
     api.add_resource(CancelApi,
                      '{}/<string:job_id>'.format(URI_STEMS['cancel']),
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(StoreApi,
+                     '{}/<string:job_id>'.format(URI_STEMS['store']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 

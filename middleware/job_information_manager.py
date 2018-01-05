@@ -321,6 +321,7 @@ class job_information_manager():
                     self.job.backend_identifier = backend_identifier
                     self.job.status = "Queued"
                     self.jobs.update(self.job)
+
             if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
                 # guard against empty string (for queued jobs)
@@ -434,3 +435,11 @@ class job_information_manager():
         """
         # Execute the cancel script
         return self.trigger_action_script('CANCEL')
+
+    def store(self):
+        """
+        This is the STORE behaviour for this job manager. Method ignores
+        any data passed as part of the request.
+        """
+        # Execute the cancel script
+        return self.trigger_action_script('STORE')

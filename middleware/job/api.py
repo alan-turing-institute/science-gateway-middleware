@@ -302,6 +302,22 @@ class RunApi(Resource):
         return manager.run()
 
 
+class StoreApi(Resource):
+    """API endpoint called to store job ouptput (POST)"""
+    def __init__(self, **kwargs):
+        # Inject job service
+        self.jobs = kwargs['job_repository']
+
+    def post(self, job_id):
+
+        job = self.jobs.get_by_id(job_id)
+        if job:
+            manager = JIM(job, job_repository=self.jobs)
+            return manager.store()
+        else:
+            abort(404, message="Job {} not found".format(job_id))
+
+
 class ThumbnailApi(Resource):
     """API endpoint called to return static files (GET)"""
     def __init__(self, **kwargs):
