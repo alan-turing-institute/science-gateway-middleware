@@ -6,7 +6,7 @@ from azure.storage.blob import ContentSettings
 # set credentials
 block_blob_service = BlockBlobService(
     account_name='sgmiddleware',
-    account_key='Lo7QSq3FspUifKH1vHVc0hqgfuJZktiZYxMIdeq38Hd6lWLwkO/4MOarljlLHD//27GDpZJuJ8eWv94Dkr5T/Q==')
+    account_key='secret')
 
 # show existing blobs
 generator = block_blob_service.list_blobs('test')
