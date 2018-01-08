@@ -9,7 +9,8 @@ mkdir $lockdir  || {
     echo "lock directory exists. exiting"
     exit 1
 }
-# take pains to remove lock directory when script terminates
+
+# remove lock directory
 trap "rmdir $lockdir" EXIT INT KILL TERM
 
 # move files to mock storage
