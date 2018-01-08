@@ -28,6 +28,11 @@
         "destination_path": "pbs.sh"
       },
       {
+        "source_uri": "./resources/openfoam/damBreak/bin/sync_storage_azure.sh",
+        "action": null,
+        "destination_path": "bin/sync_storage_azure.sh"
+      },
+      {
         "source_uri": "./resources/openfoam/damBreak/bin/get_exec_host.sh",
         "action": null,
         "destination_path": "bin/get_exec_host.sh"

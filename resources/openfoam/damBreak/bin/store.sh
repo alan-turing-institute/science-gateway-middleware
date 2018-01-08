@@ -1,3 +1,9 @@
 #!/bin/bash
 
-/home/vm-admin/miniconda/bin/python bin/store_azure.py  # TODO install conda python into root
+PBS_JOB_ID=$(cat bin/pbs_job_id)
+EXEC_HOST=$(bash bin/get_exec_host.sh)
+TMPDIR="/tmp/pbs.$PBS_JOB_ID"
+
+ssh $EXEC_HOST "cd $TMPDIR && bash bin/sync_storage_azure.sh"
+
+# TODO handle completed jobs (where storage will be from /work instead of compute node $TMPDIR)
