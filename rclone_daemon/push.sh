@@ -3,7 +3,6 @@
 CONTAINER='rclone'
 JOB_ID='jobid'
 
-# lockdir=/tmp/AXgqg0lsoeykp9L9NZjIuaqvu7ANILL4foeqzpJcTs3YkwtiJ0
 lockdir='.lock_rclone'
 
 mkdir $lockdir  || {
