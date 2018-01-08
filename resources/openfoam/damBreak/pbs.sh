@@ -2,6 +2,8 @@
 #PBS -j oe
 #PBS -o "TEST.out"
 
+
+STORAGE_SCRIPT='./bin/storage_sync_azure.sh'
 STORAGE_SYNC_FREQUENCY=10
 
 echo "Start PBS"
@@ -23,20 +25,25 @@ mkdir -p $TMPDIR
 cp -r $PBS_O_WORKDIR/* $TMPDIR  # TODO explicitly copy only required files
 cd $TMPDIR
 
-(while `true`; do ./bin/sync_storage_azure.sh; sleep $STORAGE_SYNC_FREQUENCY; done) &
+# run storage daemon loop and collect its PID number
+(while `true`; do $STORAGE_SCRIPT; sleep $STORAGE_SYNC_FREQUENCY; done) &
+STORAGE_DAEMON_PID=$!
 
 source /opt/openfoam5/etc/bashrc
 ./Allrun
 
+# here we ensure cloud storage is complete, before local cluster storage
+
+# STORAGE SYSTEM A: cloud provider storage
+# kill storage daemon loop and ensure that it completes
+# one full cycle
+kill STORAGE_DAEMON_PID
+$STORAGE_SCRIPT
+
+# STORAGE SYSTEM B: local cluster storage
 # copy back timestep information
 for timestep in $(foamListTimes); do
   cp -r $TMPDIR/$timestep $PBS_O_WORKDIR
 done
-
-
-# wait for sync storage to complete
-# (i.e. wait until lock directory has been removed)
-sleep 30
-
 
 echo "End PBS"

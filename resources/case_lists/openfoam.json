@@ -28,9 +28,9 @@
         "destination_path": "pbs.sh"
       },
       {
-        "source_uri": "./resources/openfoam/damBreak/bin/sync_storage_azure.sh",
+        "source_uri": "./resources/openfoam/damBreak/bin/storage_sync_azure.sh",
         "action": null,
-        "destination_path": "bin/sync_storage_azure.sh"
+        "destination_path": "bin/storage_sync_azure.sh"
       },
       {
         "source_uri": "./resources/openfoam/damBreak/bin/get_exec_host.sh",
@@ -165,6 +165,10 @@
       }
     ],
     "templates": [
+      {
+        "source_uri": "./resources/openfoam/damBreak/bin/job_id",
+        "destination_path": "bin/job_id"
+      },
       {
         "source_uri": "./resources/openfoam/damBreak/bin/pyfoam_patch.py",
         "destination_path": "bin/pyfoam_patch.py"

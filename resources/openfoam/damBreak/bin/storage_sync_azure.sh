@@ -1,9 +1,12 @@
 #!/bin/bash
 
-CONTAINER='rclone'
-BLOB_STEM_NAME='jobid'
+JOB_ID=$(cat bin/job_id)
+PBS_JOB_ID=$(cat bin/pbs_job_id)
 
-lockdir='.lock_rclone'
+CONTAINER='openfoam'
+BLOB_STEM_NAME=$JOB_ID
+
+lockdir='.lock_storage_sync'
 
 mkdir $lockdir  || {
     echo "lock directory exists. exiting"

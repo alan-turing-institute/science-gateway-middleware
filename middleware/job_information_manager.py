@@ -111,6 +111,7 @@ class job_information_manager():
 
     def _parameters_to_mako_dict(self, parameters):
         mako_dict = {}
+        mako_dict['job_id'] = self.job_id  # make job_id available to mako
         if parameters:
             for p in parameters:
                 mako_dict[p.name] = p.value
