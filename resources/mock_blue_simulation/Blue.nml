@@ -1,8 +1,0 @@
-&MODEL_PROPERTIES
-!-------------------------------------------------------------------------------------------------------------------------------
-! Time step factor multipliers
-  initial_value    = ${parameters['initial_value']}
-  gradient   = ${parameters['gradient']}
-  timestep_max = ${parameters['timestep_max']}
-  dt = ${parameters['dt']}
-!--------------------------------------------------------------------------------------------------------------------------------
