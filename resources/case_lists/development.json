@@ -1,126 +1,170 @@
 [{
-  "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
-  "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/af7fd241-e816-40e5-9a70-49598a452b7b",
-  "label": null,
-  "thumbnail": null,
-  "description": "Mock Blue case",
+  "id": "bf8856a4-6cd3-441d-872d-7ba9dbd9f9a4",
+  "uri": "https://science-gateway-middleware-dev.azurewebsites.net/api/cases/bf8856a4-6cd3-441d-872d-7ba9dbd9f9a4",
+  "label": "Dam Break",
+  "thumbnail": "https://sgmiddleware.blob.core.windows.net/blue/thumbnails/stirred_tank.png",
+  "description": "Blue mock simulation.",
   "job": {
-    "name": null,
-    "status": "new",
-    "scripts": [{
-        "source_uri": "./resources/blue/mock_blue_simulation/pbs.sh",
+    "name": "Simulation name...",
+    "description": "Describe your simulation...",
+    "status": null,
+    "creation_datetime": null,
+    "start_datetime": null,
+    "end_datetime": null,
+    "scripts": [
+      {
+        "source_uri": "./resources/blue/mock_case/mock_blue.py",
         "action": null,
-        "destination_path": "."
+        "destination_path": "mock_blue.py"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/mock_blue.py",
+        "source_uri": "./resources/blue/mock_case/pbs.sh",
         "action": null,
-        "destination_path": "."
+        "destination_path": "pbs.sh"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/data.sh",
-        "action": "DATA",
-        "destination_path": "."
+        "source_uri": "./resources/blue/mock_case/bin/storage_sync_azure.sh",
+        "action": null,
+        "destination_path": "bin/storage_sync_azure.sh"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/progress.sh",
-        "action": "PROGRESS",
-        "destination_path": "."
+        "source_uri": "./resources/blue/mock_case/bin/get_exec_host.sh",
+        "action": null,
+        "destination_path": "bin/get_exec_host.sh"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/run.sh",
+        "source_uri": "./resources/blue/mock_case/bin/run.sh",
         "action": "RUN",
-        "destination_path": "."
+        "destination_path": "bin/run.sh"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/get_exec_host.sh",
-        "action": null,
-        "destination_path": "."
+        "source_uri": "./resources/blue/mock_case/bin/data.sh",
+        "action": "DATA",
+        "destination_path": "bin/data.sh"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/cancel.sh",
+        "source_uri": "./resources/blue/mock_case/bin/progress.sh",
+        "action": "PROGRESS",
+        "destination_path": "bin/progress.sh"
+      },
+      {
+        "source_uri": "./resources/blue/mock_case/bin/cancel.sh",
         "action": "CANCEL",
-        "destination_path": "."
+        "destination_path": "bin/cancel.sh"
       },
       {
-        "source_uri": "./resources/blue/mock_blue_simulation/csv_to_data_json.py",
+        "source_uri": "./resources/blue/mock_case/bin/csv_to_data_json.py",
         "action": null,
-        "destination_path": "."
+        "destination_path": "bin/csv_to_data_json.py"
+      },
+      {
+        "source_uri": "./resources/blue/mock_case/bin/csv_to_progress_json.py",
+        "action": null,
+        "destination_path": "bin/csv_to_data_json.py"
       }
     ],
-    "id": "f17f97ea-ea74-468e-b637-b78f53f03b2d",
-    "backend_identifier": null,
-    "case": {
-      "id": "884cf075-a2a4-47bf-9d4d-844adc91946b",
-      "uri": null,
-      "description": "Mock blue job for testing",
-      "label": "mock_blue",
-      "thumbnail": null
-    },
-    "uri": "https://science-gateway-middleware.azurewebsites.net/api/jobs/f17f97ea-ea74-468e-b637-b78f53f03b2d",
-    "description": null,
-    "end_datetime": null,
-    "start_datetime": null,
-    "families": [{
-      "label": "Time step information",
-      "name": "model_properties",
-      "collapse": false,
-      "parameters": [{
-        "name": "initial_value",
-        "type": "slider",
-        "label": "Initial value",
-        "units": "kg",
-        "type_value": "float",
-        "min_value": "0.1",
-        "max_value": "10.0",
-        "value": "0.5",
-        "options": [],
-        "help": "",
-        "disabled": false
-      }, {
-        "name": "gradient",
-        "type": "slider",
-        "label": "Gradient",
-        "units": "kg/s",
-        "type_value": "float",
-        "min_value": "200",
-        "max_value": "400",
-        "value": "150",
-        "options": [],
-        "help": "",
-        "disabled": false
-      }, {
-        "name": "timestep_max",
-        "type": "slider",
-        "label": "Maximum timestep",
-        "units": "",
-        "type_value": "float",
-        "min_value": "10",
-        "max_value": "600",
-        "value": "300",
-        "options": [],
-        "help": "",
-        "disabled": false
-      }, {
-        "name": "dt",
-        "type": "slider",
-        "label": "Timestep magnitude",
-        "units": "s",
-        "type_value": "float",
-        "min_value": "0.001",
-        "max_value": "0.01",
-        "value": "0.005",
-        "options": [],
-        "help": "",
-        "disabled": false
-      }]
-    }],
-    "user": null,
-    "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
-    "templates": [{
-      "source_uri": "./resources/blue/mock_blue_simulation/Blue.nml",
-      "destination_path": "."
-    }],
-    "inputs": []
+    "families": [
+      {
+        "label": "Kinematic viscosities",
+        "name": "kinematic_viscosity_properties",
+        "collapse": false,
+        "parameters": [
+          {
+            "name": "disperse_nu",
+            "type": "slider",
+            "label": "Disperse phase",
+            "units": "m/s²",
+            "type_value": "float",
+            "min_value": "1e-6",
+            "max_value": "1e-4",
+            "step": "1e-06",
+            "value": "1e-06",
+            "options": [],
+            "help": "",
+            "enabled": true
+          },
+          {
+            "name": "continuous_nu",
+            "type": "slider",
+            "label": "Continuous phase",
+            "units": "m/s²",
+            "type_value": "float",
+            "min_value": "1e-06",
+            "max_value": "1e-04",
+            "step": "1e-06",
+            "value": "1.48e-05",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "Densities",
+        "name": "density_properties",
+        "collapse": false,
+        "parameters": [
+          {
+            "name": "disperse_rho",
+            "type": "slider",
+            "label": "Density: Disperse phase",
+            "units": "kg/m³",
+            "type_value": "float",
+            "min_value": "1",
+            "max_value": "2000",
+            "step": "1",
+            "value": "1000",
+            "options": [],
+            "help": "",
+            "enabled": true
+          },
+          {
+            "name": "continuous_rho",
+            "type": "slider",
+            "label": "Density: Disperse phase",
+            "units": "kg/m³",
+            "type_value": "float",
+            "min_value": "1",
+            "max_value": "2000",
+            "step": "10",
+            "value": "1",
+            "options": [],
+            "help": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "Surface tension",
+        "name": "surface_tension_properties",
+        "collapse": false,
+        "parameters": [{
+          "name": "surface_tension",
+          "type": "slider",
+          "label": "Surface Tension",
+          "units": "N/m",
+          "type_value": "float",
+          "min_value": "0.01",
+          "max_value": "0.1",
+          "step": "0.001",
+          "value": "0.07",
+          "options": [],
+          "help": "",
+          "enabled": true
+        }]
+      }
+    ],
+    "templates": [
+      {
+        "source_uri": "./resources/blue/mock_case/bin/job_id",
+        "destination_path": "bin/job_id"
+      },
+      {
+        "source_uri": "./resources/blue/mock_case/Blue.nml",
+        "destination_path": "Blue.nml"
+      }
+    ],
+    "inputs": [],
+    "outputs": []
   }
 }]
