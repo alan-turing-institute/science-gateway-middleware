@@ -126,14 +126,14 @@ def create_app(config_name,
                 demo_job = JobSchema().make_job(demo_job_json)
                 app._job_repository.create(demo_job)
 
-    elif app.config['LOAD_OPENFOAM_CASES']:
+    if app.config['LOAD_OPENFOAM_CASES']:
         cases_json_filename = './resources/case_lists/openfoam.json'
         case_list = json_to_case_list(cases_json_filename)
         with app.app_context():
             for case in case_list:
                 app._case_repository.create(case)
 
-    elif app.config['LOAD_DEVELOPMENT_CASES']:
+    if app.config['LOAD_DEVELOPMENT_CASES']:
         cases_json_filename = './resources/case_lists/development.json'
         case_list = json_to_case_list(cases_json_filename)
         with app.app_context():
