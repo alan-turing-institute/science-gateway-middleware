@@ -8,6 +8,13 @@ import json
 from instance.config import *
 from werkzeug.exceptions import ServiceUnavailable
 
+import arrow
+from azure.storage.blob import (
+    BlockBlobService,
+    ContainerPermissions
+)
+from datetime import datetime, timedelta
+
 # precedence for secrets variables is:
 # 1. Via environment varables
 # 2. Via instance/config.py
@@ -24,6 +31,10 @@ if 'SSH_PRIVATE_KEY_PATH' not in locals():
     SSH_PRIVATE_KEY_PATH = None
 if 'SSH_PRIVATE_KEY_STRING' not in locals():
     SSH_PRIVATE_KEY_STRING = None
+if 'STORAGE_ACCOUNT' not in locals():
+    STORAGE_ACCOUNT = None
+if 'STORAGE_KEY' not in locals():
+    STORAGE_PRIVATE_KEY_STRING = None
 if 'SIM_ROOT' not in locals():
     SIM_ROOT = '/home/test_user'
 
@@ -44,6 +55,10 @@ SSH_PRIVATE_KEY_STRING = os.environ.get(
 if isinstance(SSH_PRIVATE_KEY_STRING, str):
     SSH_PRIVATE_KEY_STRING = SSH_PRIVATE_KEY_STRING.replace(r'\n', "\n")
 
+STORAGE_ACCOUNT = os.environ.get('STORAGE_KEY', STORAGE_ACCOUNT)
+STORAGE_KEY = os.environ.get('STORAGE_KEY', STORAGE_KEY)
+
+
 SIM_ROOT = os.environ.get(
     'SIM_ROOT', SIM_ROOT)
 
@@ -56,6 +71,8 @@ if debug_variables:
     print('SSH_PORT', SSH_PORT)
     print('SSH_PRIVATE_KEY_PATH', SSH_PRIVATE_KEY_PATH)
     print('SSH_PRIVATE_KEY_STRING', SSH_PRIVATE_KEY_STRING)
+    print('STORAGE_ACCOUNT', STORAGE_ACCOUNT)
+    print('STORAGE_KEY', STORAGE_KEY)
 
 
 class job_information_manager():
@@ -79,6 +96,13 @@ class job_information_manager():
         self.simulation_root = SIM_ROOT
         self.private_key_path = SSH_PRIVATE_KEY_PATH
         self.private_key_string = SSH_PRIVATE_KEY_STRING
+
+        self.storage_account = STORAGE_ACCOUNT
+        self.storage_key = STORAGE_KEY
+        self.container_name = 'openfoam'
+
+        self.blob_service = BlockBlobService(
+            account_name=self.storage_account, account_key=self.storage_key)
 
         self.job = job
         self.jobs = job_repository
@@ -112,9 +136,8 @@ class job_information_manager():
     def _parameters_to_mako_dict(self, parameters):
         mako_dict = {}
         mako_dict['job_id'] = self.job_id  # make job_id available to mako
-
-        self.job_storage_token = r'?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-01-31T00:25:16Z&st=2018-01-30T16:25:16Z&spr=https&sig=eR9h%2BoID1NxytgThgsWa3bljCsU1yDNlxwukWdkArT8%3D'
-        mako_dict['job_storage_token'] = self.job_storage_token
+        mako_dict['job_storage_token'] = self._azure_sas_token()
+        # print(mako_dict)
         if parameters:
             for p in parameters:
                 mako_dict[p.name] = p.value
@@ -174,6 +197,18 @@ class job_information_manager():
             # exception that will be passed to API client as a HTTP error
             raise(ServiceUnavailable(
                 description="Unable to connect to backend compute resource"))
+
+    def _azure_sas_token(self):
+        """
+        Create token that expires in n days
+        """
+        duration = 1 # days
+        token = self.blob_service.generate_container_shared_access_signature(
+            self.container_name,
+            ContainerPermissions.WRITE,
+            arrow.utcnow().shift(days=duration),
+        )
+        return '?'+token
 
     def create_job_directory(self, debug=False):
         """
