@@ -1,8 +1,10 @@
 #!/bin/bash
 
 JOB_ID=$(cat bin/job_id)
+JOB_STORAGE_TOKEN=$(cat bin/job_storage_token)
 PBS_JOB_ID=$(cat bin/pbs_job_id)
 
+ACCOUNT='sgmiddleware'
 CONTAINER='openfoam'
 BLOB_STEM_NAME=$JOB_ID
 
@@ -16,6 +18,16 @@ mkdir $lockdir  || {
 # remove lock directory
 trap "rmdir $lockdir" EXIT INT KILL TERM
 
-# move files to mock storage
-# rclone sync --include-from include-file.txt output remote:$CONTAINER/$BLOB_STEM_NAME
-rclone sync . Azure:$CONTAINER/$BLOB_STEM_NAME
+# transfer files to cloud storage
+/home/vm-admin/miniconda/bin/blobxfer upload \
+    --sas "$JOB_STORAGE_TOKEN" \
+    --storage-account $ACCOUNT \
+    --remote-path $CONTAINER/$JOB_ID \
+    --local-path . \
+    --no-overwrite \
+    --recursive
+
+# fine-grained control over overwrite decision
+#--skip-on-filesize-match
+#--skip-on-lmt-ge  (most approriate?)
+#--skip-on-md5-match

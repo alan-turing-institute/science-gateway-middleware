@@ -112,6 +112,9 @@ class job_information_manager():
     def _parameters_to_mako_dict(self, parameters):
         mako_dict = {}
         mako_dict['job_id'] = self.job_id  # make job_id available to mako
+
+        self.job_storage_token = r'?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-01-31T00:25:16Z&st=2018-01-30T16:25:16Z&spr=https&sig=eR9h%2BoID1NxytgThgsWa3bljCsU1yDNlxwukWdkArT8%3D'
+        mako_dict['job_storage_token'] = self.job_storage_token
         if parameters:
             for p in parameters:
                 mako_dict[p.name] = p.value

@@ -170,6 +170,10 @@
         "destination_path": "bin/job_id"
       },
       {
+        "source_uri": "./resources/openfoam/damBreak/bin/job_storage_token",
+        "destination_path": "bin/job_storage_token"
+      },
+      {
         "source_uri": "./resources/openfoam/damBreak/bin/pyfoam_patch.py",
         "destination_path": "bin/pyfoam_patch.py"
       },

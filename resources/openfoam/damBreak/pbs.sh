@@ -2,7 +2,6 @@
 #PBS -j oe
 #PBS -o "TEST.out"
 
-
 STORAGE_SCRIPT='./bin/storage_sync_azure.sh'
 STORAGE_SYNC_FREQUENCY=10
 
@@ -10,8 +9,8 @@ echo "Start PBS"
 
 # kill all child processes on exit
 # note: this is likely handled automatically by the schedular
-# trap "exit" INT TERM
-# trap "kill 0" EXIT
+trap "exit" INT TERM
+trap "kill 0" EXIT
 
 set -vx
 
@@ -37,6 +36,7 @@ source /opt/openfoam5/etc/bashrc
 # STORAGE SYSTEM A: cloud provider storage
 # kill storage daemon loop and ensure that it completes
 # one full cycle
+
 kill STORAGE_DAEMON_PID
 $STORAGE_SCRIPT
 
