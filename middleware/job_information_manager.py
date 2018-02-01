@@ -13,7 +13,6 @@ from azure.storage.blob import (
     BlockBlobService,
     ContainerPermissions
 )
-from datetime import datetime, timedelta
 
 # precedence for secrets variables is:
 # 1. Via environment varables
@@ -204,19 +203,14 @@ class job_information_manager():
         Create token that expires in n days
         """
         duration = 1 # days
-        sas = self.blob_service.generate_container_shared_access_signature(
+        token = self.blob_service.generate_container_shared_access_signature(
             container_name=self.container_name,
             permission=self.blob_permission,
             protocol='https',
             start=arrow.utcnow().shift(hours=-1).datetime,
             expiry=arrow.utcnow().shift(days=1).datetime)
 
-        token = self.blob_service.generate_container_shared_access_signature(
-            self.container_name,
-            ContainerPermissions.WRITE,
-            arrow.utcnow().shift(days=duration),
-        )
-        return '?'+token
+        return token
 
     def create_job_directory(self, debug=False):
         """
