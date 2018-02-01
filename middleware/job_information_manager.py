@@ -103,6 +103,7 @@ class job_information_manager():
 
         self.blob_service = BlockBlobService(
             account_name=self.storage_account, account_key=self.storage_key)
+        self.blob_permission = ContainerPermissions(read=True, write=True)
 
         self.job = job
         self.jobs = job_repository
@@ -203,6 +204,13 @@ class job_information_manager():
         Create token that expires in n days
         """
         duration = 1 # days
+        sas = self.blob_service.generate_container_shared_access_signature(
+            container_name=self.container_name,
+            permission=self.blob_permission,
+            protocol='https',
+            start=arrow.utcnow().shift(hours=-1).datetime,
+            expiry=arrow.utcnow().shift(days=1).datetime)
+
         token = self.blob_service.generate_container_shared_access_signature(
             self.container_name,
             ContainerPermissions.WRITE,
