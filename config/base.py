@@ -6,6 +6,7 @@ URI_STEMS = {'jobs': '/api/jobs',
              'run': '/api/run',
              'cancel': '/api/cancel',
              'progress': '/api/progress',
+             'store': '/api/store',
              'data': '/api/data',
              'cases': '/api/cases',
              'thumbnails': '/assets/thumbnails'}

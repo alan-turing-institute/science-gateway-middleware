@@ -688,7 +688,7 @@ def new_job4():
     job.scripts.append(Script(
         action="CANCEL",
         source_uri="j4s3source",
-        destination_path="j4s1_dest"
+        destination_path="j4s3_dest"
     ))
     job.scripts.append(Script(
         action="SETUP",
@@ -765,23 +765,23 @@ def new_job5():
     )
 
     job.templates.append(Template(
-        source_uri="./resources/templates/Blue.nml",
+        source_uri="./tests/resources/templates/Blue.nml",
         destination_path="project/case/"))
     job.scripts.append(Script(
         action="RUN",
-        source_uri="./resources/scripts/run_job.sh",
+        source_uri="./tests/resources/scripts/run_job.sh",
         destination_path="project/case/"))
     job.scripts.append(Script(
         action="PROGRESS",
-        source_uri="./resources/scripts/progress_job.sh",
+        source_uri="./tests/resources/scripts/progress_job.sh",
         destination_path="project/case/"))
     job.scripts.append(Script(
         action="CANCEL",
-        source_uri="./resources/scripts/cancel_job.sh",
+        source_uri="./tests/resources/scripts/cancel_job.sh",
         destination_path="project/case/"))
     job.scripts.append(Script(
         action="SETUP",
-        source_uri="./resources/scripts/setup_job.sh",
+        source_uri="./tests/resources/scripts/setup_job.sh",
         destination_path="project/case/"))
     job.inputs.append(Input(
         source_uri="j5i1source",

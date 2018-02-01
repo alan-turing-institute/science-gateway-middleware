@@ -5,7 +5,7 @@ from middleware.job.sqlalchemy_repository import JobRepositorySqlAlchemy
 from middleware.job.sqlalchemy_repository import CaseRepositorySqlAlchemy
 from middleware.job.api import (JobApi, JobsApi, SetupApi, RunApi, ProgressApi,
                                 DataApi, CancelApi, CaseApi, CasesApi,
-                                ThumbnailApi)
+                                StoreApi, ThumbnailApi)
 from middleware.database import db, ma
 from middleware.job.schema import CaseSchema, JobSchema
 import json
@@ -106,13 +106,13 @@ def create_app(config_name,
     app._job_repository = job_repository
 
     prerun_job_list = [
-        './resources/prerun_product_changeover/job.json',
-        './resources/prerun_stirred_tank/job.json',
-        './resources/prerun_stratified_flow/job.json'
+        './resources/blue/prerun_product_changeover/job.json',
+        './resources/blue/prerun_stirred_tank/job.json',
+        './resources/blue/prerun_stratified_flow/job.json'
     ]
 
     if app.config['LOAD_BLUE_CASES']:
-        cases_json_filename = './resources/cases/blue_cases.json'
+        cases_json_filename = './resources/case_lists/blue.json'
         case_list = json_to_case_list(cases_json_filename)
 
         with app.app_context():
@@ -126,8 +126,15 @@ def create_app(config_name,
                 demo_job = JobSchema().make_job(demo_job_json)
                 app._job_repository.create(demo_job)
 
-    elif app.config['LOAD_DEVELOPMENT_CASES']:
-        cases_json_filename = './resources/cases/development_cases.json'
+    if app.config['LOAD_OPENFOAM_CASES']:
+        cases_json_filename = './resources/case_lists/openfoam.json'
+        case_list = json_to_case_list(cases_json_filename)
+        with app.app_context():
+            for case in case_list:
+                app._case_repository.create(case)
+
+    if app.config['LOAD_DEVELOPMENT_CASES']:
+        cases_json_filename = './resources/case_lists/development.json'
         case_list = json_to_case_list(cases_json_filename)
         with app.app_context():
             for case in case_list:
@@ -177,6 +184,11 @@ def create_app(config_name,
 
     api.add_resource(CancelApi,
                      '{}/<string:job_id>'.format(URI_STEMS['cancel']),
+                     resource_class_kwargs={'job_repository':
+                                            app._job_repository})
+
+    api.add_resource(StoreApi,
+                     '{}/<string:job_id>'.format(URI_STEMS['store']),
                      resource_class_kwargs={'job_repository':
                                             app._job_repository})
 

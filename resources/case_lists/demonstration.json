@@ -1,0 +1,126 @@
+[{
+  "id": "af7fd241-e816-40e5-9a70-49598a452b7b",
+  "uri": "https://science-gateway-middleware.azurewebsites.net/api/cases/af7fd241-e816-40e5-9a70-49598a452b7b",
+  "label": null,
+  "thumbnail": null,
+  "description": "Mock Blue case",
+  "job": {
+    "name": null,
+    "status": "new",
+    "scripts": [{
+        "source_uri": "./resources/blue/mock_blue_simulation/pbs.sh",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/mock_blue.py",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/data.sh",
+        "action": "DATA",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/progress.sh",
+        "action": "PROGRESS",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/run.sh",
+        "action": "RUN",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/get_exec_host.sh",
+        "action": null,
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/cancel.sh",
+        "action": "CANCEL",
+        "destination_path": "."
+      },
+      {
+        "source_uri": "./resources/blue/mock_blue_simulation/csv_to_data_json.py",
+        "action": null,
+        "destination_path": "."
+      }
+    ],
+    "id": "f17f97ea-ea74-468e-b637-b78f53f03b2d",
+    "backend_identifier": null,
+    "case": {
+      "id": "884cf075-a2a4-47bf-9d4d-844adc91946b",
+      "uri": null,
+      "description": "Mock blue job for testing",
+      "label": "mock_blue",
+      "thumbnail": null
+    },
+    "uri": "https://science-gateway-middleware.azurewebsites.net/api/jobs/f17f97ea-ea74-468e-b637-b78f53f03b2d",
+    "description": null,
+    "end_datetime": null,
+    "start_datetime": null,
+    "families": [{
+      "label": "Time step information",
+      "name": "model_properties",
+      "collapse": false,
+      "parameters": [{
+        "name": "initial_value",
+        "type": "slider",
+        "label": "Initial value",
+        "units": "kg",
+        "type_value": "float",
+        "min_value": "0.1",
+        "max_value": "10.0",
+        "value": "0.5",
+        "options": [],
+        "help": "",
+        "disabled": false
+      }, {
+        "name": "gradient",
+        "type": "slider",
+        "label": "Gradient",
+        "units": "kg/s",
+        "type_value": "float",
+        "min_value": "200",
+        "max_value": "400",
+        "value": "150",
+        "options": [],
+        "help": "",
+        "disabled": false
+      }, {
+        "name": "timestep_max",
+        "type": "slider",
+        "label": "Maximum timestep",
+        "units": "",
+        "type_value": "float",
+        "min_value": "10",
+        "max_value": "600",
+        "value": "300",
+        "options": [],
+        "help": "",
+        "disabled": false
+      }, {
+        "name": "dt",
+        "type": "slider",
+        "label": "Timestep magnitude",
+        "units": "s",
+        "type_value": "float",
+        "min_value": "0.001",
+        "max_value": "0.01",
+        "value": "0.005",
+        "options": [],
+        "help": "",
+        "disabled": false
+      }]
+    }],
+    "user": null,
+    "creation_datetime": "2017-08-21T09:56:01.621575+00:00",
+    "templates": [{
+      "source_uri": "./resources/blue/mock_blue_simulation/Blue.nml",
+      "destination_path": "."
+    }],
+    "inputs": []
+  }
+}]

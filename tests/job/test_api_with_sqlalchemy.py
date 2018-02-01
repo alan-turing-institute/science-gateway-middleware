@@ -82,12 +82,12 @@ def session(db, request):
     return session
 
 
-def mock_run_remote(
-        script_name, remote_path, debug=True):
-    return script_name, 'err', '0'
+def mock_run_remote_script(
+        script_path, call_dir, debug=True):
+    return script_path, 'err', '0'
 
 
-def mock_run_remote_return_json(
+def mock_run_remote_script_return_json(
         script_name, remote_path, debug=True):
     out = json.dumps({"name": script_name})
     return out, 'err', '0'
@@ -698,13 +698,13 @@ class TestJobsApi(object):
 class TestRunApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
-                '_run_remote_script', side_effect=mock_run_remote)
+                'create_job_directory', side_effect=mock_create_job_directory)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote_script)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 'patch_all_templates', side_effect=mock_patch_all)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 'transfer_all_files', side_effect=mock_transfer_all)
-    @mock.patch('middleware.job_information_manager.job_information_manager.'
-                'create_job_directory', side_effect=mock_create_job_directory)
     def test_run_with_valid_id(
             self,
             mock_tr,
@@ -726,7 +726,7 @@ class TestRunApi(object):
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
-        assert response_to_json(job_response)['stdout'] == 'j4s1source'
+        assert response_to_json(job_response)['stdout'] == 'j4s1_dest'
         assert job_response.status_code == 200
 
     def test_run_with_invalid_id(self, session):
@@ -793,13 +793,13 @@ class TestRunApi(object):
 class TestSetupApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
-                '_run_remote_script', side_effect=mock_run_remote)
+                'create_job_directory', side_effect=mock_create_job_directory)
+    @mock.patch('middleware.job_information_manager.job_information_manager.'
+                '_run_remote_script', side_effect=mock_run_remote_script)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 'patch_all_templates', side_effect=mock_patch_all)
     @mock.patch('middleware.job_information_manager.job_information_manager.'
                 'transfer_all_files', side_effect=mock_transfer_all)
-    @mock.patch('middleware.job_information_manager.job_information_manager.'
-                'create_job_directory', side_effect=mock_create_job_directory)
     def test_setup_with_valid_id(
             self,
             mock_tr,
@@ -820,7 +820,7 @@ class TestSetupApi(object):
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
-        assert response_to_json(job_response)['stdout'] == 'j4s4source'
+        assert response_to_json(job_response)['stdout'] == 'j4s4_dest'
         assert job_response.status_code == 200
 
     def test_setup_with_invalid_id(self, session):
@@ -887,7 +887,7 @@ class TestSetupApi(object):
 class TestCancelApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
-                '_run_remote_script', side_effect=mock_run_remote)
+                '_run_remote_script', side_effect=mock_run_remote_script)
     def test_cancel_with_valid_id(self, mock_run, session):
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
@@ -902,7 +902,7 @@ class TestCancelApi(object):
                                    data=json.dumps(job_to_json(job)),
                                    content_type='application/json')
 
-        assert response_to_json(job_response)['stdout'] == 'j4s3source'
+        assert response_to_json(job_response)['stdout'] == 'j4s3_dest'
         assert job_response.status_code == 200
 
     def test_cancel_with_invalid_id(self, session):
@@ -932,7 +932,7 @@ class TestCancelApi(object):
 class TestProgressApi(object):
 
     @mock.patch('middleware.job_information_manager.job_information_manager.'
-                '_run_remote_script', side_effect=mock_run_remote_return_json)
+                '_run_remote_script', side_effect=mock_run_remote_script_return_json)
     def test_progress_with_valid_id(self, mock_run, session):
         jobs = JobRepositorySqlAlchemy(session)
         cases = CaseRepositorySqlAlchemy(session)
@@ -947,7 +947,7 @@ class TestProgressApi(object):
             URI_STEMS['progress'],
             job_id))
 
-        assert response_to_json(job_response)['stdout']['name'] == 'j4s2source'
+        assert response_to_json(job_response)['stdout']['name'] == 'j4s2_dest'
         assert job_response.status_code == 200
 
     def test_progress_with_invalid_id(self, session):

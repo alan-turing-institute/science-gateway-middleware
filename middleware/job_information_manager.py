@@ -8,6 +8,12 @@ import json
 from instance.config import *
 from werkzeug.exceptions import ServiceUnavailable
 
+import arrow
+from azure.storage.blob import (
+    BlockBlobService,
+    ContainerPermissions
+)
+
 # precedence for secrets variables is:
 # 1. Via environment varables
 # 2. Via instance/config.py
@@ -24,6 +30,10 @@ if 'SSH_PRIVATE_KEY_PATH' not in locals():
     SSH_PRIVATE_KEY_PATH = None
 if 'SSH_PRIVATE_KEY_STRING' not in locals():
     SSH_PRIVATE_KEY_STRING = None
+if 'STORAGE_ACCOUNT' not in locals():
+    STORAGE_ACCOUNT = None
+if 'STORAGE_KEY' not in locals():
+    STORAGE_PRIVATE_KEY_STRING = None
 if 'SIM_ROOT' not in locals():
     SIM_ROOT = '/home/test_user'
 
@@ -44,6 +54,10 @@ SSH_PRIVATE_KEY_STRING = os.environ.get(
 if isinstance(SSH_PRIVATE_KEY_STRING, str):
     SSH_PRIVATE_KEY_STRING = SSH_PRIVATE_KEY_STRING.replace(r'\n', "\n")
 
+STORAGE_ACCOUNT = os.environ.get('STORAGE_KEY', STORAGE_ACCOUNT)
+STORAGE_KEY = os.environ.get('STORAGE_KEY', STORAGE_KEY)
+
+
 SIM_ROOT = os.environ.get(
     'SIM_ROOT', SIM_ROOT)
 
@@ -56,6 +70,8 @@ if debug_variables:
     print('SSH_PORT', SSH_PORT)
     print('SSH_PRIVATE_KEY_PATH', SSH_PRIVATE_KEY_PATH)
     print('SSH_PRIVATE_KEY_STRING', SSH_PRIVATE_KEY_STRING)
+    print('STORAGE_ACCOUNT', STORAGE_ACCOUNT)
+    print('STORAGE_KEY', STORAGE_KEY)
 
 
 class job_information_manager():
@@ -79,6 +95,14 @@ class job_information_manager():
         self.simulation_root = SIM_ROOT
         self.private_key_path = SSH_PRIVATE_KEY_PATH
         self.private_key_string = SSH_PRIVATE_KEY_STRING
+
+        self.storage_account = STORAGE_ACCOUNT
+        self.storage_key = STORAGE_KEY
+        self.container_name = 'openfoam'
+
+        self.blob_service = BlockBlobService(
+            account_name=self.storage_account, account_key=self.storage_key)
+        self.blob_permission = ContainerPermissions(read=True, write=True)
 
         self.job = job
         self.jobs = job_repository
@@ -111,6 +135,9 @@ class job_information_manager():
 
     def _parameters_to_mako_dict(self, parameters):
         mako_dict = {}
+        mako_dict['job_id'] = self.job_id  # make job_id available to mako
+        mako_dict['job_storage_token'] = self._azure_sas_token()
+        # print(mako_dict)
         if parameters:
             for p in parameters:
                 mako_dict[p.name] = p.value
@@ -171,6 +198,20 @@ class job_information_manager():
             raise(ServiceUnavailable(
                 description="Unable to connect to backend compute resource"))
 
+    def _azure_sas_token(self):
+        """
+        Create token that expires in n days
+        """
+        duration = 1 # days
+        token = self.blob_service.generate_container_shared_access_signature(
+            container_name=self.container_name,
+            permission=self.blob_permission,
+            protocol='https',
+            start=arrow.utcnow().shift(hours=-1).datetime,
+            expiry=arrow.utcnow().shift(days=1).datetime)
+
+        return token
+
     def create_job_directory(self, debug=False):
         """
         Create a job directory (All inputs, scripts, templates are transferred
@@ -196,7 +237,9 @@ class job_information_manager():
         all_files.extend(self.inputs_list)
         all_files.extend(self.patched_templates)
 
-        # these are Script and Input model objects
+        # these are Script, Input and Template model objects
+        existing_remote_dirs = [self.job_working_directory_path]
+
         for file_object in all_files:
             file_full_path = file_object.source_uri
             file_name = os.path.basename(file_full_path)
@@ -206,6 +249,15 @@ class job_information_manager():
                     file_object.destination_path)
             else:  # support {"destination_path": null} in job json
                 dest_path = self.job_working_directory_path
+
+            # creating a remote dir may be bandwidth expensive
+            # so keep track of what has been created already
+            dest_dir = posixpath.dirname(dest_path)
+            if dest_dir not in existing_remote_dirs:
+                make_remote_dir = "mkdir -p {}".format(dest_dir)
+                connection.pass_command(make_remote_dir)
+                existing_remote_dirs.append(dest_dir)
+
             connection.secure_copy(file_full_path, dest_path)
 
             # convert line endings
@@ -216,7 +268,7 @@ class job_information_manager():
 
         connection.close_connection()
 
-    def _run_remote_script(self, script_name, remote_path, debug=False):
+    def _run_remote_script(self, script_path, call_dir, debug=False):
         """
         Method to run a given script, located in a remote location.
         Set the debug flag to print stdout to the terminal, and to enable
@@ -224,10 +276,10 @@ class job_information_manager():
         Shouldnt be called directly.
         """
         connection = self._ssh_connection()
-        command = "cd {}; bash {}".format(remote_path, script_name)
+        command = "cd {}; bash {}".format(call_dir, script_path)
         out, err, exit_code = connection.pass_command(command)
         if debug:
-            print(out)
+            print(out, err, exit_code)
         return out, err, exit_code
 
     def _run_remote_command(self, command, debug=False):
@@ -236,6 +288,18 @@ class job_information_manager():
         Shouldnt be called directly.
         """
         connection = self._ssh_connection()
+        out, err, exit_code = connection.pass_command(command)
+        if debug:
+            print(out)
+        return out, err, exit_code
+
+    def _make_remote_directory(self, relative_path, debug=True):
+        """
+        Method to make a remote directory.
+        """
+        connection = self._ssh_connection()
+        command = "cd {}; mkdir -p {}".format(
+            self.job_working_directory_path, relative_path)
         out, err, exit_code = connection.pass_command(command)
         if debug:
             print(out)
@@ -276,15 +340,19 @@ class job_information_manager():
                 break
         # If the script isn't found, return a 400 error
         if to_trigger:
-            script_name = os.path.basename(to_trigger.source_uri)
-            if to_trigger.destination_path:
-                script_path = posixpath.join(
-                    self.job_working_directory_path,
-                    to_trigger.destination_path)
-            else:  # support {"destination_path": null} in job json
-                script_path = self.job_working_directory_path
+            # script_name = os.path.basename(to_trigger.source_uri)
+            # if to_trigger.destination_path:
+            #     script_path = posixpath.join(
+            #         self.job_working_directory_path,
+            #         to_trigger.destination_path)
+            # else:  # support {"destination_path": null} in job json
+            #     script_path = self.job_working_directory_path
 
-            out, err, exit = self._run_remote_script(script_name, script_path)
+            # call all scripts from the job working directory
+            script_path = to_trigger.destination_path
+            call_dir = self.job_working_directory_path
+
+            out, err, exit = self._run_remote_script(script_path, call_dir)
 
             # for "RUN" actions, we need to persist the backend identifier
             # and submission status to the database
@@ -294,6 +362,7 @@ class job_information_manager():
                     self.job.backend_identifier = backend_identifier
                     self.job.status = "Queued"
                     self.jobs.update(self.job)
+
             if to_trigger.action in ["DATA", "PROGRESS"]:
                 # convert stdout json string to json
                 # guard against empty string (for queued jobs)
@@ -407,3 +476,11 @@ class job_information_manager():
         """
         # Execute the cancel script
         return self.trigger_action_script('CANCEL')
+
+    def store(self):
+        """
+        This is the STORE behaviour for this job manager. Method ignores
+        any data passed as part of the request.
+        """
+        # Execute the cancel script
+        return self.trigger_action_script('STORE')

@@ -69,21 +69,26 @@ def abstract_getting_secrets():
     # defaults generated when running our CI tests.
     secrets = [
         'SSH_USR', 'SSH_HOSTNAME', 'SSH_PORT',
-        'SIM_ROOT', 'SSH_PRIVATE_KEY_PATH']
+        'SIM_ROOT', 'SSH_PRIVATE_KEY_PATH',
+        'STORAGE_ACCOUNT', 'STORAGE_KEY']
     if all(x in globals() for x in secrets):
         username = SSH_USR
         hostname = SSH_HOSTNAME
         port = SSH_PORT
         simulation_root = SIM_ROOT
         private_key_path = SSH_PRIVATE_KEY_PATH
+        storage_account = STORAGE_ACCOUNT
+        storage_key = STORAGE_KEY
     else:
         username = 'test_user'
         hostname = 'test_host'
         port = 22
         simulation_root = '/home/test_user'
         private_key_path = None
+        storage_account = None
+        storage_key = None
 
-    return username, hostname, port, simulation_root, private_key_path
+    return username, hostname, port, simulation_root, private_key_path, storage_account, storage_key
 
 
 def mock_mkdir(path, exist_ok=True):
@@ -118,7 +123,7 @@ class TestJIM(object):
 
     def test_constructor_no_simulation_root(self):
 
-        username, hostname, port, simulation_root, private_key_path = \
+        username, hostname, port, simulation_root, private_key_path, storage_account, storage_key = \
             abstract_getting_secrets()
 
         # Create a manager
@@ -212,7 +217,7 @@ class TestJIM(object):
         'middleware.ssh.ssh.pass_command', side_effect=mock_pass_command)
     def test_transfer_all_files(
             self, mock_close, mock_secure_copy, mock_pass_command):
-        username, hostname, port, simulation_root, private_key_path = \
+        username, hostname, port, simulation_root, private_key_path, storage_account, storage_key = \
             abstract_getting_secrets()
         job = new_job5()
         manager = JIM(job)
@@ -407,3 +412,12 @@ class TestJIM(object):
             manager = JIM(job)
             updated_status = manager.update_job_status()
             assert updated_status == s
+
+    # def test_job_access_token(self):
+    #     job = new_job5()
+    #     manager = JIM(job)
+    #     print(manager.storage_account)
+    #     print(manager.storage_key)
+    #     print(manager.container_name)
+    #     token = manager._azure_sas_token()
+    #     print(token)
